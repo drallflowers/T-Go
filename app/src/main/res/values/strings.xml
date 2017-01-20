@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">T-Go</string>
+
+    <!-- LoginActivity -->
+    <string name="username">Username: </string>
+    <string name="password">Password: </string>
+    <string name="signUp">Sign Up</string>
+    <string name="login">Login</string>
+</resources>
