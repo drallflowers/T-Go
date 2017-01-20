@@ -17,7 +17,8 @@
         <TextView android:id="@+id/job_board_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1.0"/>
+            android:layout_weight="1.0"
+            android:gravity="end"/>
 
     </LinearLayout>
 
@@ -35,7 +36,8 @@
         <TextView android:id="@+id/job_board_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1.0"/>
+            android:layout_weight="1.0"
+            android:gravity="end"/>
 
     </LinearLayout>
 

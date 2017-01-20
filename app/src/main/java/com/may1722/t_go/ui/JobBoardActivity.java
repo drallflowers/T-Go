@@ -31,7 +31,7 @@ public class JobBoardActivity extends ListActivity {
         jobs.add(new JobBoardCardData("123 Wheeler Street", "eric", "$0.95", "11:55 AM"));
 
         JobBoardCardDataAdapter adapter = new JobBoardCardDataAdapter(this, jobs);
-        ListView list = (ListView) findViewById(R.id.list_job_board);
+        ListView list = this.getListView();
         list.setAdapter(adapter);
     }
 
