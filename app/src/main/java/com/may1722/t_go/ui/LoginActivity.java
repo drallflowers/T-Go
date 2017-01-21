@@ -1,5 +1,6 @@
 package com.may1722.t_go.ui;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,5 +22,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void login(View view){
         //Will get setup to send text in UserNameEditText and PasswordEditText to database to check if the user exists
+        Intent intent = new Intent(LoginActivity.this, ReviewBoardActivity.class);
+        startActivity(intent);
     }
 }
