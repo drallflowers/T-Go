@@ -6,4 +6,6 @@
     <string name="password">Password: </string>
     <string name="signUp">Sign Up</string>
     <string name="login">Login</string>
+    <string name="upgrade">Upgrade Account</string>
+    <string name="applyingFor">Applying For: </string>
 </resources>
