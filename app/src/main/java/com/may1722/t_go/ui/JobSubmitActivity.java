@@ -7,17 +7,22 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.app.*;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.may1722.t_go.R;
 
 import java.util.Calendar;
 
-public class JobSubmitActivity extends FragmentActivity implements
+public class JobSubmitActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
+
+    private TextView jobDate;
+    private TextView jobTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +32,19 @@ public class JobSubmitActivity extends FragmentActivity implements
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day){
-
+    jobDate = (TextView) findViewById(R.id.dateView);
+        jobDate.setText(new StringBuilder().append(month+1).append("-").append(day).append("-").append(year));
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        // Do something with the time chosen by the user
+        jobDate = (TextView) findViewById(R.id.timeView);
+        if(hourOfDay > 12){
+            jobDate.setText(new StringBuilder().append(hourOfDay%12).append(":").append(minute).append(" PM")); // show PM if hour day > 12
+        }
+        else {
+            jobDate.setText(new StringBuilder().append(hourOfDay).append(":").append(minute).append(" AM")); // show AM
+        }
     }
 
     public void pickDate(View view){
@@ -55,11 +67,11 @@ public class JobSubmitActivity extends FragmentActivity implements
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
 
-            return new DatePickerDialog(getActivity(), (JobSubmitActivity)getActivity(), year, month, day);
+            return new DatePickerDialog(getActivity(),R.style.style_date_picker_dialog, (JobSubmitActivity)getActivity(), year, month, day);
         }
     }
 
-public static class TimePickerFragment extends DialogFragment {
+public static class TimePickerFragment extends DialogFragment  {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -69,7 +81,7 @@ public static class TimePickerFragment extends DialogFragment {
         int minute = c.get(Calendar.MINUTE);
 
         // Create a new instance of TimePickerDialog and return it
-        return new TimePickerDialog(getActivity(), (JobSubmitActivity)getActivity() , hour, minute,
+        return new TimePickerDialog(getActivity(),(JobSubmitActivity) getActivity() , hour, minute,
                 DateFormat.is24HourFormat(getActivity()));
     }
 
