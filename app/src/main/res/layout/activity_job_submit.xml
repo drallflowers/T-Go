@@ -37,15 +37,15 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
+                android:inputType="textMultiLine"
                 android:ems="10"
                 android:id="@+id/editDescription"
                 android:hint="Job Description" />
 
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPostalAddress"
+                android:layout_height="108dp"
+                android:inputType="textMultiLine"
                 android:ems="10"
                 android:id="@+id/addressText"
                 android:hint="Enter Address" />

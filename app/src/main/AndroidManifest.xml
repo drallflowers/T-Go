@@ -16,7 +16,8 @@
             </intent-filter>
         </activity>
         <activity android:name="com.example.alxdaly.t_go.JobSubmit" />
-        <activity android:name=".ui.JobSubmitActivity"></activity>
+        <activity android:name=".ui.JobSubmitActivity" />
+        <activity android:name=".ui.submitReview"></activity>
     </application>
 
 </manifest>
