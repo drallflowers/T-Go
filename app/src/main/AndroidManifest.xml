@@ -8,16 +8,18 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.LoginActivity">
+        <activity android:name=".ui.LoginActivity"
+                  android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.alxdaly.t_go.JobSubmit" />
-        <activity android:name=".ui.JobSubmitActivity" />
-        <activity android:name=".ui.submitReview"></activity>
+        <activity android:name=".ui.ProfileActivity"
+                  android:screenOrientation="portrait">
+
+        </activity>
     </application>
 
 </manifest>
