@@ -25,8 +25,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void login(View view){
 
-        Intent intent = new Intent(this, submitReview.class);   //Sets up the class of the Activity we want to go to
-        startActivity(intent);
+
         //Will get setup to send text in UserNameEditText and PasswordEditText to database to check if the user exists
         Intent intent = new Intent(this, ProfileActivity.class);
         startActivity(intent);
