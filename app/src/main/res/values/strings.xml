@@ -22,4 +22,8 @@
     <string name="update">Update</string>
     <string name="upgradeAcct">Upgrade Account</string>
     <string name="passwordReset">Password Reset</string>
+
+    <!-- ChatActivity -->
+    <string name="chatWith">Chat with:</string>
+    <string name="send">Send</string>
 </resources>
