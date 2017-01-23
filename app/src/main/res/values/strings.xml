@@ -1,9 +1,25 @@
 <resources>
     <string name="app_name">T-Go</string>
 
+    <!-- Generic Terms -->
+    <string name="user">User</string>
+    <string name="courier">Courier</string>
+    <string name="mod">Moderator</string>
+    <string name="admin">Admin</string>
+
     <!-- LoginActivity -->
     <string name="username">Username: </string>
     <string name="password">Password: </string>
     <string name="signUp">Sign Up</string>
     <string name="login">Login</string>
+
+    <!-- ProfileActivity -->
+    <string name="usernameExample">username</string>
+    <string name="avgRating">Average Rating:</string>
+    <string name="email">Email</string>
+    <string name="phoneNumber">Phone Number</string>
+    <string name="paymentMethods">Payment Methods</string>
+    <string name="update">Update</string>
+    <string name="upgradeAcct">Upgrade Account</string>
+    <string name="passwordReset">Password Reset</string>
 </resources>
