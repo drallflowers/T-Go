@@ -67,7 +67,7 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="31dp"
                 android:id="@+id/dateView" />
 
             <Button
@@ -79,7 +79,7 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
                 android:id="@+id/timeView" />
 
             <Button
