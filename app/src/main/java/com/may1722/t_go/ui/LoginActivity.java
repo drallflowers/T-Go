@@ -16,8 +16,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void goToSignup(View view){
-        //Intent intent = new Intent(this, SignUpActivity.class);   //Sets up the class of the Activity we want to go to
-        //startActivity(intent);                                    //Starts teh Activity we want to go to
+        Intent intent = new Intent(this, SignUpActivity.class);   //Sets up the class of the Activity we want to go to
+        startActivity(intent);                                    //Starts the Activity we want to go to
     }
 
     public void login(View view){
