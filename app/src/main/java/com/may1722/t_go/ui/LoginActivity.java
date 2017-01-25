@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.content.Intent;
 
 import com.may1722.t_go.R;
 
@@ -20,7 +21,11 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);                                    //Starts the Activity we want to go to
     }
 
+
+
     public void login(View view){
+
+
         //Will get setup to send text in UserNameEditText and PasswordEditText to database to check if the user exists
         Intent intent = new Intent(LoginActivity.this, ReviewBoardActivity.class);
         startActivity(intent);
