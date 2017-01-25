@@ -24,10 +24,9 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void login(View view){
-
-
+      
         //Will get setup to send text in UserNameEditText and PasswordEditText to database to check if the user exists
-        Intent intent = new Intent(LoginActivity.this, ReviewBoardActivity.class);
+        Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
         startActivity(intent);
     }
 }
