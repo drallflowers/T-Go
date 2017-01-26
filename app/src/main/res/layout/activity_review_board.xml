@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
-    android:background="@android:color/black">
+    android:background="@color/colorPrimary">
 
 
     <LinearLayout
@@ -19,7 +19,7 @@
             android:layout_weight="1.0"
             android:textStyle="bold"
             android:textSize="20dp"
-            android:textColor="@android:color/white"/>
+            android:textColor="@color/colorPrimaryDark"/>
         <TextView android:id="@+id/review_board_rating"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

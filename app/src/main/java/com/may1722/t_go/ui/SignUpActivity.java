@@ -19,8 +19,8 @@ public class SignUpActivity extends AppCompatActivity {
      * On cancel, head back to login without touching database
      */
     public void goToLogin(View view) {
-//        Intent intent = new Intent(this, ProfileActivity.class);
-//        startActivity(intent);
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
     /*
     * On submit, send information to DB and change screen to login
@@ -28,8 +28,7 @@ public class SignUpActivity extends AppCompatActivity {
     public void signUp(View view) {
         //Database insert & head to login
 
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+        goToLogin(view);
     }
 
 }
