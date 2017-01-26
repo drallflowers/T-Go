@@ -2,6 +2,7 @@ package com.may1722.t_go.ui;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.support.v4.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
@@ -57,6 +58,13 @@ public class JobSubmitActivity extends AppCompatActivity implements
         DialogFragment newFragment = new TimePickerFragment();
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
+
+    public void submit(View view){
+        //Check data is valid, then add job to database, then go to CurrentJobs -JRS
+        Intent intent = new Intent(this, CurrentJobs.class);
+        startActivity(intent);
+    }
+
         //Will get setup to send text in UserNameEditText and PasswordEditText to database to check if the user exists
 
     public static class DatePickerFragment extends DialogFragment{

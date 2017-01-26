@@ -17,4 +17,9 @@ public class CurrentJobs extends AppCompatActivity {
         setContentView(R.layout.activity_current_jobs);
     }
 
+    public void goToReviewSubmit(View view){
+        Intent intent = new Intent(this, SubmitReviewActivity.class);
+        startActivity(intent);
+    }
+
 }

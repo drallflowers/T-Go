@@ -49,8 +49,9 @@
                         android:layout_width="93dp"
                         android:layout_height="wrap_content"
                         android:text="In Progress"
-                        android:textAppearance="@android:style/TextAppearance.Material.Widget.TabWidget" />
-
+                       />
+                    <!-- Removed from TextView above because Error TabWidget requires API lebel 21, when 14 is min
+                    android:textAppearance="@android:style/TextAppearance.Material.Widget.TabWidget"-->
                 </LinearLayout>
 
                 <RelativeLayout
@@ -117,8 +118,9 @@
                         android:id="@+id/second_job_status"
                         android:layout_width="93dp"
                         android:layout_height="wrap_content"
-                        android:text="Payment Pending"
-                        android:textAppearance="@android:style/TextAppearance.Material.Widget.TabWidget" />
+                        android:text="Payment Pending" />
+                    <!-- Removed from TextView above because Error TabWidget requires API lebel 21, when 14 is min
+                    android:textAppearance="@android:style/TextAppearance.Material.Widget.TabWidget"-->
 
                 </LinearLayout>
 
@@ -186,8 +188,17 @@
                         android:id="@+id/third_job_status"
                         android:layout_width="93dp"
                         android:layout_height="wrap_content"
-                        android:text="Done"
-                        android:textAppearance="@android:style/TextAppearance.Material.Widget.TabWidget" />
+                        android:text="Done" />
+                    <!-- Removed from TextView above because Error TabWidget requires API lebel 21, when 14 is min
+                    android:textAppearance="@android:style/TextAppearance.Material.Widget.TabWidget"-->
+
+                    <Button
+                        android:text="Review"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/button"
+                        android:layout_weight="0.32"
+                        android:onClick="goToReviewSubmit" />
 
                 </LinearLayout>
 
