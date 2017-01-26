@@ -23,6 +23,9 @@
 
         </activity>
         <activity android:name=".ui.SignUpActivity" />
+        <activity android:name=".ui.CurrentJobs"></activity>
+        <activity android:name=".ui.JobSubmitActivity"></activity>
+        <activity android:name=".ui.SubmitReviewActivity"></activity>
     </application>
 
 </manifest>

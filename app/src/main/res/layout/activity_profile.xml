@@ -167,7 +167,52 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="bottom">
+            android:gravity="bottom"
+            android:weightSum="1">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:text="My Reviews (Courier)"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonReviews"
+                    android:layout_weight="1"
+                    android:onClick="goToReviewBoard" />
+
+                <Button
+                    android:text="Find Jobs (Courier)"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonFindJobs"
+                    android:layout_weight="1"
+                    android:onClick="goToJobBoard" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:text="My Jobs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonMyJobs"
+                    android:layout_weight="1"
+                    android:onClick="goToCurrentJobs" />
+
+                <Button
+                    android:text="New Job"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonNewJob"
+                    android:layout_weight="1"
+                    android:onClick="goToJobSubmit" />
+            </LinearLayout>
 
             <Button
                 android:text="@string/upgradeAcct"
