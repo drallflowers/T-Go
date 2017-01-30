@@ -7,6 +7,9 @@
     <string name="mod">Moderator</string>
     <string name="admin">Admin</string>
 
+    <string name="Cancel">Cancel</string>
+    <string name="Submit">Submit</string>
+
     <!-- LoginActivity -->
     <string name="username">Username: </string>
     <string name="password">Password: </string>
@@ -22,4 +25,8 @@
     <string name="update">Update</string>
     <string name="upgradeAcct">Upgrade Account</string>
     <string name="passwordReset">Password Reset</string>
+
+    <!-- Sign Up Activity -->
+    <string name="confirmPassword">Confirm Password:</string>
+
 </resources>

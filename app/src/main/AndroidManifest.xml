@@ -16,10 +16,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.JobBoardActivity"></activity>
+        <activity android:name=".ui.ReviewBoardActivity"></activity>
         <activity android:name=".ui.ProfileActivity"
                   android:screenOrientation="portrait">
 
         </activity>
+        <activity android:name=".ui.SignUpActivity" />
     </application>
 
 </manifest>
