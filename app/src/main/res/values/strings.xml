@@ -29,4 +29,7 @@
     <!-- Sign Up Activity -->
     <string name="confirmPassword">Confirm Password:</string>
 
+    <!-- ChatActivity -->
+    <string name="chatWith">Chat with:</string>
+    <string name="send">Send</string>
 </resources>

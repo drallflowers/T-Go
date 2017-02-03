@@ -6,6 +6,10 @@
           <option name="url" value="https://github.com/EnSoftCorp/Starter-Toolbox.git" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://github.com/drallflowers/T-Go.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
     <option name="cloneParentDir" value="C:\Users\dflowers\AndroidStudioProjects" />
