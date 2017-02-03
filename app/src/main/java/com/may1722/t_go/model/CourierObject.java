@@ -8,6 +8,11 @@ public class CourierObject {
     //TODO Change to job object when added
     private ArrayList<Object> currentJobs;
 
+    public CourierObject(int user_id, ArrayList<Object> currentJobs) {
+        this.user_id = user_id;
+        this.currentJobs = currentJobs;
+    }
+
     public void addJob(Object o)
     {
         currentJobs.add(o);
