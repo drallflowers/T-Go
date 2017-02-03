@@ -6,10 +6,10 @@ import java.util.ArrayList;
  * Created by alxdaly on 1/30/2017.
  */
 
-public class ChatObject {
-    ArrayList<MessageObject> messages;  //Holds all of the messages sent via chat
-    String user1;                       //Username of user1
-    String user2;                       //Username of user2
+class ChatObject {
+    private ArrayList<MessageObject> messages;  //Holds all of the messages sent via chat
+    private String user1;                       //Username of user1
+    private String user2;                       //Username of user2
 
     /**
      * Initializes chat room

@@ -35,7 +35,8 @@
                 android:id="@+id/chatOtherUser"
                 android:layout_weight="1"
                 android:textAlignment="textStart"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                tools:ignore="RtlCompat" />
 
         </LinearLayout>
 
