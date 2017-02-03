@@ -4,9 +4,9 @@ package com.may1722.t_go.model;
  * Created by alxdaly on 1/30/2017.
  */
 
-public class MessageObject {
-    String user;        //Holds username of user who sent message
-    String message;     //Holds message
+class MessageObject {
+    private String user;        //Holds username of user who sent message
+    private String message;     //Holds message
 
     /**
      * Constructor method

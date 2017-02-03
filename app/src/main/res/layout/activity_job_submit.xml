@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/buttonContinue"
                 android:layout_weight="0.13"
-                android:onClick="pickDate (JobSubmitActivity)" />
+                android:onClick="submit" />
         </LinearLayout>
     </ScrollView>
 

@@ -17,15 +17,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.JobBoardActivity"></activity>
-        <activity android:name=".ui.ReviewBoardActivity"></activity>
+        <activity android:name=".ui.JobBoardActivity" />
+        <activity android:name=".ui.ReviewBoardActivity" />
         <activity android:name=".ui.ProfileActivity"
                   android:screenOrientation="portrait">
 
         </activity>
         <activity android:name=".ui.SignUpActivity" />
+        <activity android:name=".ui.CurrentJobs" />
+        <activity android:name=".ui.JobSubmitActivity" />
+        <activity android:name=".ui.SubmitReviewActivity" />
         <activity android:name=".ui.ChatActivity"
-            android:screenOrientation="portrait"></activity>
+                  android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -39,8 +39,7 @@ public class SignUpActivity extends AppCompatActivity {
     public void signUp(View view) {
         //Database insert & head to login
 
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+        goToLogin(view);
     }
 
 
