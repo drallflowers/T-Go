@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/first_job"
+                android:layout_width="match_parent"
+                android:layout_height="189dp"
+                android:orientation="vertical"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/first_job_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.45"
+                    android:text="First Job Title"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="43dp"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:id="@+id/first_job_status_label"
+                        android:layout_width="217dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.32"
+                        android:text="Status:"
+                        android:textAppearance="@android:style/TextAppearance.Medium" />
+
+                    <TextView
+                        android:id="@+id/first_job_status"
+                        android:layout_width="93dp"
+                        android:layout_height="wrap_content"
+                        android:text="In Progress"
+                       />
+                    <!-- Removed from TextView above because Error TabWidget requires API lebel 21, when 14 is min
+                    android:textAppearance="@android:style/TextAppearance.Material.Widget.TabWidget"-->
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="108dp"
+                    android:layout_weight="0.50">
+
+                    <Button
+                        android:id="@+id/first_job_contact"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="54dp"
+                        android:layout_marginStart="54dp"
+                        android:elevation="0dp"
+                        android:text="Contact" />
+
+                    <Button
+                        android:id="@+id/first_job_maps"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="53dp"
+                        android:layout_marginRight="53dp"
+                        android:text="Maps" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/second_job"
+                android:layout_width="match_parent"
+                android:layout_height="189dp"
+                android:orientation="vertical"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/second_job_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.45"
+                    android:text="Second Job Title"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="43dp"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:id="@+id/second_job_status_label"
+                        android:layout_width="217dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.32"
+                        android:text="Status:"
+                        android:textAppearance="@android:style/TextAppearance.Medium" />
+
+                    <TextView
+                        android:id="@+id/second_job_status"
+                        android:layout_width="93dp"
+                        android:layout_height="wrap_content"
+                        android:text="Payment Pending" />
+                    <!-- Removed from TextView above because Error TabWidget requires API lebel 21, when 14 is min
+                    android:textAppearance="@android:style/TextAppearance.Material.Widget.TabWidget"-->
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="108dp"
+                    android:layout_weight="0.50">
+
+                    <Button
+                        android:id="@+id/second_job_contact"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="54dp"
+                        android:layout_marginStart="54dp"
+                        android:elevation="0dp"
+                        android:text="Contact" />
+
+                    <Button
+                        android:id="@+id/second_job_maps"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="53dp"
+                        android:layout_marginRight="53dp"
+                        android:text="Maps" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/third_job"
+                android:layout_width="match_parent"
+                android:layout_height="189dp"
+                android:orientation="vertical"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/third_job_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.45"
+                    android:text="Third Job Title"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="43dp"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:id="@+id/third_job_status_label"
+                        android:layout_width="217dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.32"
+                        android:text="Status:"
+                        android:textAppearance="@android:style/TextAppearance.Medium" />
+
+                    <TextView
+                        android:id="@+id/third_job_status"
+                        android:layout_width="93dp"
+                        android:layout_height="wrap_content"
+                        android:text="Done" />
+                    <!-- Removed from TextView above because Error TabWidget requires API lebel 21, when 14 is min
+                    android:textAppearance="@android:style/TextAppearance.Material.Widget.TabWidget"-->
+
+                    <Button
+                        android:text="Review"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/button"
+                        android:layout_weight="0.32"
+                        android:onClick="goToReviewSubmit" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="108dp"
+                    android:layout_weight="0.50">
+
+                    <Button
+                        android:id="@+id/third_job_contact"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="54dp"
+                        android:layout_marginStart="54dp"
+                        android:elevation="0dp"
+                        android:text="Contact" />
+
+                    <Button
+                        android:id="@+id/third_job_maps"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="53dp"
+                        android:layout_marginRight="53dp"
+                        android:text="Maps" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
