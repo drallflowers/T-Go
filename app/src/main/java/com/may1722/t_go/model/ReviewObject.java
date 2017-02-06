@@ -8,21 +8,26 @@ public class ReviewObject {
     /**
      * Username of person giving review
      */
-    private String reviewer;
+    private int reviewer;
     /**
      * Username of person being reviewed
      */
-    private String reviewee;
+    private int reviewee;
     /**
      * Rating from 0-5 (?) to summarize review
      */
-    private double reviewRating;
+    private int reviewRating;
     /**
      * Written review by reviewer
      */
     private String commentary;
+    /**
+     * ID for this review
+     */
+    private int review_id;
 
-    public ReviewObject(String userReviewing, String userBeingReviewed, double rating, String text){
+    public ReviewObject(int ID, int userReviewing, int userBeingReviewed, int rating, String text){
+        review_id = ID;
         reviewer = userReviewing;
         reviewee = userBeingReviewed;
         reviewRating = rating;
@@ -33,13 +38,13 @@ public class ReviewObject {
      * Return reviewer username
      * @return reviewer
      */
-    public String getReviewer(){return reviewer;}
+    public int getReviewer(){return reviewer;}
 
     /**
      * return reviewee username
      * @return reviewee
      */
-    public String getReviewee(){return  reviewee;}
+    public int getReviewee(){return  reviewee;}
 
     /**
      * return text commentary
@@ -51,5 +56,11 @@ public class ReviewObject {
      * Return numeric rating
      * @return reviewRating
      */
-    public double getReviewRating(){return reviewRating;}
+    public int getReviewRating(){return reviewRating;}
+
+    /**
+     * Return the ID of this review
+     * @return
+     */
+    public int getReview_id(){return review_id;}
 }
