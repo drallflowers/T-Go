@@ -101,7 +101,7 @@
                 android:layout_weight="1"
                 android:textSize="25sp"
                 android:textAllCaps="false"
-                android:onClick="goToSignup (LoginActivity)"
+                android:onClick="goToLogin"
                 android:fontFamily="sans-serif-medium" />
 
             <Button

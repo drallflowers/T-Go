@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
                 android:ems="10"
-                android:id="@+id/editText4"
+                android:id="@+id/editPrice"
                 android:hint="0.00" />
 
             <Button
@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/buttonContinue"
                 android:layout_weight="0.13"
-                android:onClick="pickDate (JobSubmitActivity)" />
+                android:onClick="submit" />
         </LinearLayout>
     </ScrollView>
 
