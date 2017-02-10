@@ -3,4 +3,8 @@
     <color name="colorPrimary">#999999</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#FF4081</color>
+
+    <!-- ChatActivity -->
+    <color name="colorSent">#1133BB</color>
+    <color name="colorReceived">#FFFFFF</color>
 </resources>
