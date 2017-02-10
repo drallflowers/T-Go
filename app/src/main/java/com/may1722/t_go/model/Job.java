@@ -6,7 +6,7 @@ package com.may1722.t_go.model;
 
 public class Job {
 
-    //User owner;
+    UserObject owner;
     private String description;
     private String title;
     private String time;
@@ -15,12 +15,13 @@ public class Job {
 
 
     //need to  uncomment the User field after merge
-    public Job(/*User u,*/ String desc, String ttl, Double p, String t, String adr){
+    public Job(UserObject u, String desc, String ttl, Double p, String t, String adr){
         this.price = p;
         this.description = desc;
         this.title = ttl;
         this.time = t;
         this.address = adr;
+        this.owner = u;
     }
 
 

@@ -17,6 +17,9 @@ import android.widget.TimePicker;
 
 import com.may1722.t_go.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Calendar;
 
 public class JobSubmitActivity extends AppCompatActivity implements
@@ -24,6 +27,11 @@ public class JobSubmitActivity extends AppCompatActivity implements
 
     private TextView jobDate;
     private TextView jobTime;
+    private TextView description;
+    private TextView address;
+    private TextView price;
+    private TextView title;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +67,26 @@ public class JobSubmitActivity extends AppCompatActivity implements
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
-    public void submit(View view){
+    public void submit(View view) throws JSONException {
+        JSONObject obj = new JSONObject();
+        title = (TextView) findViewById(R.id.editTitle);
+        price = (TextView) findViewById(R.id.editPrice);
+        description = (TextView) findViewById(R.id.editDescription);
+        address = (TextView) findViewById(R.id.addressText);
+
+        //might want to take this out and make it into a method. not sure though since it is kind of Job specific.
+
         //Check data is valid, then add job to database, then go to CurrentJobs -JRS
+        // Make job JSON object after it is validated
+
+        // NOTE NEED TO CHANGE NAME WITH USER
+        obj.put("Owner", "Name");
+        obj.put("Title",title.getEditableText().toString());
+        obj.put("Description", description.getEditableText().toString());
+        obj.put("Price", price.getEditableText().toString());
+        obj.put("Address", address.getEditableText().toString());
+        obj.put("Date", jobDate.getEditableText().toString());
+        obj.put("Time", jobTime.getEditableText().toString());
         Intent intent = new Intent(this, CurrentJobs.class);
         startActivity(intent);
     }
