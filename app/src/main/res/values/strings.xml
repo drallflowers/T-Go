@@ -18,6 +18,7 @@
     <string name="upgrade">Upgrade Account</string>
     <string name="applyingFor">Applying For: </string>
 
+
     <!-- ProfileActivity -->
     <string name="usernameExample">username</string>
     <string name="avgRating">Average Rating:</string>
