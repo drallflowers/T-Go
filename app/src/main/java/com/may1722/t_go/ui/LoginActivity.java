@@ -59,7 +59,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean attemptLogin(String user, String pass) {
-        URL url = new URL();
         try {
             String data = URLEncoder.encode("username", "UTF-8");
         } catch (UnsupportedEncodingException e) {
