@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.may1722.t_go.R;
+import com.may1722.t_go.model.Job;
+import com.may1722.t_go.model.UserObject;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,7 +55,7 @@ public class JobSubmitActivity extends AppCompatActivity implements
         }
         else {
             jobDate.setText(new StringBuilder().append(hourOfDay).append(":").append(minute).append(" AM")); // show AM
-        }
+        } // show PM if hour day > 12
     }
 
     public void pickDate(View view){
