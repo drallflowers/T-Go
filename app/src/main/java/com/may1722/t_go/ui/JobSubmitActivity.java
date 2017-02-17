@@ -3,6 +3,8 @@ package com.may1722.t_go.ui;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v4.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
@@ -20,6 +22,16 @@ import com.may1722.t_go.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Calendar;
 
 public class JobSubmitActivity extends AppCompatActivity implements
@@ -87,8 +99,6 @@ public class JobSubmitActivity extends AppCompatActivity implements
         obj.put("Address", address.getEditableText().toString());
         obj.put("Date", jobDate.getEditableText().toString());
         obj.put("Time", jobTime.getEditableText().toString());
-        Intent intent = new Intent(this, CurrentJobs.class);
-        startActivity(intent);
     }
 
         //Will get setup to send text in UserNameEditText and PasswordEditText to database to check if the user exists
