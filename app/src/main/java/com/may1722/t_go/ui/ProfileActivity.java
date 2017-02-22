@@ -68,4 +68,9 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void goToMaps(View view)
+    {
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
+    }
 }

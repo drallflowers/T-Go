@@ -176,6 +176,20 @@
                 android:layout_height="wrap_content">
 
                 <Button
+                    android:text="Go To Map"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/mapButton"
+                    android:layout_weight="1"
+                    android:onClick="goToMaps" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
                     android:text="My Reviews (Courier)"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
