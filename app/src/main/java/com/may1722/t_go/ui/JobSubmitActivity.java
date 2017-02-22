@@ -6,22 +6,26 @@ import android.content.Intent;
 import android.support.v4.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.app.*;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.*;
+import android.support.v7.app.ActionBar;
 import android.text.format.DateFormat;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.may1722.t_go.R;
-import com.may1722.t_go.model.Job;
-import com.may1722.t_go.model.UserObject;
+import com.may1722.t_go.model.ListViewAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class JobSubmitActivity extends AppCompatActivity implements
@@ -33,12 +37,45 @@ public class JobSubmitActivity extends AppCompatActivity implements
     private TextView address;
     private TextView price;
     private TextView title;
-
+    EditText editText;
+    Button addButton;
+    ListView listView;
+    ArrayList<String> listItems;
+    ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job_submit);
+        listView = (ListView) findViewById(R.id.listView);
+        listItems = new ArrayList<String>();
+        listItems.add("First Item - added on Activity Create");
+        listItems.add("Second Item - added on Activity Create");
+        final ListViewAdapter adapter = new ListViewAdapter(listItems, this);
+        listView.setAdapter(adapter);
+        setListViewHeightBasedOnChildren(listView);
+
+        Button addItemBtn = (Button) findViewById(R.id.addItemBtn);
+
+        addItemBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                //do something
+                listItems.add("Another item");
+                setListViewHeightBasedOnChildren(listView);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        Button btnRefresh = (Button) findViewById(R.id.btnRefresh);
+
+        btnRefresh.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                //do something
+                setListViewHeightBasedOnChildren(listView);
+            }
+        });
     }
 
     @Override
@@ -122,6 +159,27 @@ public static class TimePickerFragment extends DialogFragment  {
     }
 
 }
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListViewAdapter listAdapter = (ListViewAdapter) listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ActionBar.LayoutParams.WRAP_CONTENT));
+
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+    }
 
 
 }
