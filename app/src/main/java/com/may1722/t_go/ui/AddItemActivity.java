@@ -1,20 +1,28 @@
 package com.may1722.t_go.ui;
 
-import android.app.ProgressDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.icu.text.DateTimePatternGenerator;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.DialogFragment;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.util.Log;
+import android.app.*;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateFormat;
 import android.view.View;
-import android.content.Intent;
+import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.may1722.t_go.R;
 
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -26,41 +34,50 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
-public class LoginActivity extends AppCompatActivity {
+public class AddItemActivity extends AppCompatActivity {
+
+    private TextView name;
+    private TextView description;
+    private TextView price;
+    private TextView quantity;
+    private Integer jobID;
+    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_add_item);
+
+        userID = getIntent().getExtras().getString("userID");
+        jobID = getIntent().getExtras().getInt("jobID");
     }
 
-    public void goToSignup(View view) {
-        //Check username and password fields and send on to SignUp if non-empty? -JRS
-        Intent intent = new Intent(this, SignUpActivity.class);   //Sets up the class of the Activity we want to go to
-        startActivity(intent);                                    //Starts the Activity we want to go to
-    }
+    public void submit(View view) throws JSONException {
+        name = (TextView) findViewById(R.id.nameText);
+        description = (TextView) findViewById(R.id.descriptionText);
+        price = (TextView) findViewById(R.id.priceText);
+        quantity = (TextView) findViewById(R.id.quantityText);
 
+        String nameString = name.getEditableText().toString();
+        String descriptionString = description.getEditableText().toString();
+        String priceString = price.getEditableText().toString();
+        String quantityString = quantity.getEditableText().toString();
 
-    public void login(View view) {
-        TextView userField = (TextView) findViewById(R.id.UserNameEditText);
-        TextView passField = (TextView) findViewById(R.id.PasswordEditText);
-
-        String username = userField.getText().toString();
-        String password = passField.getText().toString();
-
-        if (username.length() > 0 & password.length() > 0) {
-            new AsyncLogin().execute(username, password);
+        if (nameString.length() > 0 && priceString.length() > 0 && quantityString.length() > 0) {
+            new AsyncAddItem().execute(nameString, descriptionString, priceString, quantityString, jobID.toString());
         } else {
-            Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_LONG).show();
+            Toast.makeText(AddItemActivity.this, "Missing info", Toast.LENGTH_LONG).show();
         }
-
     }
 
-    private class AsyncLogin extends AsyncTask<String, String, String> {
+    private class AsyncAddItem extends AsyncTask<String, String, String> {
         HttpURLConnection conn;
         URL url = null;
 
@@ -69,13 +86,12 @@ public class LoginActivity extends AppCompatActivity {
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://may1722db.ece.iastate.edu/login.inc.php");
+                url = new URL("http://may1722db.ece.iastate.edu/additem.inc.php");
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-                Toast.makeText(LoginActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
-                //return "exception";
+                return "exception";
             }
             try {
                 // Setup HttpURLConnection class to send and receive data from php and mysql
@@ -90,8 +106,11 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Append parameters to URL
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("username", params[0])
-                        .appendQueryParameter("password", params[1]);
+                        .appendQueryParameter("item_name", params[0])
+                        .appendQueryParameter("item_description", params[1])
+                        .appendQueryParameter("price", params[2])
+                        .appendQueryParameter("quantity", params[3])
+                        .appendQueryParameter("job_id", params[4]);
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
@@ -107,8 +126,7 @@ public class LoginActivity extends AppCompatActivity {
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
-                Toast.makeText(LoginActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
-                //return "exception";
+                return "exception";
             }
 
             try {
@@ -131,19 +149,19 @@ public class LoginActivity extends AppCompatActivity {
                     return result.toString();
                     // Pass data to onPostExecute method
 
+
                 } else {
-                    Toast.makeText(LoginActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(AddItemActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
                     return "connection failure";
                 }
 
             } catch (IOException e) {
                 e.printStackTrace();
-                Toast.makeText(LoginActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
-                return "connection failuer";
+                Toast.makeText(AddItemActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                return "connection failure";
             } finally {
                 conn.disconnect();
             }
-
         }
 
         @Override
@@ -155,26 +173,17 @@ public class LoginActivity extends AppCompatActivity {
                 /* Here launching another activity when login successful. If you persist login state
                 use sharedPreferences of Android. and logout button to clear sharedPreferences.
                  */
-                Toast.makeText(LoginActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
-            } else if (result.equalsIgnoreCase("no entries")) {
-                Toast.makeText(LoginActivity.this, "Username or password is invalid", Toast.LENGTH_LONG).show();
+                Toast.makeText(AddItemActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
             } else {
-                String[] result2 = new String[10];
-                result2 = result.split(",");
-                Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
-                intent.putExtra("userID", result2[0]);
-                intent.putExtra("first_name", result2[1]);
-                intent.putExtra("last_name", result2[2]);
-                intent.putExtra("email", result2[3]);
-                intent.putExtra("phone_number", result2[4]);
-                intent.putExtra("user_type", result2[5]);
-                intent.putExtra("date_created", result2[6]);
-                intent.putExtra("date_of_birth", result2[7]);
-                intent.putExtra("username", result2[8]);
-                startActivity(intent);
-                LoginActivity.this.finish();
-
+                startProfileActivity();
+                Toast.makeText(AddItemActivity.this, "Item Added", Toast.LENGTH_LONG).show();
             }
         }
     }
+    public void startProfileActivity(){
+        Intent intent = new Intent(this, ProfileActivity.class);
+        intent.putExtra("userID", userID);
+        startActivity(intent);
+    }
 }
+

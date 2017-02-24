@@ -21,6 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.JobBoardActivity" />
+        <activity android:name=".ui.AddItemActivity" />
         <activity android:name=".ui.ReviewBoardActivity" />
         <activity android:name=".ui.ProfileActivity"
                   android:screenOrientation="portrait">

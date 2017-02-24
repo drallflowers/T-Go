@@ -27,11 +27,14 @@ import java.util.ArrayList;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    private String userID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        userID = getIntent().getExtras().getString("userID");
         String username = getIntent().getExtras().getString("username");
         String user_type = getIntent().getExtras().getString("user_type");
         String email = getIntent().getExtras().getString("email");
@@ -50,21 +53,25 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void goToCurrentJobs(View view) {
         Intent intent = new Intent(this, CurrentJobs.class);
+        intent.putExtra("userID", userID);
         startActivity(intent);
     }
 
     public void goToJobSubmit(View view) {
         Intent intent = new Intent(this, JobSubmitActivity.class);
+        intent.putExtra("userID", userID);
         startActivity(intent);
     }
 
     public void goToReviewBoard(View view) {
         Intent intent = new Intent(this, ReviewBoardActivity.class);
+        intent.putExtra("userID", userID);
         startActivity(intent);
     }
 
     public void goToJobBoard(View view) {
         Intent intent = new Intent(this, JobBoardActivity.class);
+        intent.putExtra("userID", userID);
         startActivity(intent);
     }
 
