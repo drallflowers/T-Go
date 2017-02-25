@@ -62,6 +62,7 @@ public class AddItemActivity extends AppCompatActivity {
     private TextView quantity;
     private Integer jobID;
     private String userID;
+    private Integer productID = 0;
 
     private AlertDialog.Builder alertBuilder;
 
@@ -86,7 +87,7 @@ public class AddItemActivity extends AppCompatActivity {
         String quantityString = quantity.getEditableText().toString();
 
         if (nameString.length() > 0 && priceString.length() > 0 && quantityString.length() > 0) {
-            new AsyncAddItem().execute(nameString, descriptionString, priceString, quantityString, jobID.toString());
+            new AsyncAddItem().execute(nameString, descriptionString, priceString, quantityString, jobID.toString(), productID.toString());
         } else {
             Toast.makeText(AddItemActivity.this, "Missing info", Toast.LENGTH_LONG).show();
         }
@@ -125,7 +126,8 @@ public class AddItemActivity extends AppCompatActivity {
                         .appendQueryParameter("item_description", params[1])
                         .appendQueryParameter("price", params[2])
                         .appendQueryParameter("quantity", params[3])
-                        .appendQueryParameter("job_id", params[4]);
+                        .appendQueryParameter("job_id", params[4])
+                        .appendQueryParameter("product_id", params[5]);
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
@@ -206,10 +208,6 @@ public class AddItemActivity extends AppCompatActivity {
         alertBuilder = new AlertDialog.Builder(AddItemActivity.this);
         alertBuilder.setTitle("Select a product:");
 
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(AddItemActivity.this, android.R.layout.select_dialog_singlechoice);
-        adapter.add("milk");
-        adapter.add("apple");
-
         alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
            @Override
             public void onClick(DialogInterface dialog, int which){
@@ -218,8 +216,6 @@ public class AddItemActivity extends AppCompatActivity {
         });
 
         new AsyncGetProducts().execute();
-
-     //   alertBuilder.show();
     }
 
     public class ProductAdapter extends ArrayAdapter<ProductObject> {
@@ -363,12 +359,20 @@ public class AddItemActivity extends AppCompatActivity {
             products.add(new ProductObject(id, name, price));
         }
 
-        ProductAdapter adapter = new ProductAdapter(this, products);
+        final ProductAdapter adapter = new ProductAdapter(this, products);
 
         alertBuilder.setAdapter(adapter, new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which){
-                //TODO: port item info to text fields
+                ProductObject product = adapter.getItem(which);
+                productID = product.getProduct_id();
+                name = (TextView) findViewById(R.id.nameText);
+                description = (TextView) findViewById(R.id.descriptionText);
+                price = (TextView) findViewById(R.id.priceText);
+                name.setText(product.getProduct_name());
+                description.setText(product.getProduct_description());
+                price.setText(String.format("%.2f", product.getAvg_price()));
+
                 dialog.dismiss();
             }
         });
