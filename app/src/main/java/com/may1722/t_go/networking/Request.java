@@ -37,7 +37,7 @@ public abstract class Request extends AsyncTask<String, String, String> {
             conn.setDoOutput(true);
 
             // Append parameters to URL
-            Uri.Builder builder = getUriBuider(params);
+            Uri.Builder builder = getUriBuilder(params);
             String query = builder.build().getEncodedQuery();
 
             // Open connection for sending data
@@ -112,7 +112,7 @@ public abstract class Request extends AsyncTask<String, String, String> {
         return "POST";
     }
 
-    protected Uri.Builder getUriBuider(String... params){
+    protected Uri.Builder getUriBuilder(String... params){
         Uri.Builder builder = new Uri.Builder();
         return builder;
     }

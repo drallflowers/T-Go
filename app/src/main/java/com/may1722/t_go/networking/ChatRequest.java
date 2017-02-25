@@ -23,13 +23,14 @@ public class ChatRequest extends Request {
 
     ChatObject chat;
 
-    protected URL getURL() {
+    protected URL getUrl() {
         try {
-            URL url = new URL("may1722db.ece.iastate.edu/chat.php");
+            URL url = new URL("http://may1722db.ece.iastate.edu/chat.php");
+            return url;
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        return url;
+        return null;
     }
 
     protected String getPostGet(){
@@ -69,7 +70,7 @@ public class ChatRequest extends Request {
         }
     }
 
-    protected ChatObject getChat(){
+    public ChatObject getChat(){
         return chat;
     }
 }

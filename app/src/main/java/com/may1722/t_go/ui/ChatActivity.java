@@ -19,7 +19,7 @@ public class ChatActivity extends AppCompatActivity {
     private String user1;
     private String user2;
     private int chatId;
-//    private ChatRequest chatRequest= new ChatRequest();
+    private ChatRequest chatRequest;
     private EditText chatText;
     private ListView messagesListView;
     private ChatAdapter adapter;
@@ -32,19 +32,19 @@ public class ChatActivity extends AppCompatActivity {
         user1 = extras.getString("user1");
         user2 = extras.getString("user2");
         chatId = extras.getInt("chatId");
-        new ChatRequest().execute(String.valueOf(chatId), user1, user2);
-        chat = new ChatObject(chatId, user1, user2);
+        chatRequest = new ChatRequest();
+        chatRequest.execute(String.valueOf(chatId), user1, user2);
+        chat = chatRequest.getChat();
         chatText = (EditText) findViewById(R.id.chatText);
         chatText.setText("");
         messagesListView = (ListView) findViewById(R.id.messagesListView);
         adapter = new ChatAdapter(this, chat.getMessages());
         messagesListView.setAdapter(adapter);
-        chat.updateMessages(findChat(chatId));
+//        chat.updateMessages(findChat(chatId));
     }
 
-    public ArrayList<MessageObject> findChat(int chatId){
-        //Setup search for messages
-        return new ArrayList<>();
+    public ChatObject findChat(int chatId){
+        return chatRequest.getChat();
     }
 
     public void sendMsg(View view){
