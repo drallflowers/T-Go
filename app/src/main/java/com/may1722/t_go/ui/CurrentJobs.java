@@ -215,7 +215,7 @@ public class CurrentJobs extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 JobBoardCardData selected = (JobBoardCardData) parent.getAdapter().getItem(position);
-                //new AsyncCompleteJob().execute(selected.jobID.toString());
+                new AsyncCompleteJob().execute(selected.jobID.toString());
 
                 jobID = selected.jobID.toString();
                 goToJobComplete();
