@@ -73,6 +73,7 @@ public abstract class Request extends AsyncTask<String, String, String> {
                     result.append(line);
                 }
 
+                handleResult(result.toString());
                 return result.toString();
                 // Pass data to onPostExecute method
 
@@ -93,8 +94,6 @@ public abstract class Request extends AsyncTask<String, String, String> {
 
     @Override
     protected void onPostExecute(String result) {
-
-        handleResult(result);
 
     }
 
@@ -122,7 +121,7 @@ public abstract class Request extends AsyncTask<String, String, String> {
 
     }
 
-    protected void handleResult(String result, String... parmas){
+    protected void handleResult(String result){
 
     }
 
