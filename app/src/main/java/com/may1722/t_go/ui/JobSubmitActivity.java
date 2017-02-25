@@ -2,6 +2,8 @@ package com.may1722.t_go.ui;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.DialogFragment;
 import android.app.TimePickerDialog;
@@ -9,9 +11,10 @@ import android.os.Bundle;
 import android.support.v7.app.*;
 import android.support.v7.app.ActionBar;
 import android.text.format.DateFormat;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -25,6 +28,7 @@ import com.may1722.t_go.model.ListViewAdapter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -35,47 +39,51 @@ public class JobSubmitActivity extends AppCompatActivity implements
     private TextView jobTime;
     private TextView description;
     private TextView address;
-    private TextView price;
+    static TextView price;
     private TextView title;
-    EditText editText;
-    Button addButton;
-    ListView listView;
-    ArrayList<String> listItems;
-    ArrayAdapter<String> adapter;
-
+    static String itemName;
+    static ListView listView;
+    static ArrayList<String> listItems;
+    static ArrayList<Double> listPrices;
+    static ListViewAdapter adapter;
+    static double totalPrice;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getCurrentFocus()!=null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+
+
         setContentView(R.layout.activity_job_submit);
+        title = (TextView) findViewById(R.id.editTitle);
+        price = (TextView) findViewById(R.id.totalPrice);
+        description = (TextView) findViewById(R.id.editDescription);
+        address = (TextView) findViewById(R.id.addressText);
+        totalPrice = 0.00;
         listView = (ListView) findViewById(R.id.listView);
-        listItems = new ArrayList<String>();
-        listItems.add("First Item - added on Activity Create");
-        listItems.add("Second Item - added on Activity Create");
-        final ListViewAdapter adapter = new ListViewAdapter(listItems, this);
+        listItems = new ArrayList<>();
+        listPrices = new ArrayList<>();
+        adapter = new ListViewAdapter(listItems,listPrices, this);
         listView.setAdapter(adapter);
         setListViewHeightBasedOnChildren(listView);
-
+        itemName = "";
         Button addItemBtn = (Button) findViewById(R.id.addItemBtn);
 
         addItemBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 //do something
-                listItems.add("Another item");
-                setListViewHeightBasedOnChildren(listView);
-                adapter.notifyDataSetChanged();
+                totalPrice = Double.parseDouble(price.getText().toString());
+                DialogFragment newFragment = new ItemLookUpFragment();
+                newFragment.show(getSupportFragmentManager(), "itemSelect");
+
             }
         });
 
-        Button btnRefresh = (Button) findViewById(R.id.btnRefresh);
 
-        btnRefresh.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                //do something
-                setListViewHeightBasedOnChildren(listView);
-            }
-        });
+
     }
 
     @Override
@@ -108,10 +116,6 @@ public class JobSubmitActivity extends AppCompatActivity implements
 
     public void submit(View view) throws JSONException {
         JSONObject obj = new JSONObject();
-        title = (TextView) findViewById(R.id.editTitle);
-        price = (TextView) findViewById(R.id.editPrice);
-        description = (TextView) findViewById(R.id.editDescription);
-        address = (TextView) findViewById(R.id.addressText);
 
         //might want to take this out and make it into a method. not sure though since it is kind of Job specific.
 
@@ -139,9 +143,63 @@ public class JobSubmitActivity extends AppCompatActivity implements
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
-
             return new DatePickerDialog(getActivity(),R.style.style_date_picker_dialog, (JobSubmitActivity)getActivity(), year, month, day);
         }
+    }
+
+    public static class ItemLookUpFragment extends DialogFragment {
+        static ItemLookUpFragment newInstance(String title) {
+            ItemLookUpFragment fragment = new ItemLookUpFragment();
+            Bundle args = new Bundle();
+            args.putString("title", title);
+            fragment.setArguments(args);
+            return fragment;
+        }
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.view_add_item, null);
+            final EditText t = (EditText)view.findViewById(R.id.item_search);
+            final TextView p = (TextView)view.findViewById(R.id.item_est_price);
+            Button b = (Button)view.findViewById(R.id.search_btn);
+            b.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    //do something
+                    p.setText("1.00");
+
+                }
+            });
+            return new AlertDialog.Builder(getActivity())
+                    .setTitle("Enter Item Name:")
+                    .setView(view)
+                    .setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+                                    itemName =  t.getText().toString();
+                                    Double tempPrice = Double.parseDouble(p.getText().toString());
+                                    listItems.add(itemName);
+                                    listPrices.add(tempPrice);
+                                    DecimalFormat decim = new DecimalFormat("0.00");
+                                    totalPrice+=tempPrice;
+                                    String s = decim.format(totalPrice);
+                                    price.setText(s);
+                                    // make call to get item price from db
+                                    setListViewHeightBasedOnChildren(listView);
+                                    adapter.notifyDataSetChanged();
+                                }
+                            })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+
+                                }
+                            }).create();
+        }
+
+
     }
 
 public static class TimePickerFragment extends DialogFragment  {
