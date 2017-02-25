@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Random;
 
 public class JobSubmitActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
@@ -166,7 +167,11 @@ public class JobSubmitActivity extends AppCompatActivity implements
                 @Override
                 public void onClick(View v) {
                     //do something
-                    p.setText("1.00");
+                    Random r = new Random();
+                    double randomValue = 1 + (10 - 1) * r.nextDouble();
+                    DecimalFormat decim = new DecimalFormat("0.00");
+                    String s = decim.format(randomValue);
+                    p.setText(s);
 
                 }
             });
