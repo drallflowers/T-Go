@@ -2,19 +2,22 @@ package com.may1722.t_go.ui;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ListFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.icu.text.DateTimePatternGenerator;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v4.app.DialogFragment;
+import android.support.v4.app.*;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.app.*;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -184,6 +187,33 @@ public class AddItemActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ProfileActivity.class);
         intent.putExtra("userID", userID);
         startActivity(intent);
+    }
+
+    //PRODUCT FETCHING
+    public void getProducts(View view){
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(AddItemActivity.this);
+        alertBuilder.setTitle("Select a product:");
+
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(AddItemActivity.this, android.R.layout.select_dialog_singlechoice);
+        adapter.add("milk");
+        adapter.add("apple");
+
+        alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+           @Override
+            public void onClick(DialogInterface dialog, int which){
+               dialog.dismiss();
+           }
+        });
+
+        alertBuilder.setAdapter(adapter, new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which){
+                //TODO: port item info to text fields
+                dialog.dismiss();
+            }
+        });
+
+        alertBuilder.show();
     }
 }
 
