@@ -42,10 +42,8 @@ public class JobCompleteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job_complete);
 
-        Intent intent = getIntent();
-        Integer jobID = intent.getIntExtra("job_id", -1);
-
-        new AsyncGetItems().execute(jobID.toString());
+        String jobID = getIntent().getExtras().getString("job_id");
+        new AsyncGetItems().execute(jobID);
 
     }
 
@@ -85,7 +83,7 @@ public class JobCompleteActivity extends AppCompatActivity {
                 OutputStream os = conn.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(
                         new OutputStreamWriter(os, "UTF-8"));
-                writer.write("");
+                writer.write(query);
                 writer.flush();
                 writer.close();
                 os.close();
@@ -113,13 +111,11 @@ public class JobCompleteActivity extends AppCompatActivity {
                     while ((line = reader.readLine()) != null) {
                         result.append(line);
                     }
-
                     return result.toString();
                     // Pass data to onPostExecute method
 
 
                 } else {
-                    //Toast.makeText(JobBoardActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
                     return "connection failure";
                 }
 
@@ -142,7 +138,7 @@ public class JobCompleteActivity extends AppCompatActivity {
                 /* Here launching another activity when login successful. If you persist login state
                 use sharedPreferences of Android. and logout button to clear sharedPreferences.
                  */
-                Toast.makeText(JobCompleteActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                Toast.makeText(JobCompleteActivity.this, "OOPs! Something went wrong. Connection Problem."+result, Toast.LENGTH_LONG).show();
             } else {
                 try {
                     addItemsToView(result);
@@ -161,6 +157,7 @@ public class JobCompleteActivity extends AppCompatActivity {
         JSONArray jArray = new JSONArray(result);
 
         items = new ArrayList<>();
+        entries = new ArrayList<>();
         for(int i=0; i<jArray.length(); i++){
             //Add item object
             JSONObject jObject = jArray.getJSONObject(i);
@@ -184,6 +181,6 @@ public class JobCompleteActivity extends AppCompatActivity {
     }
 
     public void submit(View view){
-
+        finish();
     }
 }

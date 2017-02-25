@@ -36,6 +36,7 @@ import java.util.List;
 public class CurrentJobs extends ListActivity {
 
     private String userID;
+    private String jobID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,8 +215,10 @@ public class CurrentJobs extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 JobBoardCardData selected = (JobBoardCardData) parent.getAdapter().getItem(position);
-                new AsyncCompleteJob().execute(selected.jobID.toString());
-                //Toast.makeText(CurrentJobs.this, "completed", Toast.LENGTH_LONG).show();
+                //new AsyncCompleteJob().execute(selected.jobID.toString());
+
+                jobID = selected.jobID.toString();
+                goToJobComplete();
             }
         });
     }
@@ -321,6 +324,13 @@ public class CurrentJobs extends ListActivity {
         }
 
 
+    }
+
+    //SUBMITTING PRICES
+    public void goToJobComplete(){
+        Intent intent = new Intent(this, JobCompleteActivity.class);
+        intent.putExtra("job_id", jobID);
+        startActivity(intent);
     }
 
 }
