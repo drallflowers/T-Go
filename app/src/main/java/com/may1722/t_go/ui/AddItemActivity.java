@@ -72,7 +72,7 @@ public class AddItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_item);
 
         userID = getIntent().getExtras().getString("userID");
-        jobID = getIntent().getExtras().getInt("jobID");
+        jobID = Integer.parseInt(getIntent().getExtras().getString("jobID"));
     }
 
     public void submit(View view) throws JSONException {
@@ -339,7 +339,6 @@ public class AddItemActivity extends AppCompatActivity {
                     e.printStackTrace();
                     Toast.makeText(AddItemActivity.this, "OOPs! Something went wrong. Bad Results Returned.", Toast.LENGTH_LONG).show();
                 }
-                //Toast.makeText(JobBoardActivity.this, "Getting there", Toast.LENGTH_LONG).show();
 
             }
         }
