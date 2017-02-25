@@ -12,6 +12,7 @@ import com.may1722.t_go.model.MessageObject;
 import com.may1722.t_go.networking.ChatRequest;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class ChatActivity extends AppCompatActivity {
     public static int msgCount = 0;
@@ -33,14 +34,20 @@ public class ChatActivity extends AppCompatActivity {
         user2 = extras.getString("user2");
         chatId = extras.getInt("chatId");
         chatRequest = new ChatRequest();
-        chatRequest.execute(String.valueOf(chatId), user1, user2);
-        chat = chatRequest.getChat();
-        chatText = (EditText) findViewById(R.id.chatText);
-        chatText.setText("");
-        messagesListView = (ListView) findViewById(R.id.messagesListView);
-        adapter = new ChatAdapter(this, chat.getMessages());
-        messagesListView.setAdapter(adapter);
+        try {
+            chatRequest.execute(String.valueOf(chatId), user1, user2).get();
+            chat = chatRequest.getChat();
+            chatText = (EditText) findViewById(R.id.chatText);
+            chatText.setText("");
+            messagesListView = (ListView) findViewById(R.id.messagesListView);
+            adapter = new ChatAdapter(this, chat.getMessages());
+            messagesListView.setAdapter(adapter);
 //        chat.updateMessages(findChat(chatId));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     public ChatObject findChat(int chatId){

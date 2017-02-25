@@ -101,11 +101,12 @@ public abstract class Request extends AsyncTask<String, String, String> {
     protected URL getUrl(){
         try {
             URL url = new URL("");
+            return url;
         }
         catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        return url;
+        return null;
     }
 
     protected String getPostGet(){
