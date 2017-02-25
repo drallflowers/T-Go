@@ -27,6 +27,9 @@ public class LoginActivity extends AppCompatActivity {
       
         //Will get setup to send text in UserNameEditText and PasswordEditText to database to check if the user exists
         Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("user1", "alxdaly");
+        intent.putExtra("user2", "cleveland");
+        intent.putExtra("chatId", 1);
         startActivity(intent);
     }
 }

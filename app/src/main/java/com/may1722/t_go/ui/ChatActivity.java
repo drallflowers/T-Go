@@ -9,6 +9,7 @@ import android.widget.ListView;
 import com.may1722.t_go.R;
 import com.may1722.t_go.model.ChatObject;
 import com.may1722.t_go.model.MessageObject;
+import com.may1722.t_go.networking.ChatRequest;
 
 import java.util.ArrayList;
 
@@ -18,6 +19,7 @@ public class ChatActivity extends AppCompatActivity {
     private String user1;
     private String user2;
     private int chatId;
+//    private ChatRequest chatRequest= new ChatRequest();
     private EditText chatText;
     private ListView messagesListView;
     private ChatAdapter adapter;
@@ -26,9 +28,11 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        user1 = savedInstanceState.getString("user1");
-        user2 = savedInstanceState.getString("user2");
-        chatId = savedInstanceState.getInt("chatId");
+        Bundle extras = getIntent().getExtras();
+        user1 = extras.getString("user1");
+        user2 = extras.getString("user2");
+        chatId = extras.getInt("chatId");
+        new ChatRequest().execute(String.valueOf(chatId), user1, user2);
         chat = new ChatObject(chatId, user1, user2);
         chatText = (EditText) findViewById(R.id.chatText);
         chatText.setText("");
