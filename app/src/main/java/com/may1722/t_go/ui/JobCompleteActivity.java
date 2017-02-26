@@ -294,4 +294,13 @@ public class JobCompleteActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void goToChat(View view)
+    {
+        Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("user1", "alxdaly");
+        intent.putExtra("user2", "cleveland");
+        intent.putExtra("chatId", 1);
+        startActivity(intent);
+    }
 }
