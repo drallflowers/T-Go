@@ -2,22 +2,21 @@ package com.may1722.t_go.ui;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.icu.text.DateTimePatternGenerator;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v4.app.DialogFragment;
-import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.support.v7.app.*;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -32,8 +31,6 @@ import com.may1722.t_go.model.ListViewAdapter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -44,29 +41,26 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
-import java.util.Date;
-import java.util.concurrent.ExecutionException;
 
 public class JobSubmitActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    private TextView jobDate;
-    private TextView jobTime;
-    private TextView description;
-    private TextView address;
+    protected TextView jobDate;
+    protected TextView jobTime;
+    protected TextView address;
     static TextView price;
-    private TextView title;
-    private TextView zip;
-    private TextView state;
-    private TextView apartment;
-    private TextView city;
-    private String userID;
-    private Integer locationID;
-    private String dateString;
+    protected TextView zip;
+    protected TextView state;
+    protected TextView apartment;
+    protected TextView city;
+    protected String userID;
+    protected Integer locationID;
+    protected String dateString;
 
     static String itemName;
     static ListView listView;
@@ -74,6 +68,28 @@ public class JobSubmitActivity extends AppCompatActivity implements
     static ArrayList<Double> listPrices;
     static ListViewAdapter adapter;
     static double totalPrice;
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListViewAdapter listAdapter = (ListViewAdapter) listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ActionBar.LayoutParams.WRAP_CONTENT));
+
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,9 +100,7 @@ public class JobSubmitActivity extends AppCompatActivity implements
         userID = getIntent().getExtras().getString("userID");
 
         // link to views in the activity
-        title = (TextView) findViewById(R.id.editTitle);
         price = (TextView) findViewById(R.id.totalPrice);
-        description = (TextView) findViewById(R.id.editDescription);
         address = (TextView) findViewById(R.id.addressText);
         listView = (ListView) findViewById(R.id.listView);
 
@@ -94,7 +108,7 @@ public class JobSubmitActivity extends AppCompatActivity implements
         totalPrice = 0.00;
         listItems = new ArrayList<>();
         listPrices = new ArrayList<>();
-        adapter = new ListViewAdapter(listItems,listPrices, this);
+        adapter = new ListViewAdapter(listItems, listPrices, this);
         listView.setAdapter(adapter);
         itemName = "";
 
@@ -102,7 +116,7 @@ public class JobSubmitActivity extends AppCompatActivity implements
         setListViewHeightBasedOnChildren(listView);
         Button addItemBtn = (Button) findViewById(R.id.addItemBtn);
 
-        addItemBtn.setOnClickListener(new View.OnClickListener(){
+        addItemBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //do something
@@ -112,7 +126,6 @@ public class JobSubmitActivity extends AppCompatActivity implements
 
             }
         });
-
 
 
     }
@@ -129,7 +142,7 @@ public class JobSubmitActivity extends AppCompatActivity implements
         /*if (hourOfDay > 12) {
             jobTime.setText(new StringBuilder().append(hourOfDay % 12).append(":").append(minute).append(" PM")); // show PM if hour day > 12
         } else {*/
-            jobTime.setText(new StringBuilder().append(hourOfDay).append(":").append(minute)); // show AM
+        jobTime.setText(new StringBuilder().append(hourOfDay).append(":").append(minute)); // show AM
         //}
     }
 
@@ -186,7 +199,6 @@ public class JobSubmitActivity extends AppCompatActivity implements
             Toast.makeText(JobSubmitActivity.this, "Missing info", Toast.LENGTH_LONG).show();
         }
     }
-
 //Will get setup to send text in UserNameEditText and PasswordEditText to database to check if the user exists
 
     public static class DatePickerFragment extends DialogFragment {
@@ -196,7 +208,7 @@ public class JobSubmitActivity extends AppCompatActivity implements
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(getActivity(),R.style.style_date_picker_dialog, (JobSubmitActivity)getActivity(), year, month, day);
+            return new DatePickerDialog(getActivity(), R.style.style_date_picker_dialog, (JobSubmitActivity) getActivity(), year, month, day);
         }
     }
 
@@ -208,14 +220,15 @@ public class JobSubmitActivity extends AppCompatActivity implements
             fragment.setArguments(args);
             return fragment;
         }
+
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = inflater.inflate(R.layout.view_add_item, null);
-            final EditText t = (EditText)view.findViewById(R.id.item_search);
-            final TextView p = (TextView)view.findViewById(R.id.item_est_price);
-            Button b = (Button)view.findViewById(R.id.search_btn);
-            b.setOnClickListener(new View.OnClickListener(){
+            final EditText t = (EditText) view.findViewById(R.id.item_search);
+            final TextView p = (TextView) view.findViewById(R.id.item_est_price);
+            Button b = (Button) view.findViewById(R.id.search_btn);
+            b.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //do something
@@ -234,12 +247,12 @@ public class JobSubmitActivity extends AppCompatActivity implements
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
                                                     int whichButton) {
-                                    itemName =  t.getText().toString();
+                                    itemName = t.getText().toString();
                                     Double tempPrice = Double.parseDouble(p.getText().toString());
                                     listItems.add(itemName);
                                     listPrices.add(tempPrice);
                                     DecimalFormat decim = new DecimalFormat("0.00");
-                                    totalPrice+=tempPrice;
+                                    totalPrice += tempPrice;
                                     String s = decim.format(totalPrice);
                                     price.setText(s);
                                     // make call to get item price from db
@@ -255,8 +268,9 @@ public class JobSubmitActivity extends AppCompatActivity implements
                                 }
                             }).create();
         }
+    }
 
-public static class TimePickerFragment extends DialogFragment  {
+    public static class TimePickerFragment extends DialogFragment {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -272,7 +286,7 @@ public static class TimePickerFragment extends DialogFragment  {
 
     }
 
-    private class AsyncAddLocation extends AsyncTask<String, String, String> {
+    class AsyncAddLocation extends AsyncTask<String, String, String> {
         HttpURLConnection conn;
         URL url = null;
 
@@ -483,37 +497,12 @@ public static class TimePickerFragment extends DialogFragment  {
 
             }
         }
-
-
     }
 
-    public void startAddItemActivity(String jobID){
+    public void startAddItemActivity(String jobID) {
         Intent intent = new Intent(this, AddItemActivity.class);
         intent.putExtra("userID", userID);
         intent.putExtra("jobID", jobID);
         startActivity(intent);
     }
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
-        ListViewAdapter listAdapter = (ListViewAdapter) listView.getAdapter();
-        if (listAdapter == null)
-            return;
-
-        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
-        int totalHeight = 0;
-        View view = null;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            view = listAdapter.getView(i, view, listView);
-            if (i == 0)
-                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ActionBar.LayoutParams.WRAP_CONTENT));
-
-            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-            totalHeight += view.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
-    }
-
-
 }
-

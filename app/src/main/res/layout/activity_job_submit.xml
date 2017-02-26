@@ -62,15 +62,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="108dp"
                 android:ems="10"
-                android:hint="state"
-                android:inputType="textMultiLine" />
+                android:hint="ZIP"
+                android:inputType="textMultiLine"/>
             <Button
                 android:text="Add Item"
                 android:layout_width="match_parent"
-                android:layout_height="108dp"
-                android:ems="10"
-                android:hint="ZIP"
-                android:inputType="textMultiLine"/>
+                android:layout_height="wrap_content"
+                android:id="@+id/addItemBtn"/>
 
             <EditText
                 android:layout_width="match_parent"
@@ -79,8 +77,6 @@
                 android:ems="10"
                 android:id="@+id/apartmentText"
                 android:hint="Apartment Number (Optional)" />
-                android:layout_height="wrap_content"
-                android:id="@+id/addItemBtn" />
 
             <ListView
                 android:layout_width="match_parent"
