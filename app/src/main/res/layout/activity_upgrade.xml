@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_login"
@@ -10,8 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:background="@color/colorPrimary"
-    tools:context="com.may1722.t_go.ui.LoginActivity"
-    android:orientation="vertical">
+    tools:context="com.may1722.t_go.ui.LoginActivity">
 
 
     <LinearLayout
@@ -23,11 +22,11 @@
         android:layout_alignParentStart="true">
 
         <TextView
-            android:id="@+id/AppNameLabel"
-            android:text="@string/app_name"
+            android:id="@+id/UpgradeAccountLabel"
+            android:text="@string/upgrade"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="75sp"
+            android:textSize="45sp"
             android:layout_marginTop="47dp"
             android:textAlignment="center"
             android:textStyle="normal|bold" />
@@ -37,40 +36,44 @@
             android:layout_height="25sp" />
 
         <TextView
-            android:id="@+id/UserNameLabel"
-            android:text="@string/username"
+            android:id="@+id/CurrentStatusLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="25sp" />
-
-        <EditText
-            android:id="@+id/UserNameEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:ems="10"
-            android:singleLine="true"
-            android:selectAllOnFocus="false"
-            android:background="@drawable/edittext_bottom_line"
             android:textSize="25sp"
-            android:layout_marginBottom="30dp" />
+            tools:text="Current Status: " />
+        <TextView
+            android:id="@+id/UserStatusLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            tools:text="Courier" />
 
         <TextView
-            android:id="@+id/PasswordLabel"
-            android:text="@string/password"
+            android:id="@+id/ApplyingForLabel"
+            android:text="@string/applyingFor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="25sp" />
 
-        <EditText
-            android:id="@+id/PasswordEditText"
+        <TextView
+            android:id="@+id/NextStatusLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:ems="10"
-            android:background="@drawable/edittext_bottom_line"
             android:textSize="25sp"
-            android:layout_marginBottom="30dp" />
+            tools:text="Moderator" />
+
+        <TextView
+            android:id="@+id/CurrentRatingLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            tools:text="Current Rating: " />
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ratingBar" />
+
 
         <LinearLayout
             android:orientation="horizontal"
@@ -78,27 +81,19 @@
             android:layout_height="match_parent">
 
             <Button
-                android:text="@string/signUp"
-                android:layout_width="wrap_content"
+                android:text="Apply For Upgrade"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/SignUpButton"
                 android:layout_weight="1"
                 android:textSize="25sp"
                 android:textAllCaps="false"
-                android:onClick="goToSignup"
+                android:onClick="upgrade"
                 android:fontFamily="sans-serif-medium" />
 
-            <Button
-                android:text="@string/login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/LoginButton"
-                android:layout_weight="1"
-                android:textSize="25sp"
-                android:textAllCaps="false"
-                android:onClick="login" />
+
         </LinearLayout>
     </LinearLayout>
 
 
-</LinearLayout>
+</RelativeLayout>
