@@ -9,6 +9,7 @@
 
     <string name="Cancel">Cancel</string>
     <string name="Submit">Submit</string>
+    <string name="loading">Loading...</string>
 
     <!-- LoginActivity -->
     <string name="username">Username: </string>
@@ -17,6 +18,7 @@
     <string name="login">Login</string>
     <string name="upgrade">Upgrade Account</string>
     <string name="applyingFor">Applying For: </string>
+
 
     <!-- ProfileActivity -->
     <string name="usernameExample">username</string>
@@ -27,6 +29,7 @@
     <string name="update">Update</string>
     <string name="upgradeAcct">Upgrade Account</string>
     <string name="passwordReset">Password Reset</string>
+    <string name="mapButton">Map Interface</string>
 
     <!-- Sign Up Activity -->
     <string name="confirmPassword">Confirm Password:</string>
@@ -34,4 +37,7 @@
     <!-- ChatActivity -->
     <string name="chatWith">Chat with:</string>
     <string name="send">Send</string>
+
+    <!-- MapsActivity -->
+    <string name="LocationLabelText">Go To:</string>
 </resources>

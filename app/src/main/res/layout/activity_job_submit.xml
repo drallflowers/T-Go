@@ -17,44 +17,63 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="12dp">
+        android:layout_marginBottom="12dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="66dp">
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Location and Time"/>
+
 
             <EditText
+                android:id="@+id/addressText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
+                android:layout_height="108dp"
                 android:ems="10"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:id="@+id/editTitle"
-                android:hint="Job Title"
-                android:selectAllOnFocus="false" />
+                android:hint="Street Address"
+                android:inputType="textMultiLine" />
 
             <EditText
+                android:id="@+id/cityText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
+                android:layout_height="108dp"
                 android:ems="10"
-                android:id="@+id/editDescription"
-                android:hint="Job Description" />
+                android:hint="City"
+                android:inputType="textMultiLine" />
+
+            <EditText
+                android:id="@+id/stateText"
+                android:layout_width="match_parent"
+                android:layout_height="108dp"
+                android:ems="10"
+                android:hint="State"
+                android:inputType="textMultiLine" />
+
+            <EditText
+                android:id="@+id/zipText"
+            <Button
+                android:text="Add Item"
+                android:layout_width="match_parent"
+                android:layout_height="108dp"
+                android:ems="10"
+                android:hint="ZIP"
+                android:inputType="textMultiLine"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="108dp"
                 android:inputType="textMultiLine"
                 android:ems="10"
-                android:id="@+id/addressText"
-                android:hint="Enter Address" />
-
-            <Button
-                android:text="Add Item"
-                android:layout_width="match_parent"
+                android:id="@+id/apartmentText"
+                android:hint="Apartment Number (Optional)" />
                 android:layout_height="wrap_content"
                 android:id="@+id/addItemBtn" />
 
@@ -75,36 +94,36 @@
                 android:cursorVisible="false" />
 
             <Button
-                android:text="Pick Date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/datePicker"
-                android:onClick="pickDate" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="31dp"
-                android:id="@+id/dateView" />
-
-            <Button
-                android:text="Select Time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="pickDate"
+                android:text="Pick Date" />
+
+            <TextView
+                android:id="@+id/dateView"
+                android:layout_width="match_parent"
+                android:layout_height="31dp" />
+
+            <Button
                 android:id="@+id/timePicker"
-                android:onClick="showTimePickerDialog" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:id="@+id/timeView" />
-
-            <Button
-                android:text="Continue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="showTimePickerDialog"
+                android:text="Select Time" />
+
+            <TextView
+                android:id="@+id/timeView"
+                android:layout_width="match_parent"
+                android:layout_height="36dp" />
+
+            <Button
                 android:id="@+id/buttonContinue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="0.13"
-                android:onClick="submit" />
+                android:onClick="submit"
+                android:text="Continue" />
         </LinearLayout>
     </ScrollView>
 

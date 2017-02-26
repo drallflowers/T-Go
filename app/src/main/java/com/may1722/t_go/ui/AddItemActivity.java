@@ -1,22 +1,39 @@
 package com.may1722.t_go.ui;
 
-import android.app.ListActivity;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.ListFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.icu.text.DateTimePatternGenerator;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.*;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.app.*;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.*;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.may1722.t_go.R;
+import com.may1722.t_go.model.ProductObject;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -28,69 +45,55 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-public class CurrentJobs extends ListActivity {
+public class AddItemActivity extends AppCompatActivity {
 
+    private TextView name;
+    private TextView description;
+    private TextView price;
+    private TextView quantity;
+    private Integer jobID;
     private String userID;
-    private String jobID;
+    private Integer productID = 0;
+
+    private AlertDialog.Builder alertBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_current_jobs);
+        setContentView(R.layout.activity_add_item);
 
         userID = getIntent().getExtras().getString("userID");
-        new AsyncGetMyJobs().execute(userID);
+        jobID = Integer.parseInt(getIntent().getExtras().getString("jobID"));
     }
 
-    public class JobBoardCardData {
-        public String location;
-        public String username;
-        public String price; // String for mockup purposes, change to double later
-        public String time; // String for mockup purposes, change to Date later
-        public Integer jobID;
+    public void submit(View view) throws JSONException {
+        name = (TextView) findViewById(R.id.nameText);
+        description = (TextView) findViewById(R.id.descriptionText);
+        price = (TextView) findViewById(R.id.priceText);
+        quantity = (TextView) findViewById(R.id.quantityText);
 
-        public JobBoardCardData(String loc, String name, String price, String time, Integer jobID){
-            location = loc;
-            username = name;
-            this.price = price;
-            this.time = time;
-            this.jobID = jobID;
+        String nameString = name.getEditableText().toString();
+        String descriptionString = description.getEditableText().toString();
+        String priceString = price.getEditableText().toString();
+        String quantityString = quantity.getEditableText().toString();
+
+        if (nameString.length() > 0 && priceString.length() > 0 && quantityString.length() > 0) {
+            new AsyncAddItem().execute(nameString, descriptionString, priceString, quantityString, jobID.toString(), productID.toString());
+        } else {
+            Toast.makeText(AddItemActivity.this, "Missing info", Toast.LENGTH_LONG).show();
         }
     }
 
-    public class JobBoardCardDataAdapter extends ArrayAdapter<JobBoardCardData> {
-
-        public JobBoardCardDataAdapter(Context context, ArrayList<JobBoardCardData> jobs){
-            super(context, 0, jobs);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent){
-            JobBoardCardData job = getItem(position);
-            if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_job_board, parent, false);
-            }
-            TextView jobLocation = (TextView) convertView.findViewById(R.id.job_board_location);
-            TextView jobUsername = (TextView) convertView.findViewById(R.id.job_board_username);
-            TextView jobPrice = (TextView) convertView.findViewById(R.id.job_board_price);
-            TextView jobTime = (TextView) convertView.findViewById(R.id.job_board_time);
-
-            jobLocation.setText(job.location);
-            jobUsername.setText(job.username);
-            jobPrice.setText(job.price);
-            jobTime.setText(job.time);
-
-            return convertView;
-        }
-
-    }
-
-    private class AsyncGetMyJobs extends AsyncTask<String, String, String> {
+    private class AsyncAddItem extends AsyncTask<String, String, String> {
         HttpURLConnection conn;
         URL url = null;
 
@@ -99,7 +102,7 @@ public class CurrentJobs extends ListActivity {
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://may1722db.ece.iastate.edu/getmyjobs.inc.php");
+                url = new URL("http://may1722db.ece.iastate.edu/additem.inc.php");
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
@@ -118,7 +121,13 @@ public class CurrentJobs extends ListActivity {
                 conn.setDoOutput(true);
 
                 // Append parameters to URL
-                Uri.Builder builder = new Uri.Builder().appendQueryParameter("userid", params[0]);
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("item_name", params[0])
+                        .appendQueryParameter("item_description", params[1])
+                        .appendQueryParameter("price", params[2])
+                        .appendQueryParameter("quantity", params[3])
+                        .appendQueryParameter("job_id", params[4])
+                        .appendQueryParameter("product_id", params[5]);
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
@@ -159,18 +168,17 @@ public class CurrentJobs extends ListActivity {
 
 
                 } else {
-                    //Toast.makeText(JobBoardActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(AddItemActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
                     return "connection failure";
                 }
 
             } catch (IOException e) {
                 e.printStackTrace();
-                Toast.makeText(CurrentJobs.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                Toast.makeText(AddItemActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
                 return "connection failure";
             } finally {
                 conn.disconnect();
             }
-
         }
 
         @Override
@@ -178,52 +186,60 @@ public class CurrentJobs extends ListActivity {
 
             //this method will be running on UI thread
 
-            if (result.equalsIgnoreCase("failed to get your jobs")) {
+            if (result.equalsIgnoreCase("connection failure")) {
                 /* Here launching another activity when login successful. If you persist login state
                 use sharedPreferences of Android. and logout button to clear sharedPreferences.
                  */
-                Toast.makeText(CurrentJobs.this, result, Toast.LENGTH_LONG).show();
-            }else if(result.equalsIgnoreCase("connection failure")){
-                Toast.makeText(CurrentJobs.this, result, Toast.LENGTH_LONG).show();
-            }else {
-                addItemsToList(result);
-                //Toast.makeText(JobBoardActivity.this, "Getting there", Toast.LENGTH_LONG).show();
-
+                Toast.makeText(AddItemActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+            } else {
+                startProfileActivity();
+                Toast.makeText(AddItemActivity.this, "Item Added", Toast.LENGTH_LONG).show();
             }
         }
-
-
+    }
+    public void startProfileActivity(){
+        Intent intent = new Intent(this, ProfileActivity.class);
+        intent.putExtra("userID", userID);
+        startActivity(intent);
     }
 
-    public void addItemsToList(String result){
-        List<String> myList = new ArrayList<String>(Arrays.asList(result.split("<br>")));
-        ArrayList<JobBoardCardData> jobs = new ArrayList<>();
+    //PRODUCT FETCHING
+    public void getProducts(View view){
+        alertBuilder = new AlertDialog.Builder(AddItemActivity.this);
+        alertBuilder.setTitle("Select a product:");
 
-        if(result.length() > 0) {
-            for (String item : myList) {
-                List<String> jobList = new ArrayList<String>(Arrays.asList(item.split(", ")));
-                jobs.add(new JobBoardCardData(jobList.get(0), jobList.get(1), jobList.get(2), jobList.get(3), Integer.parseInt(jobList.get(4))));
-            }
-        }else{
-            Toast.makeText(CurrentJobs.this, "You have no jobs", Toast.LENGTH_LONG).show();
-        }
-
-        JobBoardCardDataAdapter adapter = new JobBoardCardDataAdapter(this, jobs);
-        ListView list = this.getListView();
-        list.setAdapter(adapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                JobBoardCardData selected = (JobBoardCardData) parent.getAdapter().getItem(position);
-                new AsyncCompleteJob().execute(selected.jobID.toString());
-
-                jobID = selected.jobID.toString();
-                goToJobComplete();
-            }
+        alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+           @Override
+            public void onClick(DialogInterface dialog, int which){
+               dialog.dismiss();
+           }
         });
+
+        new AsyncGetProducts().execute();
     }
 
-    private class AsyncCompleteJob extends AsyncTask<String, String, String> {
+    public class ProductAdapter extends ArrayAdapter<ProductObject> {
+
+        public ProductAdapter(Context context, ArrayList<ProductObject> products) {
+            super(context, 0, products);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ProductObject product = getItem(position);
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.select_dialog_singlechoice, parent, false);
+            }
+
+            TextView text = (TextView) convertView.findViewById(android.R.id.text1);
+            text.setText(product.getProduct_name());
+
+            return convertView;
+        }
+
+    }
+
+    private class AsyncGetProducts extends AsyncTask<String, String, String> {
         HttpURLConnection conn;
         URL url = null;
 
@@ -232,7 +248,7 @@ public class CurrentJobs extends ListActivity {
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://may1722db.ece.iastate.edu/completejob.php");
+                url = new URL("http://may1722db.ece.iastate.edu/getproducts.php");
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
@@ -251,14 +267,14 @@ public class CurrentJobs extends ListActivity {
                 conn.setDoOutput(true);
 
                 // Append parameters to URL
-                Uri.Builder builder = new Uri.Builder().appendQueryParameter("job_id", params[0]);
+                Uri.Builder builder = new Uri.Builder();
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
                 OutputStream os = conn.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(
                         new OutputStreamWriter(os, "UTF-8"));
-                writer.write(query);
+                writer.write("");
                 writer.flush();
                 writer.close();
                 os.close();
@@ -298,7 +314,7 @@ public class CurrentJobs extends ListActivity {
 
             } catch (IOException e) {
                 e.printStackTrace();
-                Toast.makeText(CurrentJobs.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                Toast.makeText(AddItemActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
                 return "connection failure";
             } finally {
                 conn.disconnect();
@@ -315,10 +331,14 @@ public class CurrentJobs extends ListActivity {
                 /* Here launching another activity when login successful. If you persist login state
                 use sharedPreferences of Android. and logout button to clear sharedPreferences.
                  */
-                Toast.makeText(CurrentJobs.this, result, Toast.LENGTH_LONG).show();
-            }else {
-                //addItemsToList(result);
-                Toast.makeText(CurrentJobs.this, "completed", Toast.LENGTH_LONG).show();
+                Toast.makeText(AddItemActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+            } else {
+                try {
+                    addItemsToList(result);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(AddItemActivity.this, "OOPs! Something went wrong. Bad Results Returned.", Toast.LENGTH_LONG).show();
+                }
 
             }
         }
@@ -326,11 +346,36 @@ public class CurrentJobs extends ListActivity {
 
     }
 
-    //SUBMITTING PRICES
-    public void goToJobComplete(){
-        Intent intent = new Intent(this, JobCompleteActivity.class);
-        intent.putExtra("job_id", jobID);
-        startActivity(intent);
-    }
+    public void addItemsToList(String result) throws JSONException {
+        JSONArray jArray = new JSONArray(result);
 
+        ArrayList<ProductObject> products = new ArrayList<>();
+        for(int i=0; i<jArray.length(); i++){
+            JSONObject jObject = jArray.getJSONObject(i);
+            int id = jObject.getInt("product_id");
+            String name = jObject.getString("product_name");
+            double price = jObject.getDouble("avg_price");
+            products.add(new ProductObject(id, name, price));
+        }
+
+        final ProductAdapter adapter = new ProductAdapter(this, products);
+
+        alertBuilder.setAdapter(adapter, new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which){
+                ProductObject product = adapter.getItem(which);
+                productID = product.getProduct_id();
+                name = (TextView) findViewById(R.id.nameText);
+                description = (TextView) findViewById(R.id.descriptionText);
+                price = (TextView) findViewById(R.id.priceText);
+                name.setText(product.getProduct_name());
+                description.setText(product.getProduct_description());
+                price.setText(String.format("%.2f", product.getAvg_price()));
+
+                dialog.dismiss();
+            }
+        });
+        alertBuilder.show();
+    }
 }
+
