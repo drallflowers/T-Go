@@ -2,10 +2,13 @@ package com.may1722.t_go.ui;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -15,17 +18,32 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.may1722.t_go.R;
 
+import org.w3c.dom.Text;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 
 public class ProfileActivity extends AppCompatActivity {
 
     static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 10;
+
+    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        userID = getIntent().getExtras().getString("userID");
         String username = getIntent().getExtras().getString("username");
         String user_type = getIntent().getExtras().getString("user_type");
         String email = getIntent().getExtras().getString("email");
@@ -44,21 +62,25 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void goToCurrentJobs(View view) {
         Intent intent = new Intent(this, CurrentJobs.class);
+        intent.putExtra("userID", userID);
         startActivity(intent);
     }
 
     public void goToJobSubmit(View view) {
         Intent intent = new Intent(this, JobSubmitActivity.class);
+        intent.putExtra("userID", userID);
         startActivity(intent);
     }
 
     public void goToReviewBoard(View view) {
         Intent intent = new Intent(this, ReviewBoardActivity.class);
+        intent.putExtra("userID", userID);
         startActivity(intent);
     }
 
     public void goToJobBoard(View view) {
         Intent intent = new Intent(this, JobBoardActivity.class);
+        intent.putExtra("userID", userID);
         startActivity(intent);
     }
 

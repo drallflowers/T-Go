@@ -167,7 +167,7 @@ public class LoginActivity extends AppCompatActivity {
                 String[] result2 = new String[10];
                 result2 = result.split(",");
                 Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
-                intent.putExtra("userid", result2[0]);
+                intent.putExtra("userID", result2[0]);
                 intent.putExtra("first_name", result2[1]);
                 intent.putExtra("last_name", result2[2]);
                 intent.putExtra("email", result2[3]);
