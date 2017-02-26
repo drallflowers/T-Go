@@ -5,7 +5,6 @@ import android.widget.Toast;
 
 import com.may1722.t_go.model.ChatObject;
 import com.may1722.t_go.model.MessageObject;
-import com.may1722.t_go.ui.ChatActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
  */
 
 public class ChatRequest extends Request {
-
     ChatObject chat;
     String[] params;
 
@@ -69,6 +67,19 @@ public class ChatRequest extends Request {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @Override
+    public void onProgressUpdate(String... result) {
+        try {
+            JSONArray jsonArray = new JSONArray(result[0]);
+            JSONObject object = jsonArray.getJSONObject(0);
+            MessageObject msg = new MessageObject(object.getString("from_user"), object.getString("message"), params[1]);
+            chat.addMessage(msg);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
