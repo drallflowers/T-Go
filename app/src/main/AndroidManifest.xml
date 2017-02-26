@@ -36,14 +36,14 @@
         <activity android:name=".ui.ReviewBoardActivity" />
         <activity
             android:name=".ui.ProfileActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity android:name=".ui.SignUpActivity" />
         <activity android:name=".ui.CurrentJobs" />
         <activity android:name=".ui.JobSubmitActivity" />
         <activity android:name=".ui.SubmitReviewActivity" />
         <activity android:name=".ui.ChatActivity"
                   android:screenOrientation="portrait" />
-        <activity android:name=".ui.JobCompleteActivity"></activity>
+        <activity android:name=".ui.JobCompleteActivity" />
         <activity android:name=".ui.MapsActivity" />
     </application>
 
