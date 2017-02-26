@@ -11,7 +11,7 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -21,7 +21,6 @@ import com.may1722.t_go.R;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener {
 
     private GoogleMap mMap;
-    private GoogleApiClient mGoogleApiClient;
 
     private final int REQUEST_PERMISSION_FINE_LOCATION = 1;
     /**
@@ -40,16 +39,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).addApi(LocationServices.API).build();
     }
 
     protected void onStart() {
-        mGoogleApiClient.connect();
+        client.connect();
         super.onStart();
     }
 
     protected void onStop() {
-        mGoogleApiClient.disconnect();
+        client.disconnect();
         super.onStop();
     }
 
@@ -60,9 +59,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION_FINE_LOCATION);
             return;
         }
+
         Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 client);
-        LatLng myLast = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+
+        if(mLastLocation != null)
+            //Move camera to last know location
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
         mMap.setMyLocationEnabled(true);
     }
 
