@@ -55,21 +55,26 @@ public class JobSubmitActivity extends AppCompatActivity implements
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         }
-
-
+        //set view to the activity
         setContentView(R.layout.activity_job_submit);
+
+        // link to views in the activity
         title = (TextView) findViewById(R.id.editTitle);
         price = (TextView) findViewById(R.id.totalPrice);
         description = (TextView) findViewById(R.id.editDescription);
         address = (TextView) findViewById(R.id.addressText);
-        totalPrice = 0.00;
         listView = (ListView) findViewById(R.id.listView);
+
+        // initialize objects
+        totalPrice = 0.00;
         listItems = new ArrayList<>();
         listPrices = new ArrayList<>();
         adapter = new ListViewAdapter(listItems,listPrices, this);
         listView.setAdapter(adapter);
-        setListViewHeightBasedOnChildren(listView);
         itemName = "";
+
+
+        setListViewHeightBasedOnChildren(listView);
         Button addItemBtn = (Button) findViewById(R.id.addItemBtn);
 
         addItemBtn.setOnClickListener(new View.OnClickListener(){
