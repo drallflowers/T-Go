@@ -73,6 +73,7 @@ public abstract class Request extends AsyncTask<String, String, String> {
                     result.append(line);
                 }
 
+                handleResult(result.toString());
                 return result.toString();
                 // Pass data to onPostExecute method
 
@@ -94,18 +95,17 @@ public abstract class Request extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String result) {
 
-        handleResult(result);
-
     }
 
     protected URL getUrl(){
         try {
             URL url = new URL("");
+            return url;
         }
         catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        return url;
+        return null;
     }
 
     protected String getPostGet(){
@@ -121,7 +121,7 @@ public abstract class Request extends AsyncTask<String, String, String> {
 
     }
 
-    protected void handleResult(String result, String... parmas){
+    protected void handleResult(String result){
 
     }
 

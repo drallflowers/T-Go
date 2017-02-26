@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class ChatRequest extends Request {
 
     ChatObject chat;
+    String[] params;
 
     protected URL getUrl() {
         try {
@@ -38,6 +39,7 @@ public class ChatRequest extends Request {
     }
 
     protected Uri.Builder getUriBuilder(String... params){
+        this.params = params;
         Uri.Builder builder = new Uri.Builder()
                 .appendQueryParameter("chat_id", params[0]);
         return builder;
@@ -47,7 +49,7 @@ public class ChatRequest extends Request {
 //        Toast.makeText(this, "Connection problem.", Toast.LENGTH_LONG).show();
     }
 
-    protected void handleResult(String result, String... params){
+    protected void handleResult(String result){
         if(result.equalsIgnoreCase("ERROR: Chat not found.")){
 
         }
