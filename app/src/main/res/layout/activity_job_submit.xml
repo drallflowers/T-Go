@@ -59,6 +59,11 @@
 
             <EditText
                 android:id="@+id/zipText"
+                android:layout_width="match_parent"
+                android:layout_height="108dp"
+                android:ems="10"
+                android:hint="state"
+                android:inputType="textMultiLine" />
             <Button
                 android:text="Add Item"
                 android:layout_width="match_parent"
