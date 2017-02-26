@@ -71,6 +71,8 @@ public class ChatActivity extends AppCompatActivity {
         content = content.replaceAll("&", "e3rtfe");
         content = content.replace(' ', '_');
         new SendChatRequest().execute(String.valueOf(chatId), user1, content);
+        chat.addMessage(new MessageObject(user1, content, user1));
+        adapter.notifyDataSetChanged();
         chatText.setText("");
     }
 
