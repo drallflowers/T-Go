@@ -26,6 +26,7 @@ public class ProductObject {
         product_id = id;
         product_name = name;
         avg_price = price;
+        product_description = "";
     }
 
     public int getProduct_id(){return product_id;}
