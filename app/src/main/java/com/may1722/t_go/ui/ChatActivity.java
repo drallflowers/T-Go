@@ -25,8 +25,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Semaphore;
 
 public class ChatActivity extends AppCompatActivity {
+    private static final int MAX_AVAILABLE = 1;
+    private final Semaphore available = new Semaphore(MAX_AVAILABLE, true);
     public static int msgCount = 0;
     public ChatObject chat;
     private String user1;
@@ -56,17 +59,7 @@ public class ChatActivity extends AppCompatActivity {
             messagesListView = (ListView) findViewById(R.id.messagesListView);
             adapter = new ChatAdapter(this, chat.getMessages());
             messagesListView.setAdapter(adapter);
-//            new MessageUpdater().execute();
-//            while(ContinueChat){
-//                chatRequest = null;
-//                chatRequest = new ChatRequest();
-//                chatRequest.execute(String.valueOf(chatId), user1, user2).get();
-//                if (chat.getMessages().size() < chatRequest.getChat().getMessages().size()) {
-//                    chat = chatRequest.getChat();
-//                    adapter.notifyDataSetChanged();
-//                }
-//                Thread.sleep(1000);
-//            }
+            new MessageUpdater().execute();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -92,8 +85,8 @@ public class ChatActivity extends AppCompatActivity {
         content = content.replaceAll("&", "e3rtfe");
         content = content.replace(' ', '_');
         new SendChatRequest().execute(String.valueOf(chatId), user1, content);
-        chat.addMessage(new MessageObject(user1, content, user1));  //Update screen
-        adapter.notifyDataSetChanged();
+//        chat.addMessage(new MessageObject(user1, content, user1));  //Update screen
+//        adapter.notifyDataSetChanged();
         chatText.setText("");
     }
 
@@ -119,31 +112,55 @@ public class ChatActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params){
-            while(ContinueChat){
-//                ChatActivity.this.runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        chatRequest = new ChatRequest();
-//                        try {
-//                            chatRequest.execute(String.valueOf(chatId), user1, user2).get();
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        } catch (ExecutionException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                });
-                if (chat.getMessages().size() < chatRequest.getChat().getMessages().size()) {
-                    chat = chatRequest.getChat();
-                    adapter.notifyDataSetChanged();
-                }
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while(ContinueChat){
+                        try {
+//                            available.acquire();
+//                            available.release();
+//                            ChatActivity.this.runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+                                try {
+    //                                available.acquire();
+                                    chatRequest.cancel(true);
+                                    chatRequest = null;
+                                    chatRequest = new ChatRequest();
+                                    chatRequest.execute(String.valueOf(chatId), user1, user2).get();
+    //                                available.release();
+    //                                } catch (InterruptedException e) {
+    //                                    e.printStackTrace();
+                                } catch (ExecutionException e) {
+                                    e.printStackTrace();
+                                }
+//                            }
+//                        });
+//                        available.acquire();
+                            if (chat.getMessages().size() < chatRequest.getChat().getMessages().size()) {
+                                ChatActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        chat = chatRequest.getChat();
+                                        adapter = new ChatAdapter(ChatActivity.this, chat.getMessages());
+                                        messagesListView.setAdapter(adapter);
+                                    }
+                                });
+                            }
+//                            available.release();
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+            thread.start();
         }
     }
 }
