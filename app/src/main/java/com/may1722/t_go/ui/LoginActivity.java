@@ -45,11 +45,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void goToSignup(View view) {
         //Check username and password fields and send on to SignUp if non-empty? -JRS
-        //Intent intent = new Intent(this, SignUpActivity.class);   //Sets up the class of the Activity we want to go to
-        Intent intent = new Intent(this, ChatActivity.class);
-        intent.putExtra("user1", "alxdaly");
-        intent.putExtra("user2", "cleveland");
-        intent.putExtra("chatId", 1);
+        Intent intent = new Intent(this, SignUpActivity.class);   //Sets up the class of the Activity we want to go to
         startActivity(intent);                                    //Starts the Activity we want to go to
     }
 
