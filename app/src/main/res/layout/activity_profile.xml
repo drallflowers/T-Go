@@ -89,13 +89,6 @@
                 android:paddingTop="5dp"
                 android:textColor="@color/colorPrimaryDark" />
 
-            <Button
-                android:text="@string/update"
-                android:layout_height="35dp"
-                android:id="@+id/updateEmailButton"
-                android:textSize="14sp"
-                android:layout_weight="1"
-                android:layout_width="wrap_content" />
         </LinearLayout>
 
         <TextView
@@ -117,14 +110,9 @@
                 android:id="@+id/phoneLabel"
                 android:layout_weight="1"
                 android:textSize="20sp"
-                android:textColor="@color/colorPrimaryDark" />
+                android:textColor="@color/colorPrimaryDark"
+                android:onClick="updatePhoneNumber"/>
 
-            <Button
-                android:text="@string/update"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:id="@+id/updatePhoneButton"
-                android:layout_weight="1" />
         </LinearLayout>
 
         <TextView
@@ -148,12 +136,6 @@
                 android:textSize="20sp"
                 android:textColor="@color/colorPrimaryDark" />
 
-            <Button
-                android:text="@string/update"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:id="@+id/updatePaymentMethodsButton"
-                android:layout_weight="1.18" />
         </LinearLayout>
 
         <TextView
@@ -235,10 +217,11 @@
                 android:id="@+id/upgradeAcctButton" />
 
             <Button
-                android:text="@string/passwordReset"
+                android:text="@string/updateUserInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/resetPasswordButton" />
+                android:id="@+id/updateUserInfoButton"
+                android:onClick="updateUserInfo"/>
         </LinearLayout>
 
     </LinearLayout>
