@@ -167,17 +167,16 @@ public class JobCompleteActivity extends AppCompatActivity {
             double price = jObject.getDouble("price");
             int count = jObject.getInt("quantity");
             int product_id = jObject.getInt("product_id");
-            if(product_id > 0) {
-                items.add(new ItemObject(item_id, name, price, count, product_id));
 
-                //Add accompanying edittext
-                EditText eText = new EditText(this);
-                eText.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                eText.setHint(name);
-                eText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                entries.add(eText);
-                contentPane.addView(eText);
-            }
+            items.add(new ItemObject(item_id, name, price, count, product_id));
+
+            //Add accompanying edittext
+            EditText eText = new EditText(this);
+            eText.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            eText.setHint(name);
+            eText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            entries.add(eText);
+            contentPane.addView(eText);
         }
     }
 
@@ -190,7 +189,11 @@ public class JobCompleteActivity extends AppCompatActivity {
                 int productID = assocItem.getProduct_id();
                 double price = Double.parseDouble(editText.getText().toString());
 
-                new AsyncUpdatePrice().execute(Integer.toString(productID), Double.toString(price));
+                if(assocItem.getProduct_id() > 0) {
+                    new AsyncUpdatePrice().execute(Integer.toString(productID), Double.toString(price));
+                } else {
+                    new AsyncAddProduct().execute(assocItem.getItem_name(), assocItem.getItem_description(), Double.toString(price));
+                }
             }
         }
 
@@ -302,5 +305,104 @@ public class JobCompleteActivity extends AppCompatActivity {
         intent.putExtra("user2", "cleveland");
         intent.putExtra("chatId", 1);
         startActivity(intent);
+    }
+
+    private class AsyncAddProduct extends AsyncTask<String, String, String> {
+        HttpURLConnection conn;
+        URL url = null;
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+                // Enter URL address where your php file resides
+                url = new URL("http://may1722db.ece.iastate.edu/addproduct.php");
+
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return "exception";
+            }
+            try {
+                // Setup HttpURLConnection class to send and receive data from php and mysql
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(15000);
+                conn.setConnectTimeout(15000);
+                conn.setRequestMethod("POST");
+
+                // setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("product_name", params[0])
+                        .appendQueryParameter("product_description", params[1])
+                        .appendQueryParameter("avg_price", params[2]);
+                String query = builder.build().getEncodedQuery();
+System.out.println(query);
+                // Open connection for sending data
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return "exception";
+            }
+
+            try {
+
+                int response_code = conn.getResponseCode();
+
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    // Read data sent from server
+                    InputStream input = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+                    return result.toString();
+                    // Pass data to onPostExecute method
+
+
+                } else {
+                    return "connection failure";
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(JobCompleteActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                return "connection failure";
+            } finally {
+                conn.disconnect();
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            //this method will be running on UI thread
+
+            if (result.equalsIgnoreCase("connection failure")) {
+                /* Here launching another activity when login successful. If you persist login state
+                use sharedPreferences of Android. and logout button to clear sharedPreferences.
+                 */
+                Toast.makeText(JobCompleteActivity.this, "OOPs! Something went wrong. Connection Problem."+result, Toast.LENGTH_LONG).show();
+            } else {
+            }
+        }
     }
 }
