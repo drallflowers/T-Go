@@ -19,7 +19,7 @@ public class MessageObject {
      */
     public MessageObject(String user, String message, String currUser) {
         this.user = user;
-        this.message = message;
+        this.message = fixMessage(message);
         if(user.equals(currUser)){
             this.self = true;
         }
@@ -48,5 +48,21 @@ public class MessageObject {
 
     public boolean isSelf() {
         return self;
+    }
+
+    /**
+     * Fix messages from database to show symbols.
+     *
+     * @param message
+     * @return  message
+     */
+    private String fixMessage(String message){
+        message = message.replaceAll("a3rtfa", "%");
+        message = message.replaceAll("b3rtfb", "_");
+        message = message.replaceAll("c3rtfc", "'");
+        message = message.replaceAll("d3rtfd", "#");
+        message = message.replaceAll("e3rtfe", "&");
+        message = message.replace('_', ' ');
+        return message;
     }
 }

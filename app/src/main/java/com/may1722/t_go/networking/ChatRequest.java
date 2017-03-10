@@ -5,7 +5,6 @@ import android.widget.Toast;
 
 import com.may1722.t_go.model.ChatObject;
 import com.may1722.t_go.model.MessageObject;
-import com.may1722.t_go.ui.ChatActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,10 +19,14 @@ import java.util.ArrayList;
  */
 
 public class ChatRequest extends Request {
-
     ChatObject chat;
     String[] params;
 
+    /**
+     * Set up URL to use chat.php
+     *
+     * @return
+     */
     protected URL getUrl() {
         try {
             URL url = new URL("http://may1722db.ece.iastate.edu/chat.php");
@@ -34,10 +37,21 @@ public class ChatRequest extends Request {
         return null;
     }
 
+    /**
+     * Set as GET
+     *
+     * @return
+     */
     protected String getPostGet(){
         return "GET";
     }
 
+    /**
+     * Build Uri.Builder to make php call
+     *
+     * @param params
+     * @return
+     */
     protected Uri.Builder getUriBuilder(String... params){
         this.params = params;
         Uri.Builder builder = new Uri.Builder()
@@ -45,10 +59,11 @@ public class ChatRequest extends Request {
         return builder;
     }
 
-    protected void toast() {
-//        Toast.makeText(this, "Connection problem.", Toast.LENGTH_LONG).show();
-    }
-
+    /**
+     * Handle the results of running chat.php
+     *
+     * @param result
+     */
     protected void handleResult(String result){
         if(result.equalsIgnoreCase("ERROR: Chat not found.")){
 
@@ -63,7 +78,8 @@ public class ChatRequest extends Request {
                 ArrayList<MessageObject> msgs = new ArrayList<>();
                 for(int i = 0; i < jsonArray.length(); i++){
                     JSONObject object = jsonArray.getJSONObject(i);
-                    msgs.add(new MessageObject(object.getString("from_user"), object.getString("message"), params[1]));
+                    MessageObject newMsg = new MessageObject(object.getString("from_user"), object.getString("message"), params[1]);
+                    msgs.add(newMsg);
                 }
                 chat.updateMessages(msgs);
             } catch (JSONException e) {
