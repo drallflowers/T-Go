@@ -74,6 +74,7 @@ public class AddItemActivity extends AppCompatActivity {
     static ListView listView;
     static ArrayList<String> listItems;
     static ArrayList<Double> listPrices;
+    static ArrayList<Integer> listQuantity;
     static ListViewAdapter adapter;
     static double totalPrice;
 
@@ -95,7 +96,8 @@ public class AddItemActivity extends AppCompatActivity {
         totalPrice = 0.00;
         listItems = new ArrayList<>();
         listPrices = new ArrayList<>();
-        adapter = new ListViewAdapter(listItems, listPrices, this);
+        listQuantity = new ArrayList<>();
+        adapter = new ListViewAdapter(listItems, listPrices,listQuantity, this);
         listView.setAdapter(adapter);
         itemName = "";
 
@@ -108,8 +110,7 @@ public class AddItemActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //do something
                 totalPrice = Double.parseDouble(price.getText().toString());
-                DialogFragment newFragment = new ItemLookUpFragment();
-                newFragment.show(getSupportFragmentManager(), "itemSelect");
+
 
             }
         });
@@ -137,62 +138,11 @@ public class AddItemActivity extends AppCompatActivity {
         listView.setLayoutParams(params);
     }
 
-    public static class ItemLookUpFragment extends DialogFragment {
-        static ItemLookUpFragment newInstance(String title) {
-            ItemLookUpFragment fragment = new ItemLookUpFragment();
-            Bundle args = new Bundle();
-            args.putString("title", title);
-            fragment.setArguments(args);
-            return fragment;
-        }
 
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.view_add_item, null);
-            final EditText t = (EditText) view.findViewById(R.id.item_search);
-            final TextView p = (TextView) view.findViewById(R.id.item_est_price);
-            Button b = (Button) view.findViewById(R.id.search_btn);
-            b.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //do something
-                    Random r = new Random();
-                    double randomValue = 1 + (10 - 1) * r.nextDouble();
-                    DecimalFormat decim = new DecimalFormat("0.00");
-                    String s = decim.format(randomValue);
-                    p.setText(s);
-
-                }
-            });
-            return new android.support.v7.app.AlertDialog.Builder(getActivity())
-                    .setTitle("Enter Item Name:")
-                    .setView(view)
-                    .setPositiveButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int whichButton) {
-                                    itemName = t.getText().toString();
-                                    Double tempPrice = Double.parseDouble(p.getText().toString());
-                                    listItems.add(itemName);
-                                    listPrices.add(tempPrice);
-                                    DecimalFormat decim = new DecimalFormat("0.00");
-                                    totalPrice += tempPrice;
-                                    String s = decim.format(totalPrice);
-                                    price.setText(s);
-                                    // make call to get item price from db
-                                    setListViewHeightBasedOnChildren(listView);
-                                    adapter.notifyDataSetChanged();
-                                }
-                            })
-                    .setNegativeButton("Cancel",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int whichButton) {
-
-                                }
-                            }).create();
-        }
+    public void fragmentTaskCompleted()
+    {
+        setListViewHeightBasedOnChildren(listView);
+        adapter.notifyDataSetChanged();
     }
 
     public void submit(View view) throws JSONException {
@@ -494,11 +444,15 @@ public class AddItemActivity extends AppCompatActivity {
 
 
 
+
                 TextView p = (TextView) findViewById(R.id.totalPrice);
+                quantity = (TextView) findViewById(R.id.quantityText);
                 itemName = product.getProduct_name();
                 listItems.add(itemName);
                 listPrices.add(product.getAvg_price());
-                totalPrice += product.getAvg_price();
+
+                listQuantity.add(1);
+                totalPrice += (product.getAvg_price());
                 // make call to get item price from db
 
                 p.setText(String.format("%.2f", totalPrice));
