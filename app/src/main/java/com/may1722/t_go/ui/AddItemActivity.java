@@ -16,19 +16,23 @@ import android.os.Bundle;
 import android.app.*;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.*;
+import android.support.v7.app.ActionBar;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.may1722.t_go.R;
+import com.may1722.t_go.model.ListViewAdapter;
 import com.may1722.t_go.model.ProductObject;
 
 import org.json.JSONArray;
@@ -45,6 +49,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,17 +57,26 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 public class AddItemActivity extends AppCompatActivity {
 
     private TextView name;
     private TextView description;
-    private TextView price;
+    private static TextView price;
     private TextView quantity;
     private Integer jobID;
     private String userID;
     private Integer productID = 0;
+
+    static String itemName;
+    static ListView listView;
+    static ArrayList<String> listItems;
+    static ArrayList<Double> listPrices;
+    static ArrayList<Integer> listQuantity;
+    static ListViewAdapter adapter;
+    static double totalPrice;
 
     private AlertDialog.Builder alertBuilder;
 
@@ -73,6 +87,62 @@ public class AddItemActivity extends AppCompatActivity {
 
         userID = getIntent().getExtras().getString("userID");
         jobID = Integer.parseInt(getIntent().getExtras().getString("jobID"));
+
+
+        price = (TextView) findViewById(R.id.totalPrice);
+        listView = (ListView) findViewById(R.id.listView);
+
+        // initialize objects
+        totalPrice = 0.00;
+        listItems = new ArrayList<>();
+        listPrices = new ArrayList<>();
+        listQuantity = new ArrayList<>();
+        adapter = new ListViewAdapter(listItems, listPrices,listQuantity, this);
+        listView.setAdapter(adapter);
+        itemName = "";
+
+
+        setListViewHeightBasedOnChildren(listView);
+        Button addItemBtn = (Button) findViewById(R.id.addItemBtn);
+
+        addItemBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //do something
+                totalPrice = Double.parseDouble(price.getText().toString());
+
+
+            }
+        });
+
+    }
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListViewAdapter listAdapter = (ListViewAdapter) listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ActionBar.LayoutParams.WRAP_CONTENT));
+
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+    }
+
+
+    public void fragmentTaskCompleted()
+    {
+        setListViewHeightBasedOnChildren(listView);
+        adapter.notifyDataSetChanged();
     }
 
     public void submit(View view) throws JSONException {
@@ -371,6 +441,23 @@ public class AddItemActivity extends AppCompatActivity {
                 name.setText(product.getProduct_name());
                 description.setText(product.getProduct_description());
                 price.setText(String.format("%.2f", product.getAvg_price()));
+
+
+
+
+                TextView p = (TextView) findViewById(R.id.totalPrice);
+                quantity = (TextView) findViewById(R.id.quantityText);
+                itemName = product.getProduct_name();
+                listItems.add(itemName);
+                listPrices.add(product.getAvg_price());
+
+                listQuantity.add(1);
+                totalPrice += (product.getAvg_price());
+                // make call to get item price from db
+
+                p.setText(String.format("%.2f", totalPrice));
+                setListViewHeightBasedOnChildren(listView);
+                adapter.notifyDataSetChanged();
 
                 dialog.dismiss();
             }
