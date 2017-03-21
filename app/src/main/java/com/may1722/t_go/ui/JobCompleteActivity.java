@@ -340,7 +340,7 @@ public class JobCompleteActivity extends AppCompatActivity {
                         .appendQueryParameter("product_description", params[1])
                         .appendQueryParameter("avg_price", params[2]);
                 String query = builder.build().getEncodedQuery();
-System.out.println(query);
+                System.out.println(query);
                 // Open connection for sending data
                 OutputStream os = conn.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(
