@@ -54,7 +54,7 @@ public class CurrentJobs extends ListActivity {
         public String time; // String for mockup purposes, change to Date later
         public Integer jobID;
 
-        public JobBoardCardData(String loc, String name, String price, String time, Integer jobID){
+        public JobBoardCardData(String loc, String name, String price, String time, Integer jobID) {
             location = loc;
             username = name;
             this.price = price;
@@ -65,12 +65,12 @@ public class CurrentJobs extends ListActivity {
 
     public class JobBoardCardDataAdapter extends ArrayAdapter<JobBoardCardData> {
 
-        public JobBoardCardDataAdapter(Context context, ArrayList<JobBoardCardData> jobs){
+        public JobBoardCardDataAdapter(Context context, ArrayList<JobBoardCardData> jobs) {
             super(context, 0, jobs);
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent){
+        public View getView(int position, View convertView, ViewGroup parent) {
             JobBoardCardData job = getItem(position);
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_job_board, parent, false);
@@ -183,9 +183,9 @@ public class CurrentJobs extends ListActivity {
                 use sharedPreferences of Android. and logout button to clear sharedPreferences.
                  */
                 Toast.makeText(CurrentJobs.this, result, Toast.LENGTH_LONG).show();
-            }else if(result.equalsIgnoreCase("connection failure")){
+            } else if (result.equalsIgnoreCase("connection failure")) {
                 Toast.makeText(CurrentJobs.this, result, Toast.LENGTH_LONG).show();
-            }else {
+            } else {
                 addItemsToList(result);
                 //Toast.makeText(JobBoardActivity.this, "Getting there", Toast.LENGTH_LONG).show();
 
@@ -195,16 +195,16 @@ public class CurrentJobs extends ListActivity {
 
     }
 
-    public void addItemsToList(String result){
+    public void addItemsToList(String result) {
         List<String> myList = new ArrayList<String>(Arrays.asList(result.split("<br>")));
         ArrayList<JobBoardCardData> jobs = new ArrayList<>();
 
-        if(result.length() > 0) {
+        if (result.length() > 0) {
             for (String item : myList) {
                 List<String> jobList = new ArrayList<String>(Arrays.asList(item.split(", ")));
                 jobs.add(new JobBoardCardData(jobList.get(0), jobList.get(1), jobList.get(2), jobList.get(3), Integer.parseInt(jobList.get(4))));
             }
-        }else{
+        } else {
             Toast.makeText(CurrentJobs.this, "You have no jobs", Toast.LENGTH_LONG).show();
         }
 
@@ -215,10 +215,10 @@ public class CurrentJobs extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 JobBoardCardData selected = (JobBoardCardData) parent.getAdapter().getItem(position);
-                new AsyncCompleteJob().execute(selected.jobID.toString());
+                //new AsyncCompleteJob().execute(selected.jobID.toString());
 
                 jobID = selected.jobID.toString();
-                goToJobComplete();
+                goToJobDetails();
             }
         });
     }
@@ -316,20 +316,19 @@ public class CurrentJobs extends ListActivity {
                 use sharedPreferences of Android. and logout button to clear sharedPreferences.
                  */
                 Toast.makeText(CurrentJobs.this, result, Toast.LENGTH_LONG).show();
-            }else {
+            } else {
                 //addItemsToList(result);
                 Toast.makeText(CurrentJobs.this, "completed", Toast.LENGTH_LONG).show();
 
             }
         }
-
-
     }
 
     //SUBMITTING PRICES
-    public void goToJobComplete(){
-        Intent intent = new Intent(this, JobCompleteActivity.class);
-        intent.putExtra("job_id", jobID);
+    public void goToJobDetails() {
+        Intent intent = new Intent(this, JobDetailsActivity.class);
+        intent.putExtra("userID", userID);
+        intent.putExtra("job_ID", jobID);
         startActivity(intent);
     }
 
