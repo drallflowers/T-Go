@@ -24,6 +24,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.vision.text.Text;
 import com.may1722.t_go.R;
 import com.may1722.t_go.model.ItemObject;
 
@@ -639,5 +640,19 @@ public class JobDetailsActivity extends ListActivity {
         }
     }
 
+    /**
+     * Calculates a code based on job information.  Used for the verification between courier and requester
+     * @return
+     */
+    private int jobCode(){
+        TextView requester = (TextView) findViewById(R.id.jobRequestor);
+        TextView courier = (TextView) findViewById(R.id.jobCourier);
+        TextView jobTime = (TextView) findViewById(R.id.timePostedLabel);
 
+        int code = requester.getText().toString().replace(" (you)", "").hashCode()
+                + courier.getText().toString().replace(" (you)", "").hashCode()
+                + jobTime.getText().toString().hashCode();
+
+        return code%1000000;
+    }
 }
