@@ -76,6 +76,7 @@ public class AddItemActivity extends AppCompatActivity {
     static ArrayList<Double> listPrices;
     static ArrayList<Integer> listQuantity;
     static ListViewAdapter adapter;
+    static TextView priceView;
     static double totalPrice;
 
     private AlertDialog.Builder alertBuilder;
@@ -100,7 +101,7 @@ public class AddItemActivity extends AppCompatActivity {
         adapter = new ListViewAdapter(listItems, listPrices,listQuantity, this);
         listView.setAdapter(adapter);
         itemName = "";
-
+        priceView = (TextView) findViewById(R.id.totalPrice);
 
         setListViewHeightBasedOnChildren(listView);
         Button addItemBtn = (Button) findViewById(R.id.addItemBtn);
@@ -109,7 +110,8 @@ public class AddItemActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //do something
-                totalPrice = Double.parseDouble(price.getText().toString());
+                DialogFragment newFragment = new CustomItemFragment();
+                newFragment.show(getSupportFragmentManager(), "test");
 
 
             }
@@ -271,6 +273,80 @@ public class AddItemActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ProfileActivity.class);
         intent.putExtra("userID", userID);
         startActivity(intent);
+    }
+
+    public static class CustomItemFragment extends DialogFragment {
+        CustomItemFragment newInstance(String title) {
+            CustomItemFragment fragment = new CustomItemFragment();
+            Bundle args = new Bundle();
+            args.putString("title", title);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final View view = inflater.inflate(R.layout.view_custom_item, null);
+
+            final EditText id = (EditText) view.findViewById(R.id.nameText);
+            final EditText price = (EditText) view.findViewById(R.id.priceText);
+            final EditText quant = (EditText) view.findViewById(R.id.quantityText);
+
+            //connect to the edit_quantity to get original amount
+
+
+            Button b = (Button) view.findViewById(R.id.addItemBtn);
+            b.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+
+
+                }
+            });
+            return new android.support.v7.app.AlertDialog.Builder(getActivity())
+                    .setTitle("Enter Item Name:")
+                    .setView(view)
+                    .setPositiveButton("Add",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+                                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                    View view = inflater.inflate(R.layout.view_custom_item, null);
+                                    //connect to the edit_quantity to get original amount
+
+
+
+                                    listItems.add(id.getText().toString());
+                                    listPrices.add(Double.parseDouble(price.getText().toString()));
+                                    listQuantity.add(Integer.parseInt(quant.getText().toString()));
+                                    adapter.notifyDataSetChanged();
+
+                                    double tempPrice = 0.0;
+                                    for(int i = 0; i < listPrices.size(); i++){
+                                        tempPrice += (listPrices.get(i)*listQuantity.get(i));
+                                    }
+
+                                    priceView.setText(tempPrice+"");
+                                    // make call to get item price from db
+
+
+                                }
+                            })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+
+                                }
+                            }).create();
+        }
+    }
+    public void addCustomProduct(View view){
+
     }
 
     //PRODUCT FETCHING

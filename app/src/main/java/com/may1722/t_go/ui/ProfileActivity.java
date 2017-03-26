@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +57,18 @@ public class ProfileActivity extends AppCompatActivity {
         typetextView.setText(user_type);
         emailtextView.setText(email);
         phonetextView.setText(phone_number);
+
+        Button findJob = (Button) findViewById(R.id.buttonFindJobs);
+        Button myReviews = (Button) findViewById(R.id.buttonReviews);
+
+
+        if(Integer.parseInt(user_type) == 0){
+            findJob.setVisibility(View.INVISIBLE);
+            myReviews.setVisibility(View.INVISIBLE);
+            findJob.setEnabled(false);
+            myReviews.setEnabled(false);
+        }
+
 
 
     }
