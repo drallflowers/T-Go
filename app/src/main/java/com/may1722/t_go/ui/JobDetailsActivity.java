@@ -52,6 +52,8 @@ public class JobDetailsActivity extends ListActivity {
     static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 10;
     private String userID;
     private String jobID;
+    private String requestorid;
+    private String courierid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +71,23 @@ public class JobDetailsActivity extends ListActivity {
     }
 
     public void completeJob(View view) {
-        new AsyncCompleteJob().execute(jobID);
+
+        Intent intent;
+        if(requestorid.equals(userID)){
+            intent = new Intent(this, JobCompleteRequesterActivity.class)
+            .putExtra("verification_code", ""+jobCode());
+        } else if(courierid.equals(userID)) {
+            intent = new Intent(this, JobCompleteCourierActivity.class)
+            .putExtra("verification_code", ""+jobCode())
+            .putExtra("job_id", jobID);
+        } else {
+            intent = null;
+        }
+
+        if(intent != null){
+            startActivity(intent);
+        }
+
     }
 
     public void goToMaps(View view) {
@@ -404,8 +422,8 @@ public class JobDetailsActivity extends ListActivity {
         TextView paymentmethod = (TextView) findViewById(R.id.jobPaymentMethodsLabel);
         TextView courier = (TextView) findViewById(R.id.jobCourier);
 
-        String requestorid = result2[2];
-        String courierid = result2[3];
+        requestorid = result2[2];
+        courierid = result2[3];
 
         if (requestorid.equals(userID)) {
             if (result2[6].equals("1")) {
@@ -422,6 +440,10 @@ public class JobDetailsActivity extends ListActivity {
         }
 
         if (courierid.equals(userID)) {
+            if (result2[6].equals("1")) {
+                Button completeJob = (Button) findViewById(R.id.completeJobButton);
+                completeJob.setVisibility(View.VISIBLE);
+            }
             courier.setText("Courier: " + result2[1] + " (you)");
         } else {
             courier.setText("Courier: " + result2[1]);
@@ -539,107 +561,6 @@ public class JobDetailsActivity extends ListActivity {
         }
     }
 
-    private class AsyncCompleteJob extends AsyncTask<String, String, String> {
-        HttpURLConnection conn;
-        URL url = null;
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-
-                // Enter URL address where your php file resides
-                url = new URL("http://may1722db.ece.iastate.edu/completejob.php");
-
-            } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                return "exception";
-            }
-            try {
-                // Setup HttpURLConnection class to send and receive data from php and mysql
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(15000);
-                conn.setConnectTimeout(15000);
-                conn.setRequestMethod("POST");
-
-                // setDoInput and setDoOutput method depict handling of both send and receive
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-
-                // Append parameters to URL
-                Uri.Builder builder = new Uri.Builder().appendQueryParameter("job_id", params[0]);
-                String query = builder.build().getEncodedQuery();
-
-                // Open connection for sending data
-                OutputStream os = conn.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(
-                        new OutputStreamWriter(os, "UTF-8"));
-                writer.write(query);
-                writer.flush();
-                writer.close();
-                os.close();
-                conn.connect();
-
-            } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-                return "exception";
-            }
-
-            try {
-
-                int response_code = conn.getResponseCode();
-
-                // Check if successful connection made
-                if (response_code == HttpURLConnection.HTTP_OK) {
-
-                    // Read data sent from server
-                    InputStream input = conn.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                    StringBuilder result = new StringBuilder();
-                    String line;
-
-                    while ((line = reader.readLine()) != null) {
-                        result.append(line);
-                    }
-
-                    return result.toString();
-                    // Pass data to onPostExecute method
-
-
-                } else {
-                    //Toast.makeText(JobBoardActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
-                    return "connection failure";
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(JobDetailsActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
-                return "connection failure";
-            } finally {
-                conn.disconnect();
-            }
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-
-            //this method will be running on UI thread
-
-            if (result.equalsIgnoreCase("connection failure")) {
-                /* Here launching another activity when login successful. If you persist login state
-                use sharedPreferences of Android. and logout button to clear sharedPreferences.
-                 */
-                Toast.makeText(JobDetailsActivity.this, result, Toast.LENGTH_LONG).show();
-            } else {
-                new AsyncGetJobInfo().execute(jobID);
-                Toast.makeText(JobDetailsActivity.this, "completed", Toast.LENGTH_LONG).show();
-
-            }
-        }
-    }
-
     /**
      * Calculates a code based on job information.  Used for the verification between courier and requester
      * @return
@@ -653,6 +574,6 @@ public class JobDetailsActivity extends ListActivity {
                 + courier.getText().toString().replace(" (you)", "").hashCode()
                 + jobTime.getText().toString().hashCode();
 
-        return code%1000000;
+        return Math.abs(code%1000000);
     }
 }

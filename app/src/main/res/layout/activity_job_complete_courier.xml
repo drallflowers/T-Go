@@ -14,4 +14,13 @@
         android:hint="Enter Verification Code"
         android:inputType="number"
         android:layout_centerInParent="true" />
+
+    <Button
+        android:id="@+id/verify_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/codeEditText"
+        android:layout_centerHorizontal="true"
+        android:onClick="verify"
+        android:text="Complete Job" />
 </RelativeLayout>
