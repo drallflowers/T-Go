@@ -6,7 +6,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <permission android:name="ACCESS_FINE_LOCATION">android.permission.ACCESS_FINE_LOCATION</permission>
+    <permission android:name="ACCESS_FINE_LOCATION">
+        android.permission.ACCESS_FINE_LOCATION
+    </permission>
 
     <application
         android:allowBackup="true"
@@ -14,13 +16,12 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAQvRIleFD56bzKmnNxrte9QS46-JHsgKM"/>
+            android:value="AIzaSyAQvRIleFD56bzKmnNxrte9QS46-JHsgKM" />
 
         <activity
             android:name=".ui.LoginActivity"
@@ -41,15 +42,21 @@
         <activity android:name=".ui.CurrentJobs" />
         <activity android:name=".ui.JobSubmitActivity" />
         <activity android:name=".ui.SubmitReviewActivity" />
-        <activity android:name=".ui.ChatActivity"
-            android:screenOrientation="portrait"/><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <activity
+            android:name=".ui.ChatActivity"
+            android:screenOrientation="portrait" />
+        <!--
+ ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-                  android:screenOrientation="portrait" />
+        android:screenOrientation="portrait" />
         <activity android:name=".ui.JobCompleteActivity" />
         <activity android:name=".ui.MapsActivity" />
+        <activity android:name=".ui.MailActivity" />
+        <activity android:name=".ui.ApplyActivity"></activity>
     </application>
 
 </manifest>

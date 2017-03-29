@@ -38,7 +38,7 @@ public class ProfileActivity extends AppCompatActivity {
     static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 10;
 
     private String userID;
-
+    private String user_type;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         userID = getIntent().getExtras().getString("userID");
         String username = getIntent().getExtras().getString("username");
-        String user_type = getIntent().getExtras().getString("user_type");
+        user_type = getIntent().getExtras().getString("user_type");
         String email = getIntent().getExtras().getString("email");
         String phone_number =  getIntent().getExtras().getString("phone_number");
         TextView profiletextView = (TextView) findViewById(R.id.profileUsername);
@@ -75,6 +75,20 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void goToCurrentJobs(View view) {
         Intent intent = new Intent(this, CurrentJobs.class);
+        intent.putExtra("userID", userID);
+        startActivity(intent);
+    }
+
+    public void goToUpgradeAccount(View view) {
+        Intent intent = new Intent(this, ApplyActivity.class);
+        intent.putExtra("type", user_type);
+        intent.putExtra("userID", userID);
+
+        startActivity(intent);
+    }
+
+    public void goToMailBoard(View view) {
+        Intent intent = new Intent(this, MailActivity.class);
         intent.putExtra("userID", userID);
         startActivity(intent);
     }
