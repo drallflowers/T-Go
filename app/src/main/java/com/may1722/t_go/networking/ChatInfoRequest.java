@@ -9,17 +9,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Created by alxdaly on 3/16/2017.
+ * Created by alxdaly on 3/22/2017.
  */
 
-public class CreateChatRequest extends Request {
+public class ChatInfoRequest extends Request {
     private int chatId = -1;
-//    private String user1 = "";
-//    private String user2 = "";
+    private String user1 = "";
+    private String user2 = "";
 
     protected URL getUrl() {
         try {
-            URL url = new URL("http://may1722db.ece.iastate.edu/makechatroom.php");
+            URL url = new URL("http://may1722db.ece.iastate.edu/getchatroominfo.php");
             return url;
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -33,9 +33,8 @@ public class CreateChatRequest extends Request {
 
     protected Uri.Builder getUriBuilder(String... params){
         Uri.Builder builder = new Uri.Builder()
-                .appendQueryParameter("user1", params[0])
-                .appendQueryParameter("user2", params[1])
-                .appendQueryParameter("jobId", params[2]);
+                .appendQueryParameter("chatId", params[0])
+                .appendQueryParameter("userId", params[1]);
         return builder;
     }
 
@@ -51,8 +50,8 @@ public class CreateChatRequest extends Request {
             try {
                 JSONObject jsonObject = new JSONObject(result);
                 chatId = jsonObject.getInt("chatId");
-//                user1 = jsonObject.getString("user1");
-//                user2 = jsonObject.getString("user2");
+                user1 = jsonObject.getString("user1");
+                user2 = jsonObject.getString("user2");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -63,11 +62,11 @@ public class CreateChatRequest extends Request {
         return chatId;
     }
 
-//    public String getUser1(){
-//        return user1;
-//    }
-//
-//    public String getUser2(){
-//        return user2;
-//    }
+    public String getUser1(){
+        return user1;
+    }
+
+    public String getUser2(){
+        return user2;
+    }
 }
