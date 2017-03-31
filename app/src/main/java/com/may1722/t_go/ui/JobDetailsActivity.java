@@ -26,6 +26,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.may1722.t_go.R;
 import com.may1722.t_go.model.ItemObject;
+import com.may1722.t_go.networking.ChatInfoRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,6 +52,10 @@ public class JobDetailsActivity extends ListActivity {
     static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 10;
     private String userID;
     private String jobID;
+    private ChatInfoRequest chatInfoRequest;
+    private int chatId;
+    private String username;
+    private String othername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +64,9 @@ public class JobDetailsActivity extends ListActivity {
 
         userID = getIntent().getExtras().getString("userID");
         jobID = getIntent().getExtras().getString("job_ID");
+        chatId = getIntent().getExtras().getInt("chat_id");
+        chatInfoRequest = new ChatInfoRequest();
+        chatInfoRequest.execute(Integer.toString(chatId), userID);
         new AsyncGetJobInfo().execute(jobID);
 
     }
@@ -180,6 +188,17 @@ public class JobDetailsActivity extends ListActivity {
                 //Toast.makeText(JobBoardActivity.this, "claimed", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    public void goToChat(View view)
+    {
+        username = chatInfoRequest.getUser1();
+        othername = chatInfoRequest.getUser2();
+        Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("user1", username);
+        intent.putExtra("user2", othername);
+        intent.putExtra("chatId", chatId);
+        startActivity(intent);
     }
 
 
