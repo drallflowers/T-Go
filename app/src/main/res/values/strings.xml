@@ -28,8 +28,10 @@
     <string name="paymentMethods">Payment Methods</string>
     <string name="update">Update</string>
     <string name="upgradeAcct">Upgrade Account</string>
-    <string name="passwordReset">Password Reset</string>
+    <string name="updateUserInfo">Update User Info</string>
     <string name="mapButton">Map Interface</string>
+    <string name="newPassword">New Password</string>
+    <string name="oldPassword">Old Password</string>
 
     <!-- Sign Up Activity -->
     <string name="confirmPassword">Confirm Password:</string>

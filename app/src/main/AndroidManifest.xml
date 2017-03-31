@@ -32,6 +32,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.UpdateUserInfoActivity" />
         <activity android:name=".ui.JobBoardActivity" />
         <activity android:name=".ui.AddItemActivity" />
         <activity android:name=".ui.ReviewBoardActivity" />
