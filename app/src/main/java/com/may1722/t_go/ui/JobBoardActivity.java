@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.may1722.t_go.R;
+import com.may1722.t_go.networking.CreateChatRequest;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -50,6 +51,7 @@ public class JobBoardActivity extends ListActivity {
     public class JobBoardCardData {
         public String location;
         public String username;
+        public Integer userId;
         public String price; // String for mockup purposes, change to double later
         public String time; // String for mockup purposes, change to Date later
         public Integer jobID;
@@ -57,6 +59,7 @@ public class JobBoardActivity extends ListActivity {
         public JobBoardCardData(String loc, String name, String price, String time, Integer jobID) {
             location = loc;
             username = name;
+            this.userId = userId;
             this.price = price;
             this.time = time;
             this.jobID = jobID;
@@ -209,7 +212,7 @@ public class JobBoardActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 JobBoardCardData selected = (JobBoardCardData) parent.getAdapter().getItem(position);
-                //new AsyncClaimJob().execute(userID, selected.jobID.toString());
+                new CreateChatRequest().execute(userID, selected.userId.toString(), selected.jobID.toString());
                 goToJobDetails(selected.jobID.toString());
                 //Toast.makeText(JobBoardActivity.this, "claimed", Toast.LENGTH_LONG).show();
             }

@@ -37,6 +37,7 @@ public class CurrentJobs extends ListActivity {
 
     private String userID;
     private String jobID;
+    private int chatId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,27 +51,31 @@ public class CurrentJobs extends ListActivity {
     public class JobBoardCardData {
         public String location;
         public String username;
+        public Integer userId;
         public String price; // String for mockup purposes, change to double later
         public String time; // String for mockup purposes, change to Date later
         public Integer jobID;
+        public Integer chatId;
 
-        public JobBoardCardData(String loc, String name, String price, String time, Integer jobID) {
+        public JobBoardCardData(String loc, String name, Integer userId, String price, String time, Integer jobID, Integer chatId){
             location = loc;
             username = name;
+            this.userId = userId;
             this.price = price;
             this.time = time;
             this.jobID = jobID;
+            this.chatId = chatId;
         }
     }
 
     public class JobBoardCardDataAdapter extends ArrayAdapter<JobBoardCardData> {
 
-        public JobBoardCardDataAdapter(Context context, ArrayList<JobBoardCardData> jobs) {
+        public JobBoardCardDataAdapter(Context context, ArrayList<JobBoardCardData> jobs){
             super(context, 0, jobs);
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, ViewGroup parent){
             JobBoardCardData job = getItem(position);
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_job_board, parent, false);
@@ -183,9 +188,9 @@ public class CurrentJobs extends ListActivity {
                 use sharedPreferences of Android. and logout button to clear sharedPreferences.
                  */
                 Toast.makeText(CurrentJobs.this, result, Toast.LENGTH_LONG).show();
-            } else if (result.equalsIgnoreCase("connection failure")) {
+            }else if(result.equalsIgnoreCase("connection failure")){
                 Toast.makeText(CurrentJobs.this, result, Toast.LENGTH_LONG).show();
-            } else {
+            }else {
                 addItemsToList(result);
                 //Toast.makeText(JobBoardActivity.this, "Getting there", Toast.LENGTH_LONG).show();
 
@@ -195,16 +200,16 @@ public class CurrentJobs extends ListActivity {
 
     }
 
-    public void addItemsToList(String result) {
+    public void addItemsToList(String result){
         List<String> myList = new ArrayList<String>(Arrays.asList(result.split("<br>")));
         ArrayList<JobBoardCardData> jobs = new ArrayList<>();
 
-        if (result.length() > 0) {
+        if(result.length() > 0) {
             for (String item : myList) {
                 List<String> jobList = new ArrayList<String>(Arrays.asList(item.split(", ")));
-                jobs.add(new JobBoardCardData(jobList.get(0), jobList.get(1), jobList.get(2), jobList.get(3), Integer.parseInt(jobList.get(4))));
+                jobs.add(new JobBoardCardData(jobList.get(0), jobList.get(1), Integer.parseInt(jobList.get(5)), jobList.get(2), jobList.get(3), Integer.parseInt(jobList.get(4)), Integer.parseInt(jobList.get(6))));
             }
-        } else {
+        }else{
             Toast.makeText(CurrentJobs.this, "You have no jobs", Toast.LENGTH_LONG).show();
         }
 
@@ -218,6 +223,7 @@ public class CurrentJobs extends ListActivity {
                 //new AsyncCompleteJob().execute(selected.jobID.toString());
 
                 jobID = selected.jobID.toString();
+                chatId = selected.chatId;
                 goToJobDetails();
             }
         });
@@ -316,12 +322,14 @@ public class CurrentJobs extends ListActivity {
                 use sharedPreferences of Android. and logout button to clear sharedPreferences.
                  */
                 Toast.makeText(CurrentJobs.this, result, Toast.LENGTH_LONG).show();
-            } else {
+            }else {
                 //addItemsToList(result);
                 Toast.makeText(CurrentJobs.this, "completed", Toast.LENGTH_LONG).show();
 
             }
         }
+
+
     }
 
     //SUBMITTING PRICES
