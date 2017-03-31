@@ -38,6 +38,5 @@ public class SendChatRequest extends Request {
     }
 
     protected void handleResult(String result){
-
     }
 }

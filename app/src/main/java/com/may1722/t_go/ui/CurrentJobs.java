@@ -37,6 +37,7 @@ public class CurrentJobs extends ListActivity {
 
     private String userID;
     private String jobID;
+    private int chatId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,16 +51,20 @@ public class CurrentJobs extends ListActivity {
     public class JobBoardCardData {
         public String location;
         public String username;
+        public Integer userId;
         public String price; // String for mockup purposes, change to double later
         public String time; // String for mockup purposes, change to Date later
         public Integer jobID;
+        public Integer chatId;
 
-        public JobBoardCardData(String loc, String name, String price, String time, Integer jobID){
+        public JobBoardCardData(String loc, String name, Integer userId, String price, String time, Integer jobID, Integer chatId){
             location = loc;
             username = name;
+            this.userId = userId;
             this.price = price;
             this.time = time;
             this.jobID = jobID;
+            this.chatId = chatId;
         }
     }
 
@@ -202,7 +207,7 @@ public class CurrentJobs extends ListActivity {
         if(result.length() > 0) {
             for (String item : myList) {
                 List<String> jobList = new ArrayList<String>(Arrays.asList(item.split(", ")));
-                jobs.add(new JobBoardCardData(jobList.get(0), jobList.get(1), jobList.get(2), jobList.get(3), Integer.parseInt(jobList.get(4))));
+                jobs.add(new JobBoardCardData(jobList.get(0), jobList.get(1), Integer.parseInt(jobList.get(5)), jobList.get(2), jobList.get(3), Integer.parseInt(jobList.get(4)), Integer.parseInt(jobList.get(6))));
             }
         }else{
             Toast.makeText(CurrentJobs.this, "You have no jobs", Toast.LENGTH_LONG).show();
@@ -218,6 +223,7 @@ public class CurrentJobs extends ListActivity {
                 new AsyncCompleteJob().execute(selected.jobID.toString());
 
                 jobID = selected.jobID.toString();
+                chatId = selected.chatId;
                 goToJobComplete();
             }
         });
@@ -330,6 +336,8 @@ public class CurrentJobs extends ListActivity {
     public void goToJobComplete(){
         Intent intent = new Intent(this, JobCompleteActivity.class);
         intent.putExtra("job_id", jobID);
+        intent.putExtra("chat_id", chatId);
+        intent.putExtra("user_id", Integer.parseInt(userID));
         startActivity(intent);
     }
 
