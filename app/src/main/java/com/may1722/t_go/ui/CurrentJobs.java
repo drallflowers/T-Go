@@ -338,6 +338,7 @@ public class CurrentJobs extends ListActivity {
         intent.putExtra("userID", userID);
         intent.putExtra("job_ID", jobID);
         intent.putExtra("chat_ID", chatID);
+        intent.putExtra("from_where", "current_jobs");
         startActivity(intent);
     }
 

@@ -38,7 +38,6 @@ import java.util.List;
 public class JobBoardActivity extends ListActivity {
 
     private String userID;
-    private int chatID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,18 +51,18 @@ public class JobBoardActivity extends ListActivity {
     public class JobBoardCardData {
         public String location;
         public String username;
-        public Integer userId;
         public String price; // String for mockup purposes, change to double later
         public String time; // String for mockup purposes, change to Date later
         public Integer jobID;
+        public Integer chatId;
 
-        public JobBoardCardData(String loc, String name, String price, String time, Integer jobID) {
+        public JobBoardCardData(String loc, String name, String price, String time, Integer jobID, Integer chatId) {
             location = loc;
             username = name;
-            this.userId = userId;
             this.price = price;
             this.time = time;
             this.jobID = jobID;
+            this.chatId = chatId;
         }
     }
 
@@ -203,7 +202,7 @@ public class JobBoardActivity extends ListActivity {
         ArrayList<JobBoardCardData> jobs = new ArrayList<>();
         for (String item : myList) {
             List<String> jobList = new ArrayList<String>(Arrays.asList(item.split(", ")));
-            jobs.add(new JobBoardCardData(jobList.get(0), jobList.get(1), jobList.get(2), jobList.get(3), Integer.parseInt(jobList.get(4))));
+            jobs.add(new JobBoardCardData(jobList.get(0), jobList.get(1), jobList.get(2), jobList.get(3), Integer.parseInt(jobList.get(4)), Integer.parseInt(jobList.get(5))));
         }
 
         JobBoardCardDataAdapter adapter = new JobBoardCardDataAdapter(this, jobs);
@@ -215,17 +214,18 @@ public class JobBoardActivity extends ListActivity {
                 JobBoardCardData selected = (JobBoardCardData) parent.getAdapter().getItem(position);
                 //new CreateChatRequest().execute(userID, selected.userId.toString(), selected.jobID.toString());
 
-                goToJobDetails(selected.jobID.toString());
+                goToJobDetails(selected.jobID.toString(), selected.chatId.toString());
                 //Toast.makeText(JobBoardActivity.this, "claimed", Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    public void goToJobDetails(String jobID){
+    public void goToJobDetails(String jobID, String chatId){
         Intent intent = new Intent(this, JobDetailsActivity.class);
         intent.putExtra("userID", userID);
         intent.putExtra("job_ID", jobID);
-        intent.putExtra("chat_ID", chatID);
+        intent.putExtra("chat_ID", chatId);
+        intent.putExtra("from_where", "job_board");
         startActivity(intent);
     }
 
