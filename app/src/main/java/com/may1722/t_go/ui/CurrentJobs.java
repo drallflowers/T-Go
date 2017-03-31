@@ -37,7 +37,7 @@ public class CurrentJobs extends ListActivity {
 
     private String userID;
     private String jobID;
-    private int chatId;
+    private int chatID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,16 +55,16 @@ public class CurrentJobs extends ListActivity {
         public String price; // String for mockup purposes, change to double later
         public String time; // String for mockup purposes, change to Date later
         public Integer jobID;
-        public Integer chatId;
+        public Integer chatID;
 
-        public JobBoardCardData(String loc, String name, Integer userId, String price, String time, Integer jobID, Integer chatId){
+        public JobBoardCardData(String loc, String name, Integer userId, String price, String time, Integer jobID, Integer chatID){
             location = loc;
             username = name;
             this.userId = userId;
             this.price = price;
             this.time = time;
             this.jobID = jobID;
-            this.chatId = chatId;
+            this.chatID= chatID;
         }
     }
 
@@ -223,7 +223,7 @@ public class CurrentJobs extends ListActivity {
                 //new AsyncCompleteJob().execute(selected.jobID.toString());
 
                 jobID = selected.jobID.toString();
-                chatId = selected.chatId;
+                chatID = selected.chatID;
                 goToJobDetails();
             }
         });
@@ -337,6 +337,7 @@ public class CurrentJobs extends ListActivity {
         Intent intent = new Intent(this, JobDetailsActivity.class);
         intent.putExtra("userID", userID);
         intent.putExtra("job_ID", jobID);
+        intent.putExtra("chat_ID", chatID);
         startActivity(intent);
     }
 

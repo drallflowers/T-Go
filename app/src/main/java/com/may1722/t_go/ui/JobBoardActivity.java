@@ -38,6 +38,7 @@ import java.util.List;
 public class JobBoardActivity extends ListActivity {
 
     private String userID;
+    private int chatID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -212,7 +213,8 @@ public class JobBoardActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 JobBoardCardData selected = (JobBoardCardData) parent.getAdapter().getItem(position);
-                new CreateChatRequest().execute(userID, selected.userId.toString(), selected.jobID.toString());
+                //new CreateChatRequest().execute(userID, selected.userId.toString(), selected.jobID.toString());
+
                 goToJobDetails(selected.jobID.toString());
                 //Toast.makeText(JobBoardActivity.this, "claimed", Toast.LENGTH_LONG).show();
             }
@@ -223,6 +225,7 @@ public class JobBoardActivity extends ListActivity {
         Intent intent = new Intent(this, JobDetailsActivity.class);
         intent.putExtra("userID", userID);
         intent.putExtra("job_ID", jobID);
+        intent.putExtra("chat_ID", chatID);
         startActivity(intent);
     }
 
