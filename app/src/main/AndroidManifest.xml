@@ -42,6 +42,7 @@
         <activity android:name=".ui.CurrentJobs" />
         <activity android:name=".ui.JobSubmitActivity" />
         <activity android:name=".ui.SubmitReviewActivity" />
+        <activity android:name=".ui.JobDetailsActivity"/>
         <activity android:name=".ui.ChatActivity"
             android:screenOrientation="portrait"/><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->

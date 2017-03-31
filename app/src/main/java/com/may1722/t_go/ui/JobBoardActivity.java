@@ -56,7 +56,7 @@ public class JobBoardActivity extends ListActivity {
         public String time; // String for mockup purposes, change to Date later
         public Integer jobID;
 
-        public JobBoardCardData(String loc, String name, int userId, String price, String time, Integer jobID) {
+        public JobBoardCardData(String loc, String name, String price, String time, Integer jobID) {
             location = loc;
             username = name;
             this.userId = userId;
@@ -202,7 +202,7 @@ public class JobBoardActivity extends ListActivity {
         ArrayList<JobBoardCardData> jobs = new ArrayList<>();
         for (String item : myList) {
             List<String> jobList = new ArrayList<String>(Arrays.asList(item.split(", ")));
-            jobs.add(new JobBoardCardData(jobList.get(0), jobList.get(1), Integer.parseInt(jobList.get(5)), jobList.get(2), jobList.get(3), Integer.parseInt(jobList.get(4))));
+            jobs.add(new JobBoardCardData(jobList.get(0), jobList.get(1), jobList.get(2), jobList.get(3), Integer.parseInt(jobList.get(4))));
         }
 
         JobBoardCardDataAdapter adapter = new JobBoardCardDataAdapter(this, jobs);
@@ -213,113 +213,17 @@ public class JobBoardActivity extends ListActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 JobBoardCardData selected = (JobBoardCardData) parent.getAdapter().getItem(position);
                 new CreateChatRequest().execute(userID, selected.userId.toString(), selected.jobID.toString());
-                new AsyncClaimJob().execute(userID, selected.jobID.toString());
+                goToJobDetails(selected.jobID.toString());
                 //Toast.makeText(JobBoardActivity.this, "claimed", Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    private class AsyncClaimJob extends AsyncTask<String, String, String> {
-        HttpURLConnection conn;
-        URL url = null;
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-
-                // Enter URL address where your php file resides
-                url = new URL("http://may1722db.ece.iastate.edu/claimjob.inc.php");
-
-            } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                return "exception";
-            }
-            try {
-                // Setup HttpURLConnection class to send and receive data from php and mysql
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(15000);
-                conn.setConnectTimeout(15000);
-                conn.setRequestMethod("POST");
-
-                // setDoInput and setDoOutput method depict handling of both send and receive
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-
-                // Append parameters to URL
-                Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("userid", params[0])
-                        .appendQueryParameter("job_id", params[1]);
-                String query = builder.build().getEncodedQuery();
-
-                // Open connection for sending data
-                OutputStream os = conn.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(
-                        new OutputStreamWriter(os, "UTF-8"));
-                writer.write(query);
-                writer.flush();
-                writer.close();
-                os.close();
-                conn.connect();
-
-            } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-                return "exception";
-            }
-
-            try {
-
-                int response_code = conn.getResponseCode();
-
-                // Check if successful connection made
-                if (response_code == HttpURLConnection.HTTP_OK) {
-
-                    // Read data sent from server
-                    InputStream input = conn.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                    StringBuilder result = new StringBuilder();
-                    String line;
-
-                    while ((line = reader.readLine()) != null) {
-                        result.append(line);
-                    }
-
-                    return result.toString();
-                    // Pass data to onPostExecute method
-
-
-                } else {
-                    //Toast.makeText(JobBoardActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
-                    return "connection failure";
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(JobBoardActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
-                return "connection failure";
-            } finally {
-                conn.disconnect();
-            }
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-
-            //this method will be running on UI thread
-
-            if (result.equalsIgnoreCase("connection failure")) {
-                /* Here launching another activity when login successful. If you persist login state
-                use sharedPreferences of Android. and logout button to clear sharedPreferences.
-                 */
-                Toast.makeText(JobBoardActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(JobBoardActivity.this, "claimed", Toast.LENGTH_LONG).show();
-            }
-        }
-
-
+    public void goToJobDetails(String jobID){
+        Intent intent = new Intent(this, JobDetailsActivity.class);
+        intent.putExtra("userID", userID);
+        intent.putExtra("job_ID", jobID);
+        startActivity(intent);
     }
 
 }

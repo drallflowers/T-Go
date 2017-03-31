@@ -220,11 +220,11 @@ public class CurrentJobs extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 JobBoardCardData selected = (JobBoardCardData) parent.getAdapter().getItem(position);
-                new AsyncCompleteJob().execute(selected.jobID.toString());
+                //new AsyncCompleteJob().execute(selected.jobID.toString());
 
                 jobID = selected.jobID.toString();
                 chatId = selected.chatId;
-                goToJobComplete();
+                goToJobDetails();
             }
         });
     }
@@ -333,11 +333,10 @@ public class CurrentJobs extends ListActivity {
     }
 
     //SUBMITTING PRICES
-    public void goToJobComplete(){
-        Intent intent = new Intent(this, JobCompleteActivity.class);
-        intent.putExtra("job_id", jobID);
-        intent.putExtra("chat_id", chatId);
-        intent.putExtra("user_id", Integer.parseInt(userID));
+    public void goToJobDetails() {
+        Intent intent = new Intent(this, JobDetailsActivity.class);
+        intent.putExtra("userID", userID);
+        intent.putExtra("job_ID", jobID);
         startActivity(intent);
     }
 
