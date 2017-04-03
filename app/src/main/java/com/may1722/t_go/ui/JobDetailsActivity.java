@@ -2,10 +2,12 @@ package com.may1722.t_go.ui;
 
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -54,6 +57,7 @@ public class JobDetailsActivity extends ListActivity {
     private String jobID;
     private String requestorid;
     private String courierid;
+    private String jobCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,22 +76,51 @@ public class JobDetailsActivity extends ListActivity {
 
     public void completeJob(View view) {
 
-        Intent intent;
+        jobCode = jobCode();
+
         if(requestorid.equals(userID)){
-            intent = new Intent(this, JobCompleteRequesterActivity.class)
-            .putExtra("verification_code", ""+jobCode());
+            Toast.makeText(JobDetailsActivity.this, "Verification Code: \n"+jobCode, Toast.LENGTH_LONG).show();
         } else if(courierid.equals(userID)) {
-            intent = new Intent(this, JobCompleteCourierActivity.class)
-            .putExtra("verification_code", ""+jobCode())
-            .putExtra("job_id", jobID);
+            LayoutInflater inflater = LayoutInflater.from(JobDetailsActivity.this);
+            View dialogView = inflater.inflate(R.layout.edit_dialog, null);
+
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(JobDetailsActivity.this);
+            alertBuilder.setTitle("Enter Verification Code: ");
+            alertBuilder.setView(dialogView);
+
+            alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+                @Override
+                public void onClick(DialogInterface dialog, int which){
+                    dialog.dismiss();
+                }
+            });
+
+            alertBuilder.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    EditText entry = (EditText)findViewById(R.id.edit_dialog_input);
+                    String userEntry = entry.getText().toString();
+                    if(userEntry.equals(jobCode)){
+                        new AsyncCompleteJob().execute(jobID);
+                        dialogInterface.dismiss();
+                        goToJobComplete();
+                    } else {
+                        Toast.makeText(JobDetailsActivity.this, "Incorrect Verification Code", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
+            alertBuilder.show();
+
         } else {
-            intent = null;
+            Toast.makeText(JobDetailsActivity.this, "How did you get here?", Toast.LENGTH_LONG).show();
         }
+    }
 
-        if(intent != null){
-            startActivity(intent);
-        }
-
+    public void goToJobComplete(){
+        Intent intent = new Intent(this, JobCompleteActivity.class)
+                .putExtra("job_id", jobID);
+        startActivity(intent);
     }
 
     public void goToMaps(View view) {
@@ -561,11 +594,112 @@ public class JobDetailsActivity extends ListActivity {
         }
     }
 
+    private class AsyncCompleteJob extends AsyncTask<String, String, String> {
+        HttpURLConnection conn;
+        URL url = null;
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+                // Enter URL address where your php file resides
+                url = new URL("http://may1722db.ece.iastate.edu/completejob.php");
+
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return "exception";
+            }
+            try {
+                // Setup HttpURLConnection class to send and receive data from php and mysql
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(15000);
+                conn.setConnectTimeout(15000);
+                conn.setRequestMethod("POST");
+
+                // setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder().appendQueryParameter("job_id", params[0]);
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return "exception";
+            }
+
+            try {
+
+                int response_code = conn.getResponseCode();
+
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    // Read data sent from server
+                    InputStream input = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+
+                    return result.toString();
+                    // Pass data to onPostExecute method
+
+
+                } else {
+                    //Toast.makeText(JobBoardActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                    return "connection failure";
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(JobDetailsActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                return "connection failure";
+            } finally {
+                conn.disconnect();
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            //this method will be running on UI thread
+
+            if (result.equalsIgnoreCase("connection failure")) {
+                /* Here launching another activity when login successful. If you persist login state
+                use sharedPreferences of Android. and logout button to clear sharedPreferences.
+                 */
+                Toast.makeText(JobDetailsActivity.this, result, Toast.LENGTH_LONG).show();
+            } else {
+//                new JobDetailsActivity.AsyncGetJobInfo().execute(jobID);
+                Toast.makeText(JobDetailsActivity.this, "completed", Toast.LENGTH_LONG).show();
+
+            }
+        }
+    }
+
     /**
      * Calculates a code based on job information.  Used for the verification between courier and requester
      * @return
      */
-    private int jobCode(){
+    private String jobCode(){
         TextView requester = (TextView) findViewById(R.id.jobRequestor);
         TextView courier = (TextView) findViewById(R.id.jobCourier);
         TextView jobTime = (TextView) findViewById(R.id.timePostedLabel);
@@ -574,6 +708,8 @@ public class JobDetailsActivity extends ListActivity {
                 + courier.getText().toString().replace(" (you)", "").hashCode()
                 + jobTime.getText().toString().hashCode();
 
-        return Math.abs(code%1000000);
+        int shortCode = Math.abs(code%1000000);
+
+        return String.format("%06d", shortCode);
     }
 }
