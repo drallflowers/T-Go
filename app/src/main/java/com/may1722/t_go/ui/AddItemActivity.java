@@ -68,6 +68,7 @@ public class AddItemActivity extends AppCompatActivity {
     private TextView quantity;
     private Integer jobID;
     private String userID;
+    private String user_type;
     private Integer productID = 0;
 
     static String itemName;
@@ -87,6 +88,7 @@ public class AddItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_item);
 
         userID = getIntent().getExtras().getString("userID");
+        user_type = getIntent().getExtras().getString("type");
         jobID = Integer.parseInt(getIntent().getExtras().getString("jobID"));
 
 
@@ -148,15 +150,15 @@ public class AddItemActivity extends AppCompatActivity {
     }
 
     public void submit(View view) throws JSONException {
-        name = (TextView) findViewById(R.id.nameText);
+        /*name = (TextView) findViewById(R.id.nameText);
         description = (TextView) findViewById(R.id.descriptionText);
         price = (TextView) findViewById(R.id.priceText);
-        quantity = (TextView) findViewById(R.id.quantityText);
+        quantity = (TextView) findViewById(R.id.quantityText);*/
 
-        String nameString = name.getEditableText().toString();
-        String descriptionString = description.getEditableText().toString();
-        String priceString = price.getEditableText().toString();
-        String quantityString = quantity.getEditableText().toString();
+        String nameString = listItems.get(0);
+        String descriptionString = "";
+        String priceString = listPrices.get(0).toString();
+        String quantityString =listQuantity.get(0).toString();
 
         if (nameString.length() > 0 && priceString.length() > 0 && quantityString.length() > 0) {
             new AsyncAddItem().execute(nameString, descriptionString, priceString, quantityString, jobID.toString(), productID.toString());
@@ -272,7 +274,10 @@ public class AddItemActivity extends AppCompatActivity {
     public void startProfileActivity(){
         Intent intent = new Intent(this, ProfileActivity.class);
         intent.putExtra("userID", userID);
-        startActivity(intent);
+        intent.putExtra("user_type", user_type);
+        this.finish();
+        //startActivity(intent);
+
     }
 
     public static class CustomItemFragment extends DialogFragment {

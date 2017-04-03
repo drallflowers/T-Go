@@ -86,6 +86,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void goToJobSubmit(View view) {
         Intent intent = new Intent(this, JobSubmitActivity.class);
+        intent.putExtra("type", user_type);
         intent.putExtra("userID", userID);
         startActivity(intent);
     }
