@@ -65,8 +65,9 @@ public class JobDetailsActivity extends ListActivity {
         setContentView(R.layout.activity_job_details);
 
         userID = getIntent().getExtras().getString("userID");
+        otherID = "";
         jobID = getIntent().getExtras().getString("job_ID");
-        chatId = getIntent().getExtras().getInt("chat_id");
+        chatId = getIntent().getExtras().getInt("chat_ID");
         fromWhere = getIntent().getExtras().getString("from_where");
         if(fromWhere.equals("job_board")){
             Button chat = (Button) findViewById(R.id.chatButton);
@@ -80,12 +81,16 @@ public class JobDetailsActivity extends ListActivity {
         new AsyncClaimJob().execute(userID, jobID);
         CreateChatRequest createChatRequest = new CreateChatRequest();
         createChatRequest.execute(userID, otherID, jobID);
-        chatId = createChatRequest.getChatId();
 
-        Button chat = (Button) findViewById(R.id.chatButton);
-        Button acceptJob = (Button) findViewById(R.id.acceptJobButton);
-        chat.setVisibility(View.VISIBLE);
-        acceptJob.setVisibility(View.GONE);
+        try {
+            Thread.sleep(500);
+            chatId = createChatRequest.getChatId();Button chat = (Button) findViewById(R.id.chatButton);
+            Button acceptJob = (Button) findViewById(R.id.acceptJobButton);
+            chat.setVisibility(View.VISIBLE);
+            acceptJob.setVisibility(View.GONE);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void completeJob(View view) {
@@ -208,7 +213,7 @@ public class JobDetailsActivity extends ListActivity {
         Intent intent = new Intent(this, ChatActivity.class);
         intent.putExtra("user1", username);
         intent.putExtra("user2", othername);
-        intent.putExtra("chatId", chatId);
+        intent.putExtra("chatID", chatId);
         startActivity(intent);
     }
 
