@@ -6,14 +6,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,8 +23,6 @@ import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.may1722.t_go.R;
-import com.may1722.t_go.model.ItemObject;
-import com.may1722.t_go.networking.ChatInfoRequest;
 import com.may1722.t_go.networking.CreateChatRequest;
 
 import org.json.JSONArray;
@@ -44,15 +40,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class JobDetailsActivity extends ListActivity {
 
     static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 10;
     private String userID;
-    private String otherID;
+    private String otherID = "0";
     private String jobID;
     private String fromWhere;
     private int chatId;
@@ -66,7 +60,7 @@ public class JobDetailsActivity extends ListActivity {
 
         userID = getIntent().getExtras().getString("userID");
         jobID = getIntent().getExtras().getString("job_ID");
-        chatId = getIntent().getExtras().getInt("chat_id");
+        chatId = getIntent().getExtras().getInt("chat_ID");
         fromWhere = getIntent().getExtras().getString("from_where");
         if(fromWhere.equals("job_board")){
             Button chat = (Button) findViewById(R.id.chatButton);
@@ -80,6 +74,11 @@ public class JobDetailsActivity extends ListActivity {
         new AsyncClaimJob().execute(userID, jobID);
         CreateChatRequest createChatRequest = new CreateChatRequest();
         createChatRequest.execute(userID, otherID, jobID);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         chatId = createChatRequest.getChatId();
 
         Button chat = (Button) findViewById(R.id.chatButton);
@@ -208,7 +207,7 @@ public class JobDetailsActivity extends ListActivity {
         Intent intent = new Intent(this, ChatActivity.class);
         intent.putExtra("user1", username);
         intent.putExtra("user2", othername);
-        intent.putExtra("chatId", chatId);
+        intent.putExtra("chat_ID", chatId);
         startActivity(intent);
     }
 
