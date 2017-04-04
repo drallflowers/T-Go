@@ -385,6 +385,7 @@ public class AddItemActivity extends AppCompatActivity {
             TextView text = (TextView) convertView.findViewById(android.R.id.text1);
             text.setText(product.getProduct_name());
 
+
             return convertView;
         }
 
@@ -515,21 +516,21 @@ public class AddItemActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which){
                 ProductObject product = adapter.getItem(which);
-                productID = product.getProduct_id();
+                /*productID = product.getProduct_id();
                 name = (TextView) findViewById(R.id.nameText);
                 description = (TextView) findViewById(R.id.descriptionText);
                 price = (TextView) findViewById(R.id.priceText);
                 name.setText(product.getProduct_name());
                 description.setText(product.getProduct_description());
-                price.setText(String.format("%.2f", product.getAvg_price()));
+                price.setText(String.format("%.2f", product.getAvg_price()));*/
 
 
 
 
                 TextView p = (TextView) findViewById(R.id.totalPrice);
-                quantity = (TextView) findViewById(R.id.quantityText);
-                itemName = product.getProduct_name();
-                listItems.add(itemName);
+                //quantity = (TextView) findViewById(R.id.quantityText);
+               // itemName = product.getProduct_name();
+                listItems.add(product.getProduct_name());
                 listPrices.add(product.getAvg_price());
 
                 listQuantity.add(1);
