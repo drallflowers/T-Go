@@ -82,7 +82,7 @@ public class JobDetailsActivity extends ListActivity {
             Toast.makeText(JobDetailsActivity.this, "Verification Code: \n"+jobCode, Toast.LENGTH_LONG).show();
         } else if(courierid.equals(userID)) {
             LayoutInflater inflater = LayoutInflater.from(JobDetailsActivity.this);
-            View dialogView = inflater.inflate(R.layout.edit_dialog, null);
+            final View dialogView = inflater.inflate(R.layout.edit_dialog, null);
 
             AlertDialog.Builder alertBuilder = new AlertDialog.Builder(JobDetailsActivity.this);
             alertBuilder.setTitle("Enter Verification Code: ");
@@ -98,7 +98,7 @@ public class JobDetailsActivity extends ListActivity {
             alertBuilder.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    EditText entry = (EditText)findViewById(R.id.edit_dialog_input);
+                    EditText entry = (EditText)dialogView.findViewById(R.id.edit_dialog_input);
                     String userEntry = entry.getText().toString();
                     if(userEntry.equals(jobCode)){
                         new AsyncCompleteJob().execute(jobID);
