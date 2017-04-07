@@ -99,6 +99,7 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
                 setListViewHeightBasedOnChildren(t);
                 notifyDataSetChanged();
 
+
             }
         });
 
@@ -156,7 +157,7 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
                 @Override
                 public void onClick(View v) {
                     list.remove(pos); //or some other task
-                    double removedPrice = prices.get(pos);
+                    double removedPrice = prices.get(pos)*quantities.get(pos);
                     prices.remove(pos);
                     quantities.remove(pos);
 
@@ -169,7 +170,7 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
                     String s = decim.format(currentPrice[0]);
                     currentPriceView.setText(s);
                     ((AddItemActivity)context).fragmentTaskCompleted();
-
+                    dismiss();
 
                 }
             });

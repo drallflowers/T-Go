@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -21,7 +22,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 10;
     private String userID;
-
+    private String user_type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +31,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         userID = getIntent().getExtras().getString("userID");
         String username = getIntent().getExtras().getString("username");
-        String user_type = getIntent().getExtras().getString("user_type");
+        user_type = getIntent().getExtras().getString("user_type");
         String email = getIntent().getExtras().getString("email");
         String phone_number =  getIntent().getExtras().getString("phone_number");
         TextView profiletextView = (TextView) findViewById(R.id.profileUsername);
@@ -41,6 +42,18 @@ public class ProfileActivity extends AppCompatActivity {
         typetextView.setText(user_type);
         emailtextView.setText(email);
         phonetextView.setText(phone_number);
+
+        Button findJob = (Button) findViewById(R.id.buttonFindJobs);
+        Button myReviews = (Button) findViewById(R.id.buttonReviews);
+
+
+        if(Integer.parseInt(user_type) == 0){
+            findJob.setVisibility(View.INVISIBLE);
+            myReviews.setVisibility(View.INVISIBLE);
+            findJob.setEnabled(false);
+            myReviews.setEnabled(false);
+        }
+
 
 
     }
@@ -57,8 +70,23 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void goToUpgradeAccount(View view) {
+        Intent intent = new Intent(this, ApplyActivity.class);
+        intent.putExtra("type", user_type);
+        intent.putExtra("userID", userID);
+
+        startActivity(intent);
+    }
+
+    public void goToMailBoard(View view) {
+        Intent intent = new Intent(this, MailActivity.class);
+        intent.putExtra("userID", userID);
+        startActivity(intent);
+    }
+
     public void goToJobSubmit(View view) {
         Intent intent = new Intent(this, JobSubmitActivity.class);
+        intent.putExtra("type", user_type);
         intent.putExtra("userID", userID);
         startActivity(intent);
     }

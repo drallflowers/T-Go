@@ -152,6 +152,13 @@
             android:gravity="bottom"
             android:weightSum="1">
 
+            <Button
+                android:id="@+id/buttonMail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="goToMailBoard"
+                android:text="Mail" />
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -211,10 +218,11 @@
             </LinearLayout>
 
             <Button
-                android:text="@string/upgradeAcct"
+                android:id="@+id/upgradeAcctButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/upgradeAcctButton" />
+                android:onClick="goToUpgradeAccount"
+                android:text="@string/upgradeAcct" />
 
             <Button
                 android:text="@string/updateUserInfo"

@@ -59,6 +59,7 @@ public class JobSubmitActivity extends AppCompatActivity implements
     protected TextView apartment;
     protected TextView city;
     protected String userID;
+    protected String user_type;
     protected Integer locationID;
     protected String dateString;
 
@@ -74,7 +75,7 @@ public class JobSubmitActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_job_submit);
 
         userID = getIntent().getExtras().getString("userID");
-
+        user_type = getIntent().getExtras().getString("type");
         // link to views in the activity
 
         address = (TextView) findViewById(R.id.addressText);
@@ -398,7 +399,9 @@ public class JobSubmitActivity extends AppCompatActivity implements
     public void startAddItemActivity(String jobID) {
         Intent intent = new Intent(this, AddItemActivity.class);
         intent.putExtra("userID", userID);
+        intent.putExtra("type", user_type);
         intent.putExtra("jobID", jobID);
         startActivity(intent);
+        this.finish();
     }
 }

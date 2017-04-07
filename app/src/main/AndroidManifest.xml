@@ -57,6 +57,8 @@
         android:screenOrientation="portrait" />
         <activity android:name=".ui.JobCompleteActivity" />
         <activity android:name=".ui.MapsActivity" />
+        <activity android:name=".ui.MailActivity" />
+        <activity android:name=".ui.ApplyActivity"></activity>
     </application>
 
 </manifest>

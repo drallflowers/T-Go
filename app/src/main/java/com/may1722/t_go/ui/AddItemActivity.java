@@ -1,12 +1,14 @@
 package com.may1722.t_go.ui;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -47,6 +49,7 @@ public class AddItemActivity extends AppCompatActivity {
     private TextView quantity;
     private Integer jobID;
     private String userID;
+    private String user_type;
     private Integer productID = 0;
 
     static String itemName;
@@ -55,6 +58,7 @@ public class AddItemActivity extends AppCompatActivity {
     static ArrayList<Double> listPrices;
     static ArrayList<Integer> listQuantity;
     static ListViewAdapter adapter;
+    static TextView priceView;
     static double totalPrice;
 
     private AlertDialog.Builder alertBuilder;
@@ -65,6 +69,7 @@ public class AddItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_item);
 
         userID = getIntent().getExtras().getString("userID");
+        user_type = getIntent().getExtras().getString("type");
         jobID = Integer.parseInt(getIntent().getExtras().getString("jobID"));
 
 
@@ -79,7 +84,7 @@ public class AddItemActivity extends AppCompatActivity {
         adapter = new ListViewAdapter(listItems, listPrices,listQuantity, this);
         listView.setAdapter(adapter);
         itemName = "";
-
+        priceView = (TextView) findViewById(R.id.totalPrice);
 
         setListViewHeightBasedOnChildren(listView);
         Button addItemBtn = (Button) findViewById(R.id.addItemBtn);
@@ -88,7 +93,8 @@ public class AddItemActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //do something
-                totalPrice = Double.parseDouble(price.getText().toString());
+                DialogFragment newFragment = new CustomItemFragment();
+                newFragment.show(getSupportFragmentManager(), "test");
 
 
             }
@@ -125,15 +131,15 @@ public class AddItemActivity extends AppCompatActivity {
     }
 
     public void submit(View view) throws JSONException {
-        name = (TextView) findViewById(R.id.nameText);
+        /*name = (TextView) findViewById(R.id.nameText);
         description = (TextView) findViewById(R.id.descriptionText);
         price = (TextView) findViewById(R.id.priceText);
-        quantity = (TextView) findViewById(R.id.quantityText);
+        quantity = (TextView) findViewById(R.id.quantityText);*/
 
-        String nameString = name.getEditableText().toString();
-        String descriptionString = description.getEditableText().toString();
-        String priceString = price.getEditableText().toString();
-        String quantityString = quantity.getEditableText().toString();
+        String nameString = listItems.get(0);
+        String descriptionString = "";
+        String priceString = listPrices.get(0).toString();
+        String quantityString =listQuantity.get(0).toString();
 
         if (nameString.length() > 0 && priceString.length() > 0 && quantityString.length() > 0) {
             new AsyncAddItem().execute(nameString, descriptionString, priceString, quantityString, jobID.toString(), productID.toString());
@@ -249,7 +255,84 @@ public class AddItemActivity extends AppCompatActivity {
     public void startProfileActivity(){
         Intent intent = new Intent(this, ProfileActivity.class);
         intent.putExtra("userID", userID);
-        startActivity(intent);
+        intent.putExtra("user_type", user_type);
+        this.finish();
+        //startActivity(intent);
+
+    }
+
+    public static class CustomItemFragment extends DialogFragment {
+        CustomItemFragment newInstance(String title) {
+            CustomItemFragment fragment = new CustomItemFragment();
+            Bundle args = new Bundle();
+            args.putString("title", title);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final View view = inflater.inflate(R.layout.view_custom_item, null);
+
+            final EditText id = (EditText) view.findViewById(R.id.nameText);
+            final EditText price = (EditText) view.findViewById(R.id.priceText);
+            final EditText quant = (EditText) view.findViewById(R.id.quantityText);
+
+            //connect to the edit_quantity to get original amount
+
+
+            Button b = (Button) view.findViewById(R.id.addItemBtn);
+            b.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+
+
+                }
+            });
+            return new android.support.v7.app.AlertDialog.Builder(getActivity())
+                    .setTitle("Enter Item Name:")
+                    .setView(view)
+                    .setPositiveButton("Add",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+                                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                    View view = inflater.inflate(R.layout.view_custom_item, null);
+                                    //connect to the edit_quantity to get original amount
+
+
+
+                                    listItems.add(id.getText().toString());
+                                    listPrices.add(Double.parseDouble(price.getText().toString()));
+                                    listQuantity.add(Integer.parseInt(quant.getText().toString()));
+                                    adapter.notifyDataSetChanged();
+
+                                    double tempPrice = 0.0;
+                                    for(int i = 0; i < listPrices.size(); i++){
+                                        tempPrice += (listPrices.get(i)*listQuantity.get(i));
+                                    }
+
+                                    priceView.setText(tempPrice+"");
+                                    // make call to get item price from db
+
+
+                                }
+                            })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+
+                                }
+                            }).create();
+        }
+    }
+    public void addCustomProduct(View view){
+
     }
 
     //PRODUCT FETCHING
@@ -282,6 +365,7 @@ public class AddItemActivity extends AppCompatActivity {
 
             TextView text = (TextView) convertView.findViewById(android.R.id.text1);
             text.setText(product.getProduct_name());
+
 
             return convertView;
         }
@@ -413,21 +497,21 @@ public class AddItemActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which){
                 ProductObject product = adapter.getItem(which);
-                productID = product.getProduct_id();
+                /*productID = product.getProduct_id();
                 name = (TextView) findViewById(R.id.nameText);
                 description = (TextView) findViewById(R.id.descriptionText);
                 price = (TextView) findViewById(R.id.priceText);
                 name.setText(product.getProduct_name());
                 description.setText(product.getProduct_description());
-                price.setText(String.format("%.2f", product.getAvg_price()));
+                price.setText(String.format("%.2f", product.getAvg_price()));*/
 
 
 
 
                 TextView p = (TextView) findViewById(R.id.totalPrice);
-                quantity = (TextView) findViewById(R.id.quantityText);
-                itemName = product.getProduct_name();
-                listItems.add(itemName);
+                //quantity = (TextView) findViewById(R.id.quantityText);
+               // itemName = product.getProduct_name();
+                listItems.add(product.getProduct_name());
                 listPrices.add(product.getAvg_price());
 
                 listQuantity.add(1);
