@@ -14,6 +14,8 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.may1722.t_go.R;
+import com.may1722.t_go.model.PasswordEncrypter;
+import com.may1722.t_go.networking.SaltRequest;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -58,7 +60,17 @@ public class LoginActivity extends AppCompatActivity {
         String password = passField.getText().toString();
 
         if (username.length() > 0 & password.length() > 0) {
-            new AsyncLogin().execute(username, password);
+            SaltRequest saltRequest = new SaltRequest();
+            saltRequest.execute(username);
+
+            try {
+                Thread.sleep(500);
+                PasswordEncrypter passwordEncrypter = new PasswordEncrypter(saltRequest.getSalt());
+                password = passwordEncrypter.hash(password);
+                new AsyncLogin().execute(username, password);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } else {
             Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_LONG).show();
         }
