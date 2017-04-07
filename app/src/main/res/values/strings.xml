@@ -42,4 +42,8 @@
 
     <!-- MapsActivity -->
     <string name="LocationLabelText">Go To:</string>
+
+    <!-- JobDetailsActivity -->
+    <string name = "timePosted">Time Posted:</string>
+    <string name = "timeDue">Time Due:</string>
 </resources>
