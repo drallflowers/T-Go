@@ -83,7 +83,7 @@ public class ApplyActivity extends AppCompatActivity
 
                 // Append parameters to URL
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("userid","0").appendQueryParameter("content", "Please Review").appendQueryParameter("mail_type", "01").appendQueryParameter("from_userid", getIntent().getExtras().getString("userIDdavid"));
+                        .appendQueryParameter("userid","0").appendQueryParameter("content", "Please Review").appendQueryParameter("mail_type", "01").appendQueryParameter("from_userid", getIntent().getExtras().getString("userID"));
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
