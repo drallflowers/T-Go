@@ -5,20 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.may1722.t_go.R;
-import com.may1722.t_go.networking.CreateChatRequest;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -32,7 +29,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 public class JobBoardActivity extends ListActivity {
@@ -181,12 +177,14 @@ public class JobBoardActivity extends ListActivity {
 
             //this method will be running on UI thread
 
-            if (result.equalsIgnoreCase("failed to get jobs")) {
+            if (result.equalsIgnoreCase("")) {
                 /* Here launching another activity when login successful. If you persist login state
                 use sharedPreferences of Android. and logout button to clear sharedPreferences.
                  */
-                Toast.makeText(JobBoardActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
-            } else {
+                Toast.makeText(JobBoardActivity.this, "No jobs available", Toast.LENGTH_LONG).show();
+            }else if(result.equalsIgnoreCase("connection failure")){
+                Toast.makeText(JobBoardActivity.this, result, Toast.LENGTH_LONG).show();
+            }else {
                 addItemsToList(result);
                 //Toast.makeText(JobBoardActivity.this, "Getting there", Toast.LENGTH_LONG).show();
 
