@@ -166,6 +166,18 @@
                 android:drawSelectorOnTop="false"/>
 
             <Button
+                android:text="Chat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/chatButton"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:onClick="goToChat" />
+
+            <Button
                 android:id="@+id/goToMapButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

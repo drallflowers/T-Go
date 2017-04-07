@@ -38,7 +38,7 @@ public class ChatActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         user1 = extras.getString("user1");                                      //Sets up user1
         user2 = extras.getString("user2");                                      //Sets up user2
-        chatId = extras.getInt("chatId");                                       //Sets up chatId
+        chatId = extras.getInt("chatID");                                       //Sets up chatId
         setChatWith();
         chatRequest = new ChatRequest();
         try {

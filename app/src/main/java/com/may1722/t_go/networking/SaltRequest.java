@@ -2,18 +2,22 @@ package com.may1722.t_go.networking;
 
 import android.net.Uri;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Created by alxdaly on 2/25/2017.
+ * Created by alxdaly on 4/4/2017.
  */
 
-public class SendChatRequest extends Request {
+public class SaltRequest extends Request {
+    private int salt;
 
     protected URL getUrl() {
         try {
-            URL url = new URL("http://may1722db.ece.iastate.edu/sendchat.php");
+            URL url = new URL("http://may1722db.ece.iastate.edu/getsalt.php");
             return url;
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -27,9 +31,7 @@ public class SendChatRequest extends Request {
 
     protected Uri.Builder getUriBuilder(String... params){
         Uri.Builder builder = new Uri.Builder()
-                .appendQueryParameter("chat_id", params[0])
-                .appendQueryParameter("sender", params[1])
-                .appendQueryParameter("message", params[2]);
+                .appendQueryParameter("username", params[0]);
         return builder;
     }
 
@@ -38,5 +40,15 @@ public class SendChatRequest extends Request {
     }
 
     protected void handleResult(String result){
+        if(result.equalsIgnoreCase("ERROR: Chat room not made.")){
+
+        }
+        else {
+            salt = Integer.parseInt(result);
+        }
+    }
+
+    public int getSalt() {
+        return salt;
     }
 }

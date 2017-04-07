@@ -5,14 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +29,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 public class JobBoardActivity extends ListActivity {
@@ -53,13 +50,15 @@ public class JobBoardActivity extends ListActivity {
         public String price; // String for mockup purposes, change to double later
         public String time; // String for mockup purposes, change to Date later
         public Integer jobID;
+        public Integer chatId;
 
-        public JobBoardCardData(String loc, String name, String price, String time, Integer jobID) {
+        public JobBoardCardData(String loc, String name, String price, String time, Integer jobID, Integer chatId) {
             location = loc;
             username = name;
             this.price = price;
             this.time = time;
             this.jobID = jobID;
+            this.chatId = chatId;
         }
     }
 
@@ -178,12 +177,14 @@ public class JobBoardActivity extends ListActivity {
 
             //this method will be running on UI thread
 
-            if (result.equalsIgnoreCase("failed to get jobs")) {
+            if (result.equalsIgnoreCase("")) {
                 /* Here launching another activity when login successful. If you persist login state
                 use sharedPreferences of Android. and logout button to clear sharedPreferences.
                  */
-                Toast.makeText(JobBoardActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
-            } else {
+                Toast.makeText(JobBoardActivity.this, "No jobs available", Toast.LENGTH_LONG).show();
+            }else if(result.equalsIgnoreCase("connection failure")){
+                Toast.makeText(JobBoardActivity.this, result, Toast.LENGTH_LONG).show();
+            }else {
                 addItemsToList(result);
                 //Toast.makeText(JobBoardActivity.this, "Getting there", Toast.LENGTH_LONG).show();
 
@@ -199,7 +200,7 @@ public class JobBoardActivity extends ListActivity {
         ArrayList<JobBoardCardData> jobs = new ArrayList<>();
         for (String item : myList) {
             List<String> jobList = new ArrayList<String>(Arrays.asList(item.split(", ")));
-            jobs.add(new JobBoardCardData(jobList.get(0), jobList.get(1), jobList.get(2), jobList.get(3), Integer.parseInt(jobList.get(4))));
+            jobs.add(new JobBoardCardData(jobList.get(0), jobList.get(1), jobList.get(2), jobList.get(3), Integer.parseInt(jobList.get(4)), Integer.parseInt(jobList.get(5))));
         }
 
         JobBoardCardDataAdapter adapter = new JobBoardCardDataAdapter(this, jobs);
@@ -209,17 +210,20 @@ public class JobBoardActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 JobBoardCardData selected = (JobBoardCardData) parent.getAdapter().getItem(position);
-                //new AsyncClaimJob().execute(userID, selected.jobID.toString());
-                goToJobDetails(selected.jobID.toString());
+                //new CreateChatRequest().execute(userID, selected.userId.toString(), selected.jobID.toString());
+
+                goToJobDetails(selected.jobID.toString(), selected.chatId.toString());
                 //Toast.makeText(JobBoardActivity.this, "claimed", Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    public void goToJobDetails(String jobID){
+    public void goToJobDetails(String jobID, String chatId){
         Intent intent = new Intent(this, JobDetailsActivity.class);
         intent.putExtra("userID", userID);
         intent.putExtra("job_ID", jobID);
+        intent.putExtra("chat_ID", chatId);
+        intent.putExtra("from_where", "job_board");
         startActivity(intent);
     }
 

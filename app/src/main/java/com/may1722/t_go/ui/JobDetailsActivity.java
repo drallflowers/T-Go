@@ -30,6 +30,8 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.vision.text.Text;
 import com.may1722.t_go.R;
 import com.may1722.t_go.model.ItemObject;
+import com.may1722.t_go.networking.ChatInfoRequest;
+import com.may1722.t_go.networking.CreateChatRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,10 +56,15 @@ public class JobDetailsActivity extends ListActivity {
 
     static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 10;
     private String userID;
+    private String otherID;
     private String jobID;
     private String requestorid;
     private String courierid;
     private String jobCode;
+    private String fromWhere;
+    private int chatId;
+    private String username;
+    private String othername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,13 +72,32 @@ public class JobDetailsActivity extends ListActivity {
         setContentView(R.layout.activity_job_details);
 
         userID = getIntent().getExtras().getString("userID");
+        otherID = "";
         jobID = getIntent().getExtras().getString("job_ID");
+        chatId = getIntent().getExtras().getInt("chat_ID");
+        fromWhere = getIntent().getExtras().getString("from_where");
+        if(fromWhere.equals("job_board")){
+            Button chat = (Button) findViewById(R.id.chatButton);
+            chat.setVisibility(View.GONE);
+        }
         new AsyncGetJobInfo().execute(jobID);
 
     }
 
     public void acceptJob(View view) {
         new AsyncClaimJob().execute(userID, jobID);
+        CreateChatRequest createChatRequest = new CreateChatRequest();
+        createChatRequest.execute(userID, otherID, jobID);
+
+        try {
+            Thread.sleep(500);
+            chatId = createChatRequest.getChatId();Button chat = (Button) findViewById(R.id.chatButton);
+            Button acceptJob = (Button) findViewById(R.id.acceptJobButton);
+            chat.setVisibility(View.VISIBLE);
+            acceptJob.setVisibility(View.GONE);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void completeJob(View view) {
@@ -232,6 +258,15 @@ public class JobDetailsActivity extends ListActivity {
                 //Toast.makeText(JobBoardActivity.this, "claimed", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    public void goToChat(View view)
+    {
+        Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("user1", username);
+        intent.putExtra("user2", othername);
+        intent.putExtra("chatID", chatId);
+        startActivity(intent);
     }
 
 
@@ -464,12 +499,15 @@ public class JobDetailsActivity extends ListActivity {
                 completeJob.setVisibility(View.VISIBLE);
             }
             requestor.setText("Requestor: " + result2[0] + " (you)");
+            username = result2[0];
         } else {
             if (result2[6].equals("0")) {
                 Button acceptJob = (Button) findViewById(R.id.acceptJobButton);
                 acceptJob.setVisibility(View.VISIBLE);
             }
             requestor.setText("Requestor: " + result2[0]);
+            otherID = requestorid;
+            othername = result2[0];
         }
 
         if (courierid.equals(userID)) {
@@ -478,8 +516,13 @@ public class JobDetailsActivity extends ListActivity {
                 completeJob.setVisibility(View.VISIBLE);
             }
             courier.setText("Courier: " + result2[1] + " (you)");
+            username = result2[1];
         } else {
             courier.setText("Courier: " + result2[1]);
+            if(!otherID.equals(requestorid)){
+                otherID = courierid;
+                othername = result2[1];
+            }
         }
 
         location.setText(result2[4]);

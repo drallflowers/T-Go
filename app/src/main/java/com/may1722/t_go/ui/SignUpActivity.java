@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.may1722.t_go.R;
+import com.may1722.t_go.model.PasswordEncrypter;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -63,7 +64,10 @@ public class SignUpActivity extends AppCompatActivity {
         String password = passField.getText().toString();
         String confirmPassword = confirmPassField.getText().toString();
         if (password.equals(confirmPassword) && password.length() > 0 && username.length() > 0) {
-            new AsyncSignUp().execute(username, password);
+            PasswordEncrypter passwordEncrypter = new PasswordEncrypter();
+            password = passwordEncrypter.hash(password);
+            int salt = passwordEncrypter.getSalt();
+            new AsyncSignUp().execute(username, password, Integer.toString(salt));
         } else {
             //error message
             Toast.makeText(SignUpActivity.this, "Invalid username or password", Toast.LENGTH_LONG).show();
@@ -101,7 +105,8 @@ public class SignUpActivity extends AppCompatActivity {
                 // Append parameters to URL
                 Uri.Builder builder = new Uri.Builder()
                         .appendQueryParameter("username", params[0])
-                        .appendQueryParameter("password", params[1]);
+                        .appendQueryParameter("password", params[1])
+                        .appendQueryParameter("salt", params[2]);
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
