@@ -60,6 +60,12 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+    public void logout(View view)
+    {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
+
     public void goToCurrentJobs(View view) {
         Intent intent = new Intent(this, CurrentJobs.class);
         intent.putExtra("userID", userID);
