@@ -46,13 +46,13 @@ public class JobCompleteActivity extends AppCompatActivity {
         userId = getIntent().getExtras().getInt("user_id");
     }
 
-    protected void goToProfile()
+    protected void goToProfile(View view)
     {
         Intent intent = new Intent(this, ProfileActivity.class);
         startActivity(intent);
     }
 
-    protected void goToReview()
+    protected void goToReview(View view)
     {
         Intent intent = new Intent(this, SubmitReviewActivity.class);
         startActivity(intent);
