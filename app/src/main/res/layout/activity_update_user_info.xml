@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_job_submit"
+    android:id="@+id/activity_update_user_info"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.may1722.t_go.ui.JobSubmitActivity">
+    tools:context="com.may1722.t_go.ui.UpdateUserInfoActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -19,8 +19,8 @@
         android:layout_alignParentStart="true"
         android:layout_marginBottom="12dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="66dp">
-
+        android:layout_marginTop="66dp"
+        android:id="@+id/scrollView2">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,79 +28,72 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Location and Time"/>
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@+id/scrollView2"
+                android:text="Update User Info" />
 
+            <TextView
+                android:text="@string/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/emailLabel"
+                android:textSize="20sp" />
 
             <EditText
-                android:id="@+id/addressText"
+                android:id="@+id/emailText"
                 android:layout_width="match_parent"
                 android:layout_height="108dp"
                 android:ems="10"
-                android:hint="Street Address"
+                android:hint="Email"
                 android:inputType="textMultiLine" />
 
+            <TextView
+                android:text="@string/phoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/phoneLabel"
+                android:textSize="20sp" />
             <EditText
-                android:id="@+id/cityText"
+                android:id="@+id/phoneNumberText"
                 android:layout_width="match_parent"
                 android:layout_height="108dp"
                 android:ems="10"
-                android:hint="City"
+                android:hint="Phone Number"
                 android:inputType="textMultiLine" />
 
-            <EditText
-                android:id="@+id/stateText"
+            <TextView
+                android:text="@string/oldPassword"
                 android:layout_width="match_parent"
-                android:layout_height="108dp"
-                android:ems="10"
-                android:hint="State"
-                android:inputType="textMultiLine" />
+                android:layout_height="wrap_content"
+                android:id="@+id/oldPasswordLabel"
+                android:textSize="20sp" />
 
             <EditText
-                android:id="@+id/zipText"
+                android:id="@+id/oldPasswordText"
                 android:layout_width="match_parent"
                 android:layout_height="108dp"
                 android:ems="10"
-                android:hint="ZIP"
+                android:hint="(required)"
+                android:inputType="textMultiLine" />
+
+            <TextView
+                android:text="@string/newPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/newPasswordLabel"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/newPasswordText"
+                android:layout_width="match_parent"
+                android:layout_height="108dp"
+                android:ems="10"
+                android:hint="(optional)"
                 android:inputType="textMultiLine"/>
-
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="108dp"
-                android:inputType="textMultiLine"
-                android:ems="10"
-                android:id="@+id/apartmentText"
-                android:hint="Apartment Number (Optional)" />
-
-
-
-
-
-            <Button
-                android:id="@+id/datePicker"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="pickDate"
-                android:text="Pick Date" />
-
-            <TextView
-                android:id="@+id/dateView"
-                android:layout_width="match_parent"
-                android:layout_height="31dp" />
-
-            <Button
-                android:id="@+id/timePicker"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="showTimePickerDialog"
-                android:text="Select Time" />
-
-            <TextView
-                android:id="@+id/timeView"
-                android:layout_width="match_parent"
-                android:layout_height="36dp" />
 
             <Button
                 android:id="@+id/buttonContinue"
@@ -108,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.13"
                 android:onClick="submit"
-                android:text="Continue" />
+                android:text="Save User Info" />
         </LinearLayout>
     </ScrollView>
 

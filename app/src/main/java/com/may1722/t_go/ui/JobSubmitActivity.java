@@ -59,36 +59,13 @@ public class JobSubmitActivity extends AppCompatActivity implements
     protected TextView apartment;
     protected TextView city;
     protected String userID;
+    protected String user_type;
     protected Integer locationID;
     protected String dateString;
 
-    static String itemName;
-    static ListView listView;
-    static ArrayList<String> listItems;
-    static ArrayList<Double> listPrices;
-    static ListViewAdapter adapter;
-    static double totalPrice;
 
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
-        ListViewAdapter listAdapter = (ListViewAdapter) listView.getAdapter();
-        if (listAdapter == null)
-            return;
 
-        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
-        int totalHeight = 0;
-        View view = null;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            view = listAdapter.getView(i, view, listView);
-            if (i == 0)
-                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ActionBar.LayoutParams.WRAP_CONTENT));
 
-            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-            totalHeight += view.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,34 +75,10 @@ public class JobSubmitActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_job_submit);
 
         userID = getIntent().getExtras().getString("userID");
-
+        user_type = getIntent().getExtras().getString("type");
         // link to views in the activity
-        price = (TextView) findViewById(R.id.totalPrice);
+
         address = (TextView) findViewById(R.id.addressText);
-        listView = (ListView) findViewById(R.id.listView);
-
-        // initialize objects
-        totalPrice = 0.00;
-        listItems = new ArrayList<>();
-        listPrices = new ArrayList<>();
-        adapter = new ListViewAdapter(listItems, listPrices, this);
-        listView.setAdapter(adapter);
-        itemName = "";
-
-
-        setListViewHeightBasedOnChildren(listView);
-        Button addItemBtn = (Button) findViewById(R.id.addItemBtn);
-
-        addItemBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //do something
-                totalPrice = Double.parseDouble(price.getText().toString());
-                DialogFragment newFragment = new ItemLookUpFragment();
-                newFragment.show(getSupportFragmentManager(), "itemSelect");
-
-            }
-        });
 
 
     }
@@ -212,63 +165,7 @@ public class JobSubmitActivity extends AppCompatActivity implements
         }
     }
 
-    public static class ItemLookUpFragment extends DialogFragment {
-        static ItemLookUpFragment newInstance(String title) {
-            ItemLookUpFragment fragment = new ItemLookUpFragment();
-            Bundle args = new Bundle();
-            args.putString("title", title);
-            fragment.setArguments(args);
-            return fragment;
-        }
 
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.view_add_item, null);
-            final EditText t = (EditText) view.findViewById(R.id.item_search);
-            final TextView p = (TextView) view.findViewById(R.id.item_est_price);
-            Button b = (Button) view.findViewById(R.id.search_btn);
-            b.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //do something
-                    Random r = new Random();
-                    double randomValue = 1 + (10 - 1) * r.nextDouble();
-                    DecimalFormat decim = new DecimalFormat("0.00");
-                    String s = decim.format(randomValue);
-                    p.setText(s);
-
-                }
-            });
-            return new AlertDialog.Builder(getActivity())
-                    .setTitle("Enter Item Name:")
-                    .setView(view)
-                    .setPositiveButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int whichButton) {
-                                    itemName = t.getText().toString();
-                                    Double tempPrice = Double.parseDouble(p.getText().toString());
-                                    listItems.add(itemName);
-                                    listPrices.add(tempPrice);
-                                    DecimalFormat decim = new DecimalFormat("0.00");
-                                    totalPrice += tempPrice;
-                                    String s = decim.format(totalPrice);
-                                    price.setText(s);
-                                    // make call to get item price from db
-                                    setListViewHeightBasedOnChildren(listView);
-                                    adapter.notifyDataSetChanged();
-                                }
-                            })
-                    .setNegativeButton("Cancel",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int whichButton) {
-
-                                }
-                            }).create();
-        }
-    }
 
     public static class TimePickerFragment extends DialogFragment {
 
@@ -502,7 +399,9 @@ public class JobSubmitActivity extends AppCompatActivity implements
     public void startAddItemActivity(String jobID) {
         Intent intent = new Intent(this, AddItemActivity.class);
         intent.putExtra("userID", userID);
+        intent.putExtra("type", user_type);
         intent.putExtra("jobID", jobID);
         startActivity(intent);
+        this.finish();
     }
 }

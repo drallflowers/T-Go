@@ -2,13 +2,11 @@ package com.may1722.t_go.ui;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -18,25 +16,13 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.may1722.t_go.R;
 
-import org.w3c.dom.Text;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
 
 public class ProfileActivity extends AppCompatActivity {
 
     static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 10;
-
     private String userID;
+    private String user_type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +31,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         userID = getIntent().getExtras().getString("userID");
         String username = getIntent().getExtras().getString("username");
-        String user_type = getIntent().getExtras().getString("user_type");
+        user_type = getIntent().getExtras().getString("user_type");
         String email = getIntent().getExtras().getString("email");
         String phone_number =  getIntent().getExtras().getString("phone_number");
         TextView profiletextView = (TextView) findViewById(R.id.profileUsername);
@@ -57,12 +43,24 @@ public class ProfileActivity extends AppCompatActivity {
         emailtextView.setText(email);
         phonetextView.setText(phone_number);
 
+        Button findJob = (Button) findViewById(R.id.buttonFindJobs);
+        Button myReviews = (Button) findViewById(R.id.buttonReviews);
+
+
+        if(Integer.parseInt(user_type) == 0){
+            findJob.setVisibility(View.INVISIBLE);
+            myReviews.setVisibility(View.INVISIBLE);
+            findJob.setEnabled(false);
+            myReviews.setEnabled(false);
+        }
+
+
 
     }
 
-    public void logout(View view)
-    {
-        Intent intent = new Intent(this, LoginActivity.class);
+    public void updateUserInfo(View view) {
+        Intent intent = new Intent(this, UpdateUserInfoActivity.class);
+        intent.putExtra("userID", userID);
         startActivity(intent);
     }
 
@@ -72,8 +70,23 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void goToUpgradeAccount(View view) {
+        Intent intent = new Intent(this, ApplyActivity.class);
+        intent.putExtra("type", user_type);
+        intent.putExtra("userID", userID);
+
+        startActivity(intent);
+    }
+
+    public void goToMailBoard(View view) {
+        Intent intent = new Intent(this, MailActivity.class);
+        intent.putExtra("userID", userID);
+        startActivity(intent);
+    }
+
     public void goToJobSubmit(View view) {
         Intent intent = new Intent(this, JobSubmitActivity.class);
+        intent.putExtra("type", user_type);
         intent.putExtra("userID", userID);
         startActivity(intent);
     }

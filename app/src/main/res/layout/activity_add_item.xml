@@ -23,43 +23,27 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
+
+            <Button
+                android:text="Add Custom Item"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Item to Be Added" />
+                android:id="@+id/addItemBtn"/>
 
-
-            <EditText
-                android:id="@+id/nameText"
+            <ListView
                 android:layout_width="match_parent"
-                android:layout_height="108dp"
-                android:ems="10"
-                android:hint="Item Name"
-                android:inputType="textMultiLine" />
-
-            <EditText
-                android:id="@+id/descriptionText"
+                android:id="@+id/listView"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:text="0.00"
                 android:layout_width="match_parent"
-                android:layout_height="108dp"
-                android:ems="10"
-                android:hint="Item Description (Optional)"
-                android:inputType="textMultiLine" />
-
-            <EditText
-                android:id="@+id/priceText"
-                android:layout_width="match_parent"
-                android:layout_height="108dp"
-                android:ems="10"
-                android:hint="Individual Price"
-                android:inputType="numberDecimal" />
-
-            <EditText
-                android:id="@+id/quantityText"
-                android:layout_width="match_parent"
-                android:layout_height="108dp"
-                android:ems="10"
-                android:hint="Quantity"
-                android:inputType="number" />
+                android:layout_height="wrap_content"
+                android:id="@+id/totalPrice"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textIsSelectable="false"
+                android:editable="false"
+                android:clickable="false"
+                android:cursorVisible="false" />
 
             <Button
                 android:id="@+id/buttonContinue"
@@ -67,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.13"
                 android:onClick="submit"
-                android:text="Add Item" />
+                android:text="submit" />
 
         </LinearLayout>
     </ScrollView>

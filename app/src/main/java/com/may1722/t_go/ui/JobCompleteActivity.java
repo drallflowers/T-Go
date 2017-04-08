@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.may1722.t_go.R;
 import com.may1722.t_go.model.ItemObject;
+import com.may1722.t_go.networking.ChatInfoRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +38,11 @@ public class JobCompleteActivity extends AppCompatActivity {
 
     private ArrayList<EditText> entries;
     private ArrayList<ItemObject> items;
+    private ChatInfoRequest chatInfoRequest;
+    private int chatId;
+    private int userId;
+    private String username;
+    private String othername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +50,10 @@ public class JobCompleteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_job_complete);
 
         String jobID = getIntent().getExtras().getString("job_id");
+        chatId = getIntent().getExtras().getInt("chat_id");
+        userId = getIntent().getExtras().getInt("user_id");
+        chatInfoRequest = new ChatInfoRequest();
+        chatInfoRequest.execute(Integer.toString(chatId), Integer.toString(userId));
         new AsyncGetItems().execute(jobID);
 
     }
@@ -300,10 +310,12 @@ public class JobCompleteActivity extends AppCompatActivity {
 
     public void goToChat(View view)
     {
+        username = chatInfoRequest.getUser1();
+        othername = chatInfoRequest.getUser2();
         Intent intent = new Intent(this, ChatActivity.class);
-        intent.putExtra("user1", "alxdaly");
-        intent.putExtra("user2", "cleveland");
-        intent.putExtra("chatId", 1);
+        intent.putExtra("user1", username);
+        intent.putExtra("user2", othername);
+        intent.putExtra("chatId", chatId);
         startActivity(intent);
     }
 
@@ -340,7 +352,7 @@ public class JobCompleteActivity extends AppCompatActivity {
                         .appendQueryParameter("product_description", params[1])
                         .appendQueryParameter("avg_price", params[2]);
                 String query = builder.build().getEncodedQuery();
-System.out.println(query);
+                System.out.println(query);
                 // Open connection for sending data
                 OutputStream os = conn.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(

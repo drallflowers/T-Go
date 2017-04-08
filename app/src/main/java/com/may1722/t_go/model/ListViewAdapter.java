@@ -2,21 +2,30 @@ package com.may1722.t_go.model;
 
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.may1722.t_go.R;
+import com.may1722.t_go.ui.AddItemActivity;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Random;
 
 import static android.R.id.list;
 
@@ -25,13 +34,16 @@ import static android.R.id.list;
  */
 
 public class ListViewAdapter extends BaseAdapter implements ListAdapter {
-    private ArrayList<String> list = new ArrayList<>();
-    private ArrayList<Double> prices = new ArrayList<>();
-    private Context context;
+    protected static ArrayList<String> list = new ArrayList<>();
+    protected static ArrayList<Double> prices = new ArrayList<>();
+    protected static ArrayList<Integer> quantities = new ArrayList<>();
+    protected static Context context;
+    protected static int pos;
 
-    public ListViewAdapter(ArrayList<String> list,ArrayList<Double> prices, Context context) {
+    public ListViewAdapter(ArrayList<String> list,ArrayList<Double> prices,ArrayList<Integer> quantity, Context context) {
         this.list = list;
         this.prices = prices;
+        this.quantities = quantity;
         this.context = context;
     }
 
@@ -54,6 +66,7 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View view = convertView;
+        pos = position;
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.list_item_delete, null);
@@ -61,7 +74,9 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
 
         //Handle TextView and display string from your list
         TextView listItemText = (TextView)view.findViewById(R.id.list_item_string);
+        TextView listItemQuantity = (TextView)view.findViewById(R.id.textAmount);
         listItemText.setText(list.get(position));
+        listItemQuantity.setText(quantities.get(position)+"");
         //listItemText.setWidth((int) (view.getWidth()*.5));
 
         //Handle buttons and add onClickListeners
@@ -75,26 +90,15 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
             @Override
             public void onClick(View v) {
                 //do something
-                list.remove(position); //or some other task
-                double removedPrice = prices.get(position);
-                prices.remove(position);
+                DialogFragment newFragment = new EditDeleteFragment();
+                newFragment.show(((FragmentActivity) context).getSupportFragmentManager(), "test");
 
-
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View temp = inflater.inflate(R.layout.activity_job_submit, null);
-
-                TextView currentPriceView = (TextView) ((Activity) context).findViewById(R.id.totalPrice);
-
-                double currentPrice = Double.parseDouble(currentPriceView.getText().toString());
-                currentPrice -= removedPrice;
-                DecimalFormat decim = new DecimalFormat("0.00");
-                String s = decim.format(currentPrice);
-                currentPriceView.setText(s);
 
                 ListView t = (ListView) ((Activity) context).findViewById(R.id.listView);
-                setListViewHeightBasedOnChildren(t);
 
+                setListViewHeightBasedOnChildren(t);
                 notifyDataSetChanged();
+
 
             }
         });
@@ -103,7 +107,6 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
     }
 
     public void setListViewHeightBasedOnChildren(ListView listView) {
-        System.out.println(listView.getLayoutParams().height);
 
         int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
         int totalHeight = 0;
@@ -116,12 +119,94 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
             view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
             totalHeight += view.getMeasuredHeight();
         }
-        System.out.println(totalHeight);
         ViewGroup.LayoutParams params = listView.getLayoutParams();
 
         params.height =totalHeight + (listView.getDividerHeight() * (this.getCount() - 1));
-        System.out.println(params.height);
         listView.setLayoutParams(params);
     }
 
+
+    public static class EditDeleteFragment extends DialogFragment {
+            EditDeleteFragment newInstance(String title) {
+            EditDeleteFragment fragment = new EditDeleteFragment();
+            Bundle args = new Bundle();
+            args.putString("title", title);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final View view = inflater.inflate(R.layout.view_add_item, null);
+
+            //connect to the edit_quantity to get original amount
+            final EditText t = (EditText) view.findViewById(R.id.edit_quantity);
+
+            final View view2 = inflater.inflate(R.layout.list_item_delete, null);
+            final TextView currentPriceView = (TextView) ((Activity) context).findViewById(R.id.totalPrice);
+
+            final double[] currentPrice = {Double.parseDouble(currentPriceView.getText().toString())};
+
+            t.setText(quantities.get(pos)+"");
+
+            Button b = (Button) view.findViewById(R.id.delete_btn);
+            b.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    list.remove(pos); //or some other task
+                    double removedPrice = prices.get(pos)*quantities.get(pos);
+                    prices.remove(pos);
+                    quantities.remove(pos);
+
+                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View temp = inflater.inflate(R.layout.activity_job_submit, null);
+
+
+                    currentPrice[0] -= removedPrice;
+                    DecimalFormat decim = new DecimalFormat("0.00");
+                    String s = decim.format(currentPrice[0]);
+                    currentPriceView.setText(s);
+                    ((AddItemActivity)context).fragmentTaskCompleted();
+                    dismiss();
+
+                }
+            });
+            return new android.support.v7.app.AlertDialog.Builder(getActivity())
+                    .setTitle("Enter Item Name:")
+                    .setView(view)
+                    .setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+                                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                    View view = inflater.inflate(R.layout.view_add_item, null);
+                                    //connect to the edit_quantity to get original amount
+                                    quantities.set(pos,Integer.parseInt( t.getText().toString()));
+                                    double cost = 0.0;
+                                    for(int i = 0; i < prices.size();i++){
+                                        cost+= (prices.get(i)*quantities.get(i));
+                                    }
+                                    currentPrice[0] = cost;
+                                    DecimalFormat decim = new DecimalFormat("0.00");
+                                    String s = decim.format(currentPrice[0]);
+                                    currentPriceView.setText(s);
+                                    ((AddItemActivity)context).fragmentTaskCompleted();
+
+                                }
+                            })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+                                    ((AddItemActivity)context).fragmentTaskCompleted();
+                                }
+                            }).create();
+        }
+    }
+
 }
+
+
