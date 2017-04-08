@@ -57,6 +57,12 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     }
+    public void logout(View view)
+    {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.putExtra("userID", userID);
+        startActivity(intent);
+    }
 
     public void updateUserInfo(View view) {
         Intent intent = new Intent(this, UpdateUserInfoActivity.class);
