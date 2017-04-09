@@ -19,30 +19,43 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
-        <RatingBar
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/review_target"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/reviewRating" />
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_weight="0.03"
+            android:text="TextView" />
+
+        <RatingBar
+            android:id="@+id/reviewRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <EditText
+            android:id="@+id/reviewDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:ems="10"
-            android:id="@+id/reviewDescription"
             android:layout_weight="0.53"
-            android:hint="Review details"/>
+            android:ems="10"
+            android:hint="Review details"
+            android:inputType="textMultiLine" />
 
-        <RadioButton
-            android:text="Would Recommend?"
+        <CheckBox
+            android:id="@+id/review_recommend"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/radioButton" />
+            android:layout_weight="0.03"
+            android:text="Would you recommend this person?" />
 
         <Button
-            android:text="submit"
+            android:id="@+id/submitButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/submitButton" />
+            android:onClick="submitReview"
+            android:text="submit" />
     </LinearLayout>
+
 </RelativeLayout>

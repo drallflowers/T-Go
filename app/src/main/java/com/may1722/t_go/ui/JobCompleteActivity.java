@@ -35,15 +35,17 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class JobCompleteActivity extends AppCompatActivity {
-    private int userId;
-    private String username;
+    private int my_ID;
+    private int their_ID;
+    private String their_username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job_complete);
-        String jobID = getIntent().getExtras().getString("job_id");
-        userId = getIntent().getExtras().getInt("user_id");
+        my_ID = getIntent().getExtras().getInt("my_id");
+        their_ID = getIntent().getExtras().getInt("their_id");
+        their_username = getIntent().getExtras().getString("their_username");
     }
 
     protected void goToProfile(View view)
@@ -54,8 +56,10 @@ public class JobCompleteActivity extends AppCompatActivity {
 
     protected void goToReview(View view)
     {
-        Intent intent = new Intent(this, SubmitReviewActivity.class);
+        Intent intent = new Intent(this, SubmitReviewActivity.class)
+                .putExtra("my_ID", my_ID)
+                .putExtra("their_ID", their_ID)
+                .putExtra("their_username", their_username);
         startActivity(intent);
     }
-
 }

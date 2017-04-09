@@ -61,7 +61,6 @@ public class JobDetailsActivity extends ListActivity {
     private String requestorid;
     private String courierid;
     private String jobCode;
-    private String fromWhere;
     private int chatId;
     private String username;
     private String othername;
@@ -75,7 +74,7 @@ public class JobDetailsActivity extends ListActivity {
         otherID = "";
         jobID = getIntent().getExtras().getString("job_ID");
         chatId = getIntent().getExtras().getInt("chat_ID");
-        fromWhere = getIntent().getExtras().getString("from_where");
+        String fromWhere = getIntent().getExtras().getString("from_where");
         if(fromWhere.equals("job_board")){
             Button chat = (Button) findViewById(R.id.chatButton);
             chat.setVisibility(View.GONE);
@@ -145,7 +144,9 @@ public class JobDetailsActivity extends ListActivity {
 
     public void goToJobComplete(){
         Intent intent = new Intent(this, JobCompleteActivity.class)
-                .putExtra("job_id", jobID);
+                .putExtra("my_id", userID)
+                .putExtra("their_id", (requestorid.equals(userID)) ? courierid : requestorid) //Either way our ID is userID, determine 'their ID' with a ternary
+                .putExtra("their_username", othername);
         startActivity(intent);
     }
 
@@ -161,9 +162,7 @@ public class JobDetailsActivity extends ListActivity {
                             .setFilter(new AutocompleteFilter.Builder().setTypeFilter(AutocompleteFilter.TYPE_FILTER_ESTABLISHMENT).build())
                             .build(this);
             startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
-        } catch (GooglePlayServicesRepairableException e) {
-            // TODO: Handle the error.
-        } catch (GooglePlayServicesNotAvailableException e) {
+        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
             // TODO: Handle the error.
         }
     }
