@@ -40,66 +40,72 @@
                 android:text="@string/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:id="@+id/emailLabel"
                 android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/emailText"
                 android:layout_width="match_parent"
-                android:layout_height="108dp"
+                android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Email"
-                android:inputType="textMultiLine" />
+                android:inputType="text" />
 
             <TextView
                 android:text="@string/phoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:id="@+id/phoneLabel"
                 android:textSize="20sp" />
+
             <EditText
                 android:id="@+id/phoneNumberText"
                 android:layout_width="match_parent"
-                android:layout_height="108dp"
+                android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Phone Number"
-                android:inputType="textMultiLine" />
+                android:inputType="text" />
 
             <TextView
                 android:text="@string/oldPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:id="@+id/oldPasswordLabel"
                 android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/oldPasswordText"
                 android:layout_width="match_parent"
-                android:layout_height="108dp"
+                android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="(required)"
-                android:inputType="textMultiLine" />
+                android:inputType="textPassword" />
 
             <TextView
                 android:text="@string/newPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:id="@+id/newPasswordLabel"
                 android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/newPasswordText"
                 android:layout_width="match_parent"
-                android:layout_height="108dp"
+                android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="(optional)"
-                android:inputType="textMultiLine"/>
+                android:inputType="textPassword" />
 
             <Button
                 android:id="@+id/buttonContinue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.13"
+                android:layout_marginTop="10dp"
                 android:onClick="submit"
                 android:text="Save User Info" />
         </LinearLayout>
