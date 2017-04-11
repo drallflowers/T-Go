@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.may1722.t_go.R;
 
@@ -52,6 +53,7 @@ public class SubmitReviewActivity extends AppCompatActivity {
     public void submitReview(View view)
     {
         new AsyncSubmitReview().execute(details.getText().toString());
+        finish();
     }
 
     private class AsyncSubmitReview extends AsyncTask<String, String, String> {
@@ -63,7 +65,7 @@ public class SubmitReviewActivity extends AppCompatActivity {
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://may1722db.ece.iastate.edu/submitReview.inc.php");
+                url = new URL("http://may1722db.ece.iastate.edu/submitReview.php");
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -132,6 +134,7 @@ public class SubmitReviewActivity extends AppCompatActivity {
             } finally {
                 conn.disconnect();
             }
+            Toast.makeText(getApplicationContext(), "Done", Toast.LENGTH_LONG).show();
             return "done";
         }
     }
