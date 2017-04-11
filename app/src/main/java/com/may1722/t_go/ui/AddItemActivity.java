@@ -20,7 +20,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.stripe.android.Stripe;
+import com.stripe.android.TokenCallback;
+import com.stripe.android.model.Card;
+import com.stripe.android.model.Token;
+import com.stripe.android.view.CardInputWidget;
 import com.may1722.t_go.R;
 import com.may1722.t_go.model.ListViewAdapter;
 import com.may1722.t_go.model.ProductObject;
@@ -102,6 +106,11 @@ public class AddItemActivity extends AppCompatActivity {
 
     }
 
+    public void addPayment(View view) {
+        DialogFragment newFragment = new PaymentFragment();
+        newFragment.show(getSupportFragmentManager(), "test");
+    }
+
     public static void setListViewHeightBasedOnChildren(ListView listView) {
         ListViewAdapter listAdapter = (ListViewAdapter) listView.getAdapter();
         if (listAdapter == null)
@@ -129,6 +138,81 @@ public class AddItemActivity extends AppCompatActivity {
         setListViewHeightBasedOnChildren(listView);
         adapter.notifyDataSetChanged();
     }
+    public static class PaymentFragment extends DialogFragment {
+        PaymentFragment newInstance(String title) {
+            PaymentFragment fragment = new PaymentFragment();
+            Bundle args = new Bundle();
+            args.putString("title", title);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final View view = inflater.inflate(R.layout.payment_layout, null);
+
+            final CardInputWidget mCardInputWidget = (CardInputWidget) view.findViewById(R.id.card_input_widget);
+
+            //connect to the edit_quantity to get original amount
+
+
+
+            return new android.support.v7.app.AlertDialog.Builder(getActivity())
+                    .setTitle("Enter Payment Info")
+                    .setView(view)
+                    .setPositiveButton("Add",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+                                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                    View view = inflater.inflate(R.layout.view_custom_item, null);
+                                    //connect to the edit_quantity to get original amount
+
+                                    Card cardToSave = mCardInputWidget.getCard();
+                                    if (cardToSave == null) {
+
+                                    }
+                                    else{
+                                        Stripe stripe = new Stripe(getContext(), "pk_test_HTpFfQgN4nvtJ9LZGXaUlJff");
+                                        stripe.createToken(
+                                                cardToSave,
+                                                new TokenCallback() {
+                                                    public void onSuccess(Token token) {
+
+
+                                                        new AsyncSendPayment().execute(token.getId());
+
+                                                    }
+                                                    public void onError(Exception error) {
+                                                        // Show localized error message
+                                                        Toast.makeText(getContext(),"Error",
+                                                                Toast.LENGTH_LONG
+                                                        ).show();
+                                                    }
+                                                }
+                                        );
+                                    }
+
+
+
+
+                                    // make call to get item price from db
+
+
+                                }
+                            })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+
+                                }
+                            }).create();
+        }
+    }
+
 
     public void submit(View view) throws JSONException {
         /*name = (TextView) findViewById(R.id.nameText);
@@ -146,6 +230,106 @@ public class AddItemActivity extends AppCompatActivity {
         } else {
             Toast.makeText(AddItemActivity.this, "Missing info", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private static class AsyncSendPayment extends AsyncTask<String, String, String> {
+        HttpURLConnection conn;
+        URL url = null;
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+                // Enter URL address where your php file resides
+                url = new URL("http://may1722db.ece.iastate.edu/payment.php");
+
+            } catch (MalformedURLException e) {
+
+                e.printStackTrace();
+                return "exception";
+            }
+            try {
+                // Setup HttpURLConnection class to send and receive data from php and mysql
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(15000);
+                conn.setConnectTimeout(15000);
+                conn.setRequestMethod("POST");
+
+                // setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("stripeToken", params[0]);
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+
+            } catch (IOException e1) {
+               
+                e1.printStackTrace();
+                return "exception";
+            }
+
+            try {
+
+                int response_code = conn.getResponseCode();
+
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    // Read data sent from server
+                    InputStream input = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+
+                    return result.toString();
+                    // Pass data to onPostExecute method
+
+
+                } else {
+                    return "connection failure";
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "connection failure";
+            } finally {
+                conn.disconnect();
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            //this method will be running on UI thread
+
+            if (result.equalsIgnoreCase("connection failure")) {
+                /* Here launching another activity when login successful. If you persist login state
+                use sharedPreferences of Android. and logout button to clear sharedPreferences.
+                 */
+            } else {
+                System.out.println(result);
+
+            }
+        }
+
+
     }
 
     private class AsyncAddItem extends AsyncTask<String, String, String> {
