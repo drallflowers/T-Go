@@ -153,6 +153,13 @@
             android:weightSum="1">
 
             <Button
+                android:id="@+id/button3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="logout"
+                android:text="Logout" />
+
+            <Button
                 android:id="@+id/buttonMail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
