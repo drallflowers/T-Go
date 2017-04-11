@@ -39,7 +39,15 @@ public class ProfileActivity extends AppCompatActivity {
         TextView emailtextView = (TextView) findViewById(R.id.profileEmail);
         TextView phonetextView = (TextView) findViewById(R.id.profilePhoneLabel);
         profiletextView.setText(username);
-        typetextView.setText(user_type);
+
+        if(user_type.equals("1")){
+            typetextView.setText("Courier");
+        }else if(user_type.equals("2")){
+            typetextView.setText("Moderator");
+        }else{
+            typetextView.setText("User");
+        }
+
         emailtextView.setText(email);
         phonetextView.setText(phone_number);
 

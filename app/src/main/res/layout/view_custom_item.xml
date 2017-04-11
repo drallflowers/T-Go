@@ -20,7 +20,7 @@
             android:layout_height="108dp"
             android:ems="10"
             android:hint="Item Name"
-            android:inputType="textMultiLine" />
+            android:singleLine="true" />
 
         <EditText
             android:id="@+id/descriptionText"
@@ -28,7 +28,7 @@
             android:layout_height="108dp"
             android:ems="10"
             android:hint="Item Description (Optional)"
-            android:inputType="textMultiLine" />
+            android:singleLine="true" />
 
         <EditText
             android:id="@+id/priceText"
@@ -50,6 +50,7 @@
             android:id="@+id/addItemBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:text="Add Item" />
 
     </LinearLayout>

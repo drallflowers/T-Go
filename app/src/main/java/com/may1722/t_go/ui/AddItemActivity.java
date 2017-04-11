@@ -55,6 +55,7 @@ public class AddItemActivity extends AppCompatActivity {
     static String itemName;
     static ListView listView;
     static ArrayList<String> listItems;
+    static ArrayList<String> listDescription;
     static ArrayList<Double> listPrices;
     static ArrayList<Integer> listQuantity;
     static ListViewAdapter adapter;
@@ -79,9 +80,10 @@ public class AddItemActivity extends AppCompatActivity {
         // initialize objects
         totalPrice = 0.00;
         listItems = new ArrayList<>();
+        listDescription = new ArrayList<>();
         listPrices = new ArrayList<>();
         listQuantity = new ArrayList<>();
-        adapter = new ListViewAdapter(listItems, listPrices,listQuantity, this);
+        adapter = new ListViewAdapter(listItems, listDescription, listPrices,listQuantity, this);
         listView.setAdapter(adapter);
         itemName = "";
         priceView = (TextView) findViewById(R.id.totalPrice);
@@ -136,16 +138,24 @@ public class AddItemActivity extends AppCompatActivity {
         price = (TextView) findViewById(R.id.priceText);
         quantity = (TextView) findViewById(R.id.quantityText);*/
 
-        String nameString = listItems.get(0);
-        String descriptionString = "";
-        String priceString = listPrices.get(0).toString();
-        String quantityString =listQuantity.get(0).toString();
 
-        if (nameString.length() > 0 && priceString.length() > 0 && quantityString.length() > 0) {
-            new AsyncAddItem().execute(nameString, descriptionString, priceString, quantityString, jobID.toString(), productID.toString());
-        } else {
-            Toast.makeText(AddItemActivity.this, "Missing info", Toast.LENGTH_LONG).show();
+        for(int i = 0; i < listItems.size(); i++){
+            String nameString = listItems.get(i);
+            String descriptionString = listDescription.get(i);
+            String priceString = listPrices.get(i).toString();
+            String quantityString =listQuantity.get(i).toString();
+
+            if (nameString.length() > 0 && priceString.length() > 0 && quantityString.length() > 0) {
+                new AsyncAddItem().execute(nameString, descriptionString, priceString, quantityString, jobID.toString(), productID.toString());
+            } else {
+                Toast.makeText(AddItemActivity.this, "Missing info", Toast.LENGTH_LONG).show();
+            }
+
         }
+
+        new AsyncGetUserInfo().execute(userID);
+        Toast.makeText(AddItemActivity.this, "Job Added", Toast.LENGTH_LONG).show();
+
     }
 
     private class AsyncAddItem extends AsyncTask<String, String, String> {
@@ -247,8 +257,7 @@ public class AddItemActivity extends AppCompatActivity {
                  */
                 Toast.makeText(AddItemActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
             } else {
-                new AsyncGetUserInfo().execute(userID);
-                Toast.makeText(AddItemActivity.this, "Item Added", Toast.LENGTH_LONG).show();
+
             }
         }
     }
@@ -277,6 +286,7 @@ public class AddItemActivity extends AppCompatActivity {
             final View view = inflater.inflate(R.layout.view_custom_item, null);
 
             final EditText id = (EditText) view.findViewById(R.id.nameText);
+            final EditText description = (EditText) view.findViewById(R.id.descriptionText);
             final EditText price = (EditText) view.findViewById(R.id.priceText);
             final EditText quant = (EditText) view.findViewById(R.id.quantityText);
 
@@ -307,17 +317,20 @@ public class AddItemActivity extends AppCompatActivity {
 
 
                                     listItems.add(id.getText().toString());
+                                    listDescription.add(description.getText().toString());
                                     listPrices.add(Double.parseDouble(price.getText().toString()));
                                     listQuantity.add(Integer.parseInt(quant.getText().toString()));
                                     adapter.notifyDataSetChanged();
 
                                     double tempPrice = 0.0;
                                     for(int i = 0; i < listPrices.size(); i++){
-                                        tempPrice += (listPrices.get(i)*listQuantity.get(i));
+                                        tempPrice += Math.round((listPrices.get(i)*listQuantity.get(i))*100)/100.00d;
                                     }
 
                                     priceView.setText(tempPrice+"");
                                     // make call to get item price from db
+
+                                    setListViewHeightBasedOnChildren(listView);
 
 
                                 }
@@ -513,7 +526,7 @@ public class AddItemActivity extends AppCompatActivity {
                // itemName = product.getProduct_name();
                 listItems.add(product.getProduct_name());
                 listPrices.add(product.getAvg_price());
-
+                listDescription.add(product.getProduct_description());
                 listQuantity.add(1);
                 totalPrice += (product.getAvg_price());
                 // make call to get item price from db

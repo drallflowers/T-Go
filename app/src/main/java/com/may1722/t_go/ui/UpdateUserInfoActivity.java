@@ -7,15 +7,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.may1722.t_go.R;
 
 import java.io.BufferedReader;
@@ -274,7 +267,7 @@ public class UpdateUserInfoActivity extends AppCompatActivity {
                  */
                 Toast.makeText(UpdateUserInfoActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(UpdateUserInfoActivity.this, "Info UpdatedD", Toast.LENGTH_LONG).show();
+                Toast.makeText(UpdateUserInfoActivity.this, "Info Updated", Toast.LENGTH_LONG).show();
                 String[] result2 = new String[10];
                 result2 = result.split(",");
                 Intent intent = new Intent(UpdateUserInfoActivity.this, ProfileActivity.class);

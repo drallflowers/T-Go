@@ -39,7 +39,7 @@
                 android:layout_height="108dp"
                 android:ems="10"
                 android:hint="Street Address"
-                android:inputType="textMultiLine" />
+                android:singleLine="true"  />
 
             <EditText
                 android:id="@+id/cityText"
@@ -47,7 +47,7 @@
                 android:layout_height="108dp"
                 android:ems="10"
                 android:hint="City"
-                android:inputType="textMultiLine" />
+                android:singleLine="true" />
 
             <EditText
                 android:id="@+id/stateText"
@@ -55,7 +55,7 @@
                 android:layout_height="108dp"
                 android:ems="10"
                 android:hint="State"
-                android:inputType="textMultiLine" />
+                android:singleLine="true"  />
 
             <EditText
                 android:id="@+id/zipText"
@@ -63,19 +63,16 @@
                 android:layout_height="108dp"
                 android:ems="10"
                 android:hint="ZIP"
-                android:inputType="textMultiLine"/>
+                android:singleLine="true" />
 
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="108dp"
-                android:inputType="textMultiLine"
+                android:singleLine="true"
                 android:ems="10"
                 android:id="@+id/apartmentText"
                 android:hint="Apartment Number (Optional)" />
-
-
-
 
 
             <Button
