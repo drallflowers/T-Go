@@ -2,6 +2,7 @@ package com.may1722.t_go.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.LauncherActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -227,17 +228,21 @@ public class AddItemActivity extends AppCompatActivity {
 
         }
         else{
-            String nameString = listItems.get(0);
-            String descriptionString = "";
-            String priceString = listPrices.get(0).toString();
-            String quantityString = listQuantity.get(0).toString();
+            for(int i=0; i<listItems.size(); i++){
+                String nameString = listItems.get(i);
+                String descriptionString = "";
+                String priceString = listPrices.get(i).toString();
+                String quantityString = listQuantity.get(i).toString();
 
-            if (nameString.length() > 0 && priceString.length() > 0 && quantityString.length() > 0) {
-                new AsyncAddItem().execute(nameString, descriptionString, priceString, quantityString, jobID.toString(), productID.toString());
-                new AsyncUpdateJob().execute(token.getId(), jobID.toString());
-            } else {
-                Toast.makeText(AddItemActivity.this, "Missing info", Toast.LENGTH_LONG).show();
+                if (nameString.length() > 0 && priceString.length() > 0 && quantityString.length() > 0) {
+                    new AsyncAddItem().execute(nameString, descriptionString, priceString, quantityString, jobID.toString(), productID.toString());
+
+                } else {
+                    Toast.makeText(AddItemActivity.this, "Missing info", Toast.LENGTH_LONG).show();
+                    return;
+                }
             }
+            new AsyncUpdateJob().execute(token.getId(), jobID.toString());
         }
     }
 
