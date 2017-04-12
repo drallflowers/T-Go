@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.google.android.gms.vision.text.Text;
 import com.may1722.t_go.R;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -46,11 +48,12 @@ public class SearchJobAdapter extends BaseAdapter {
 
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         convertView = mInflater.inflate(R.layout.list_search_job, null);
-
         TextView jobDate = (TextView) convertView.findViewById(R.id.jobDate);
         TextView jobId = (TextView) convertView.findViewById(R.id.jobId);
-        jobDate.setText(j.getDate().toString());
-        jobId.setText(j.getJobId());
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+        String date = df.format(j.getDate());
+        jobDate.setText(date);
+        jobId.setText(Integer.toString(j.getJobId()));
         return convertView;
     }
 }

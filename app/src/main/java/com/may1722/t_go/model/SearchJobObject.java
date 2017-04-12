@@ -1,6 +1,6 @@
 package com.may1722.t_go.model;
 
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * Created by alxdaly on 4/10/2017.

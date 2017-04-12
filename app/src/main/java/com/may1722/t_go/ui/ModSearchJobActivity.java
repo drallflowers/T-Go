@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.may1722.t_go.R;
 import com.may1722.t_go.model.SearchJobAdapter;
 import com.may1722.t_go.model.SearchJobObject;
+import com.may1722.t_go.networking.SearchJobRequest;
 
 import java.util.ArrayList;
 
@@ -19,6 +20,7 @@ public class ModSearchJobActivity extends AppCompatActivity {
     private ArrayList<SearchJobObject> jobs;
     private ListView jobListView;
     private SearchJobAdapter adapter;
+    private SearchJobRequest searchJobRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +46,21 @@ public class ModSearchJobActivity extends AppCompatActivity {
             Toast.makeText(ModSearchJobActivity.this, "Please submit the courier's username.", Toast.LENGTH_LONG).show();
         }
         else{
+            searchJobRequest = new SearchJobRequest();
+            searchJobRequest.execute(userName, courierName);
 
+            try {
+                Thread.sleep(500);
+                jobs = searchJobRequest.getJobs();
+                adapter = new SearchJobAdapter(this, jobs);
+                jobListView.setAdapter(adapter);
+                if(jobs.size() <= 0){
+                    Toast.makeText(ModSearchJobActivity.this, "One or both of the usernames does not exist.", Toast.LENGTH_LONG).show();
+                }
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
