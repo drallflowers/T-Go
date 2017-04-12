@@ -1,5 +1,6 @@
 package com.may1722.t_go.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -29,7 +30,7 @@ public class ModSearchJobActivity extends AppCompatActivity {
         userID = getIntent().getExtras().getString("userID");
         jobs = new ArrayList<SearchJobObject>();
         jobListView = (ListView) findViewById(R.id.jobListView);
-        adapter = new SearchJobAdapter(this, jobs);
+        adapter = new SearchJobAdapter(ModSearchJobActivity.this, this, jobs);
         jobListView.setAdapter(adapter);
     }
 
@@ -52,7 +53,7 @@ public class ModSearchJobActivity extends AppCompatActivity {
             try {
                 Thread.sleep(500);
                 jobs = searchJobRequest.getJobs();
-                adapter = new SearchJobAdapter(this, jobs);
+                adapter = new SearchJobAdapter(ModSearchJobActivity.this, this, jobs);
                 jobListView.setAdapter(adapter);
                 if(jobs.size() <= 0){
                     Toast.makeText(ModSearchJobActivity.this, "One or both of the usernames does not exist.", Toast.LENGTH_LONG).show();
@@ -63,4 +64,15 @@ public class ModSearchJobActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void openJobDetailsPage(int position){
+        Intent intent = new Intent(this, JobDetailsActivity.class);
+        intent.putExtra("userID", userID);
+        intent.putExtra("job_ID", Integer.toString(jobs.get(position).getJobId()));
+        intent.putExtra("chatID", -1);
+        intent.putExtra("from_where", "search_job");
+        startActivity(intent);
+
+    }
+
 }

@@ -80,6 +80,16 @@ public class JobDetailsActivity extends ListActivity {
             Button chat = (Button) findViewById(R.id.chatButton);
             chat.setVisibility(View.GONE);
         }
+        else if(fromWhere.equals("search_job")){
+            Button chat = (Button) findViewById(R.id.chatButton);
+            Button map = (Button) findViewById(R.id.goToMapButton);
+            Button acceptJob = (Button) findViewById(R.id.acceptJobButton);
+            Button completeJob = (Button) findViewById(R.id.completeJobButton);
+            chat.setVisibility(View.GONE);
+            map.setVisibility(View.GONE);
+            acceptJob.setVisibility(View.GONE);
+            completeJob.setVisibility(View.GONE);
+        }
         new AsyncGetJobInfo().execute(jobID);
 
     }

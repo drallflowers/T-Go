@@ -14,16 +14,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="04/15/2017"
+            android:textAlignment="center"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="20dp" />
 
-        <TextView
-            android:id="@+id/jobId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:visibility="invisible" />
     </LinearLayout>
 
 </LinearLayout>
