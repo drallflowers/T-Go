@@ -131,7 +131,7 @@ public class JobDetailsActivity extends ListActivity {
                     EditText entry = (EditText)dialogView.findViewById(R.id.edit_dialog_input);
                     String userEntry = entry.getText().toString();
                     if(userEntry.equals(jobCode)){
-                        new AsyncCompleteJob().execute(jobID);
+                        new AsyncCompleteJob().execute(jobID, Double.toString(totalPrice));
                         System.out.println(token);
                         System.out.println(((int)(totalPrice*100))+"");
                         new AsyncSendPayment().execute(token,((int)(totalPrice*100))+"");
@@ -772,7 +772,8 @@ public class JobDetailsActivity extends ListActivity {
                 conn.setDoOutput(true);
 
                 // Append parameters to URL
-                Uri.Builder builder = new Uri.Builder().appendQueryParameter("job_id", params[0]);
+                Uri.Builder builder = new Uri.Builder().appendQueryParameter("job_id", params[0])
+                        .appendQueryParameter("payment_amount", params[1]);
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
