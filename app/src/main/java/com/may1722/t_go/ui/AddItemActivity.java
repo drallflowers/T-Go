@@ -55,6 +55,7 @@ public class AddItemActivity extends AppCompatActivity {
     private String userID;
     private String user_type;
     private Integer productID = 0;
+    private static Token token;
 
     static String itemName;
     static ListView listView;
@@ -179,9 +180,9 @@ public class AddItemActivity extends AppCompatActivity {
                                         stripe.createToken(
                                                 cardToSave,
                                                 new TokenCallback() {
-                                                    public void onSuccess(Token token) {
+                                                    public void onSuccess(Token t) {
 
-
+                                                        token = t;
                                                         new AsyncSendPayment().execute(token.getId());
 
                                                     }
@@ -219,16 +220,25 @@ public class AddItemActivity extends AppCompatActivity {
         description = (TextView) findViewById(R.id.descriptionText);
         price = (TextView) findViewById(R.id.priceText);
         quantity = (TextView) findViewById(R.id.quantityText);*/
+        if(listItems.size()==0){
+            Toast.makeText(AddItemActivity.this, "Please Add Items", Toast.LENGTH_LONG).show();
+        }
+        else if(token == null){
+            Toast.makeText(AddItemActivity.this, "Please Add Payment Info", Toast.LENGTH_LONG).show();
 
-        String nameString = listItems.get(0);
-        String descriptionString = "";
-        String priceString = listPrices.get(0).toString();
-        String quantityString =listQuantity.get(0).toString();
+        }
+        else{
+            String nameString = listItems.get(0);
+            String descriptionString = "";
+            String priceString = listPrices.get(0).toString();
+            String quantityString = listQuantity.get(0).toString();
 
-        if (nameString.length() > 0 && priceString.length() > 0 && quantityString.length() > 0) {
-            new AsyncAddItem().execute(nameString, descriptionString, priceString, quantityString, jobID.toString(), productID.toString());
-        } else {
-            Toast.makeText(AddItemActivity.this, "Missing info", Toast.LENGTH_LONG).show();
+            if (nameString.length() > 0 && priceString.length() > 0 && quantityString.length() > 0) {
+                new AsyncAddItem().execute(nameString, descriptionString, priceString, quantityString, jobID.toString(), productID.toString());
+                new AsyncUpdateJob().execute(token.getId(), jobID.toString());
+            } else {
+                Toast.makeText(AddItemActivity.this, "Missing info", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -275,7 +285,7 @@ public class AddItemActivity extends AppCompatActivity {
                 conn.connect();
 
             } catch (IOException e1) {
-               
+
                 e1.printStackTrace();
                 return "exception";
             }
@@ -662,6 +672,107 @@ public class AddItemActivity extends AppCompatActivity {
 
 
     }
+
+    private static class AsyncUpdateJob extends AsyncTask<String, String, String> {
+        HttpURLConnection conn;
+        URL url = null;
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+                // Enter URL address where your php file resides
+                url = new URL("http://may1722db.ece.iastate.edu/updatejob.php");
+
+            } catch (MalformedURLException e) {
+
+                e.printStackTrace();
+                return "exception";
+            }
+            try {
+                // Setup HttpURLConnection class to send and receive data from php and mysql
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(15000);
+                conn.setConnectTimeout(15000);
+                conn.setRequestMethod("POST");
+
+                // setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("token", params[0]).appendQueryParameter("jobid", params[1]);
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+
+            } catch (IOException e1) {
+
+                e1.printStackTrace();
+                return "exception";
+            }
+
+            try {
+
+                int response_code = conn.getResponseCode();
+
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    // Read data sent from server
+                    InputStream input = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+
+                    return result.toString();
+                    // Pass data to onPostExecute method
+
+
+                } else {
+                    return "connection failure";
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "connection failure";
+            } finally {
+                conn.disconnect();
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            //this method will be running on UI thread
+
+            if (result.equalsIgnoreCase("connection failure")) {
+                /* Here launching another activity when login successful. If you persist login state
+                use sharedPreferences of Android. and logout button to clear sharedPreferences.
+                 */
+            } else {
+                System.out.println(result);
+
+            }
+        }
+
+
+    }
+
 
     public void addItemsToList(String result) throws JSONException {
         JSONArray jArray = new JSONArray(result);
