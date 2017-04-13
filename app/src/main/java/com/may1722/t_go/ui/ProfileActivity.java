@@ -23,6 +23,7 @@ public class ProfileActivity extends AppCompatActivity {
     static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 10;
     private String userID;
     private String user_type;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +31,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         userID = getIntent().getExtras().getString("userID");
-        String username = getIntent().getExtras().getString("username");
+        username = getIntent().getExtras().getString("username");
         user_type = getIntent().getExtras().getString("user_type");
         String email = getIntent().getExtras().getString("email");
         String phone_number =  getIntent().getExtras().getString("phone_number");
@@ -65,10 +66,17 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     }
+    public void logout(View view)
+    {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.putExtra("userID", userID);
+        startActivity(intent);
+    }
 
     public void updateUserInfo(View view) {
         Intent intent = new Intent(this, UpdateUserInfoActivity.class);
         intent.putExtra("userID", userID);
+        intent.putExtra("username", username);
         startActivity(intent);
     }
 

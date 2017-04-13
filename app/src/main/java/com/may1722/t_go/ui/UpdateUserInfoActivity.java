@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.may1722.t_go.R;
+import com.may1722.t_go.model.PasswordEncrypter;
+import com.may1722.t_go.networking.SaltRequest;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -26,6 +28,7 @@ import java.net.URL;
 public class UpdateUserInfoActivity extends AppCompatActivity {
 
     private String userID;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,7 @@ public class UpdateUserInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_update_user_info);
 
         userID = getIntent().getExtras().getString("userID");
+        username = getIntent().getExtras().getString("username");
         new AsyncGetUserInfo().execute(userID);
     }
 
@@ -45,17 +49,28 @@ public class UpdateUserInfoActivity extends AppCompatActivity {
         String phoneString = phone.getText().toString();
         String oldPasswordString = oldPassword.getText().toString();
         String newPasswordString = newPassword.getText().toString();
+        SaltRequest saltRequest = new SaltRequest();
+        saltRequest.execute(username);
 
-        if(oldPasswordString.length() == 0){
-            Toast.makeText(UpdateUserInfoActivity.this, "Enter your password", Toast.LENGTH_LONG).show();
-        }else if(emailString.length() == 0) {
-            Toast.makeText(UpdateUserInfoActivity.this, "Enter your email", Toast.LENGTH_LONG).show();
-        }else if(phoneString.length() == 0){
-            Toast.makeText(UpdateUserInfoActivity.this, "Enter your phone number", Toast.LENGTH_LONG).show();
-        }else if(newPasswordString.length() == 0){
-            new AsyncUpdateUserInfo().execute(userID, emailString, phoneString, oldPasswordString, oldPasswordString);
-        }else {
-            new AsyncUpdateUserInfo().execute(userID, emailString, phoneString, oldPasswordString, newPasswordString);
+        try {
+            Thread.sleep(500);
+            PasswordEncrypter passwordEncrypter = new PasswordEncrypter(saltRequest.getSalt());
+            oldPasswordString = passwordEncrypter.hash(oldPasswordString);
+            passwordEncrypter = new PasswordEncrypter(saltRequest.getSalt());
+            newPasswordString = passwordEncrypter.hash(newPasswordString);
+            if(oldPasswordString.length() == 0){
+                Toast.makeText(UpdateUserInfoActivity.this, "Enter your password", Toast.LENGTH_LONG).show();
+            }else if(emailString.length() == 0) {
+                Toast.makeText(UpdateUserInfoActivity.this, "Enter your email", Toast.LENGTH_LONG).show();
+            }else if(phoneString.length() == 0){
+                Toast.makeText(UpdateUserInfoActivity.this, "Enter your phone number", Toast.LENGTH_LONG).show();
+            }else if(newPasswordString.length() == 0){
+                new AsyncUpdateUserInfo().execute(userID, emailString, phoneString, oldPasswordString, oldPasswordString);
+            }else {
+                new AsyncUpdateUserInfo().execute(userID, emailString, phoneString, oldPasswordString, newPasswordString);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
