@@ -35,8 +35,9 @@ public class ApplyActivity extends AppCompatActivity
         setContentView(R.layout.activity_apply);
         TextView status = (TextView) findViewById(R.id.UserStatusLabel);
         TextView next = (TextView) findViewById(R.id.NextStatusLabel);
+        String type = getIntent().getExtras().getString("type");
 
-        switch (getIntent().getExtras().getString("type")){
+        switch (type){
             case "0": status.setText("User");
                 next.setText("Courier");
                 break;
@@ -83,7 +84,7 @@ public class ApplyActivity extends AppCompatActivity
 
                 // Append parameters to URL
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("userid","0").appendQueryParameter("content", "Please Review").appendQueryParameter("mail_type", "01").appendQueryParameter("from_userid", getIntent().getExtras().getString("userID"));
+                        .appendQueryParameter("userid","0").appendQueryParameter("content", "Applying For Upgrade").appendQueryParameter("mail_type", "01").appendQueryParameter("from_userid", getIntent().getExtras().getString("userID"));
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data

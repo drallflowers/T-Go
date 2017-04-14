@@ -22,11 +22,11 @@ public class ProductObject {
         avg_price = price;
     }
 
-    public ProductObject(int id, String name, double price){
+    public ProductObject(int id, String name, String description, double price){
         product_id = id;
         product_name = name;
         avg_price = price;
-        product_description = "";
+        product_description = description;
     }
 
     public int getProduct_id(){return product_id;}

@@ -500,8 +500,9 @@ public class AddItemActivity extends AppCompatActivity {
             JSONObject jObject = jArray.getJSONObject(i);
             int id = jObject.getInt("product_id");
             String name = jObject.getString("product_name");
+            String description = jObject.getString("product_description");
             double price = jObject.getDouble("avg_price");
-            products.add(new ProductObject(id, name, price));
+            products.add(new ProductObject(id, name, description, price));
         }
 
         final ProductAdapter adapter = new ProductAdapter(this, products);

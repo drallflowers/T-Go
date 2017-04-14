@@ -43,8 +43,14 @@ public class ProfileActivity extends AppCompatActivity {
 
         if(user_type.equals("1")){
             typetextView.setText("Courier");
-        }else if(user_type.equals("2")){
+        }else if(user_type.equals("2")) {
             typetextView.setText("Moderator");
+            Button button = (Button) findViewById(R.id.upgradeAcctButton);
+            button.setVisibility(View.GONE);
+        }else if(user_type.equals("3")){
+            typetextView.setText("Admin");
+            Button button = (Button) findViewById(R.id.upgradeAcctButton);
+            button.setVisibility(View.GONE);
         }else{
             typetextView.setText("User");
         }
@@ -57,8 +63,8 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         if(Integer.parseInt(user_type) == 0){
-            findJob.setVisibility(View.INVISIBLE);
-            myReviews.setVisibility(View.INVISIBLE);
+            findJob.setVisibility(View.GONE);
+            myReviews.setVisibility(View.GONE);
             findJob.setEnabled(false);
             myReviews.setEnabled(false);
         }
