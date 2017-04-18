@@ -30,6 +30,15 @@ import com.may1722.t_go.R;
 import com.may1722.t_go.model.ListViewAdapter;
 import com.may1722.t_go.model.ProductObject;
 
+import java.security.InvalidKeyException;
+import java.security.Key;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +53,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 public class AddItemActivity extends AppCompatActivity {
@@ -607,11 +617,27 @@ public class AddItemActivity extends AppCompatActivity {
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
 
+                String key = "Bar12345Bar12345";
+                byte[] encrypted = null;
+                Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
+                Cipher cipher = null;
+                try {
+                    cipher = Cipher.getInstance("AES");
+                    cipher.init(Cipher.ENCRYPT_MODE, aesKey);
+                    encrypted = cipher.doFinal(params[0].getBytes());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } 
+                // encrypt the text
+               System.out.println(new String(encrypted));
+
                 // Append parameters to URL
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("token", params[0]).appendQueryParameter("jobid", params[1]);
+                        .appendQueryParameter("token", new String(encrypted))
+                        .appendQueryParameter("jobid",params[1]);
                 String query = builder.build().getEncodedQuery();
 
+                System.out.println(query);
                 // Open connection for sending data
                 OutputStream os = conn.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(

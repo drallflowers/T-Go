@@ -47,9 +47,15 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 
 
 public class JobDetailsActivity extends ListActivity {
@@ -567,9 +573,23 @@ public class JobDetailsActivity extends ListActivity {
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
 
+                String key = "Bar12345Bar12345"; // 128 bit key
+                // Create key and cipher
+                Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
+                String decrypted = "";
+                try {
+                    Cipher cipher = Cipher.getInstance("AES");
+                    cipher.init(Cipher.DECRYPT_MODE, aesKey);
+                    decrypted= new String(cipher.doFinal(params[0].getBytes()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                System.out.println(decrypted);
+
                 // Append parameters to URL
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("stripeToken", params[0]).appendQueryParameter("price",params[1]);
+                        .appendQueryParameter("stripeToken",decrypted).appendQueryParameter("price",params[1]);
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
