@@ -2,7 +2,6 @@ package com.may1722.t_go.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.LauncherActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,23 +20,15 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.may1722.t_go.R;
+import com.may1722.t_go.model.ListViewAdapter;
+import com.may1722.t_go.model.ProductObject;
 import com.stripe.android.Stripe;
 import com.stripe.android.TokenCallback;
 import com.stripe.android.model.Card;
 import com.stripe.android.model.Token;
 import com.stripe.android.view.CardInputWidget;
-import com.may1722.t_go.R;
-import com.may1722.t_go.model.ListViewAdapter;
-import com.may1722.t_go.model.ProductObject;
-
-import java.security.InvalidKeyException;
-import java.security.Key;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,8 +44,15 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.NoSuchAlgorithmException;
+import java.security.Key;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import android.util.Base64;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class AddItemActivity extends AppCompatActivity {
 
@@ -617,27 +615,46 @@ public class AddItemActivity extends AppCompatActivity {
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
 
-                String key = "Bar12345Bar12345";
-                byte[] encrypted = null;
-                Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
-                Cipher cipher = null;
+
+                byte[] encrypted = new byte[0];
+                String ciph = "";
                 try {
-                    cipher = Cipher.getInstance("AES");
-                    cipher.init(Cipher.ENCRYPT_MODE, aesKey);
-                    encrypted = cipher.doFinal(params[0].getBytes());
+                    String keyString = "averylongtext!@$@#$#@$#*&(*&}{23432432432dsfsdf"; // 128 bit key
+                    // Create key and cipher
+
+                    //make iv not random...
+                    Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+                    byte[] iv = new byte[]{-75, -29, -84, -45, 20, -106, 52, -95, -14, 57, -112, 115, -83, -58, 96, 70};
+
+                    IvParameterSpec ivSpec = new IvParameterSpec(iv);
+
+                    MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                    digest.update(keyString.getBytes());
+
+                    byte[] key = new byte[16];
+                    System.arraycopy(digest.digest(), 0, key, 0, key.length);
+                    SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+
+                    cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
+                    // encrypt the text
+                    encrypted = cipher.doFinal(params[0].getBytes("UTF-8"));
+
                 } catch (Exception e) {
                     e.printStackTrace();
-                } 
-                // encrypt the text
-               System.out.println(new String(encrypted));
+                }
+
+                String temp = "";
+                //store the bytes in a string to put in the db and return to make sure we get the right shit
+                for(int i = 0; i < encrypted.length; i++){
+                    temp = temp + encrypted[i] + " ";
+                }
 
                 // Append parameters to URL
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("token", new String(encrypted))
+                        .appendQueryParameter("token", temp)
                         .appendQueryParameter("jobid",params[1]);
                 String query = builder.build().getEncodedQuery();
 
-                System.out.println(query);
                 // Open connection for sending data
                 OutputStream os = conn.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(
