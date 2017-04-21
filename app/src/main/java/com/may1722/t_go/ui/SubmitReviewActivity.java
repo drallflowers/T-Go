@@ -2,10 +2,9 @@ package com.may1722.t_go.ui;
 
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -29,7 +28,6 @@ public class SubmitReviewActivity extends AppCompatActivity {
     private String their_ID;
     private EditText details;
     private float rating;
-    private boolean recommend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +44,14 @@ public class SubmitReviewActivity extends AppCompatActivity {
         RatingBar rating = (RatingBar) findViewById(R.id.reviewRating);
         this.rating = rating.getRating();
 
-        CheckBox rcmd = (CheckBox) findViewById(R.id.review_recommend);
-        recommend = rcmd.isChecked();
     }
 
     public void submitReview(View view)
     {
-        new AsyncSubmitReview().execute(details.getText().toString());
+        String detailString = details.getText().toString();
+        RatingBar rating = (RatingBar) findViewById(R.id.reviewRating);
+        this.rating = rating.getRating();
+        new AsyncSubmitReview().execute(detailString);
         finish();
     }
 
@@ -84,11 +83,10 @@ public class SubmitReviewActivity extends AppCompatActivity {
 
                 // Append parameters to URL
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("user_ID", String.valueOf(my_ID))
-                        .appendQueryParameter("their_ID", String.valueOf(their_ID))
+                        .appendQueryParameter("user_ID", my_ID)
+                        .appendQueryParameter("their_ID", their_ID)
                         .appendQueryParameter("details", params[0])
-                        .appendQueryParameter("rating", String.valueOf(rating))
-                        .appendQueryParameter("recommend", String.valueOf(recommend));
+                        .appendQueryParameter("rating", String.valueOf(rating));
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
