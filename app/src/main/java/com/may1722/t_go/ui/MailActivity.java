@@ -514,8 +514,6 @@ public class MailActivity extends AppCompatActivity {
             viewMail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-
                     pos = position;
                     viewMailFrag();
 
@@ -538,17 +536,22 @@ public class MailActivity extends AppCompatActivity {
         System.out.println(result);
         JSONArray jArray = new JSONArray(result);
 
-
         for(int i=0; i<jArray.length(); i++){
             JSONObject jObject = jArray.getJSONObject(i);
             int id = jObject.getInt("mail_id");
             int user_id = jObject.getInt("userid");
+            String username = jObject.getString("username");
+            int user_type = jObject.getInt("user_type");
             String content = jObject.getString("content");
             int mail_type = jObject.getInt("mail_type");
             int from_userid = jObject.getInt("from_userid");
-            mail.add(new MailObject(id, user_id, content, mail_type,from_userid));
+            mail.add(new MailObject(id, user_id, username, user_type, content, mail_type,from_userid));
         }
         m.notifyDataSetChanged();
+
+        if(jArray.length() <= 0){
+            Toast.makeText(MailActivity.this, "You have no mail.", Toast.LENGTH_LONG).show();
+        }
 
 
     }
@@ -569,11 +572,18 @@ public class MailActivity extends AppCompatActivity {
             final LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final View view = inflater.inflate(R.layout.mail_action_item, null);
 
-            final TextView id = (TextView) view.findViewById(R.id.UserLabel);
-            final TextView applyingFor = (TextView) view.findViewById(R.id.ApplyingForLabel);
+            final TextView username = (TextView) view.findViewById(R.id.UserStatusLabel);
+            final TextView applyingFor = (TextView) view.findViewById(R.id.NextStatusLabel);
 
             //connect to the edit_quantity to get original amount
+            username.setText(mail.get(pos).getUserName());
+            Integer current_type = mail.get(pos).getUserType();
 
+            if(current_type==0){
+                applyingFor.setText("Courier");
+            }else if(current_type == 1){
+                applyingFor.setText("Moderator");
+            }
 
             Button b = (Button) view.findViewById(R.id.buttonAccept);
             b.setOnClickListener(new View.OnClickListener() {
@@ -581,12 +591,11 @@ public class MailActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     String temp = String.valueOf(mail.get(pos).getFrom_userid());
 
-
                     new AsyncGetInfo().execute(temp);
                     System.out.println(user_type);
 
                     MailActionItemFragment.this.dismiss();
-                    new AsyncDeleteMail().execute(temp);
+                    new AsyncDeleteMail().execute(String.valueOf(mail.get(pos).getMail_id()));
                 }
             });
 

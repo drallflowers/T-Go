@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,9 +48,17 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.Key;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 
 public class JobDetailsActivity extends ListActivity {
@@ -58,13 +67,16 @@ public class JobDetailsActivity extends ListActivity {
     private String userID;
     private String otherID;
     private String jobID;
+    private String token;
     private String requestorid;
     private String courierid;
     private String jobCode;
     private String fromWhere;
     private int chatId;
+    private double totalPrice;
     private String username;
     private String othername;
+    private  ArrayList<JobDetailsActivity.ItemCardData> itemsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +85,7 @@ public class JobDetailsActivity extends ListActivity {
 
         userID = getIntent().getExtras().getString("userID");
         otherID = "";
+        totalPrice = 0.0;
         jobID = getIntent().getExtras().getString("job_ID");
         chatId = getIntent().getExtras().getInt("chat_ID");
         fromWhere = getIntent().getExtras().getString("from_where");
@@ -137,7 +150,8 @@ public class JobDetailsActivity extends ListActivity {
                     EditText entry = (EditText)dialogView.findViewById(R.id.edit_dialog_input);
                     String userEntry = entry.getText().toString();
                     if(userEntry.equals(jobCode)){
-                        new AsyncCompleteJob().execute(jobID);
+                        new AsyncCompleteJob().execute(jobID, Double.toString(totalPrice));
+                        new AsyncSendPayment().execute(token,((int)(totalPrice*100))+"");
                         dialogInterface.dismiss();
                         goToJobComplete();
                     } else {
@@ -242,7 +256,7 @@ public class JobDetailsActivity extends ListActivity {
     public void addItemsToList(String result) throws JSONException {
         JSONArray jArray = new JSONArray(result);
 
-        ArrayList<JobDetailsActivity.ItemCardData> itemsList = new ArrayList<>();
+         itemsList = new ArrayList<>();
         for (int i = 0; i < jArray.length(); i++) {
             //Add item object
             JSONObject jObject = jArray.getJSONObject(i);
@@ -252,7 +266,7 @@ public class JobDetailsActivity extends ListActivity {
             Double price = jObject.getDouble("price");
             Integer count = jObject.getInt("quantity");
             Integer product_id = jObject.getInt("product_id");
-
+            totalPrice += (price*count);
             itemsList.add(new JobDetailsActivity.ItemCardData(name, description, price.toString(), count.toString(), product_id));
         }
 
@@ -488,6 +502,8 @@ public class JobDetailsActivity extends ListActivity {
 
     }
 
+
+
     public void addJobDetails(String result) {
         String[] result2 = new String[10];
         result2 = result.split(",");
@@ -497,7 +513,6 @@ public class JobDetailsActivity extends ListActivity {
         TextView jobStatus = (TextView) findViewById(R.id.jobStatus);
         TextView timeposted = (TextView) findViewById(R.id.timePostedLabel);
         TextView timedue = (TextView) findViewById(R.id.timeDueLabel);
-        TextView paymentmethod = (TextView) findViewById(R.id.jobPaymentMethodsLabel);
         TextView courier = (TextView) findViewById(R.id.jobCourier);
 
         requestorid = result2[2];
@@ -540,9 +555,111 @@ public class JobDetailsActivity extends ListActivity {
         jobStatus.setText("Job Status: " + result2[6]);
         timeposted.setText("Time Posted: " + result2[7]);
         timedue.setText("Time Due: " + result2[8]);
-        paymentmethod.setText(result2[9]);
+        token = result2[9];
+        new AsyncGetPaymentMethod().execute(jobID);
         new AsyncGetItems().execute(jobID);
     }
+
+    private static class AsyncSendPayment extends AsyncTask<String, String, String> {
+        HttpURLConnection conn;
+        URL url = null;
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+                // Enter URL address where your php file resides
+                url = new URL("http://may1722db.ece.iastate.edu/payment.php");
+
+            } catch (MalformedURLException e) {
+
+                e.printStackTrace();
+                return "exception";
+            }
+            try {
+                // Setup HttpURLConnection class to send and receive data from php and mysql
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(15000);
+                conn.setConnectTimeout(15000);
+                conn.setRequestMethod("POST");
+
+                // setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("stripeToken",params[0]).appendQueryParameter("price",params[1]);
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+
+            } catch (IOException e1) {
+
+                e1.printStackTrace();
+                return "exception";
+            }
+
+            try {
+
+                int response_code = conn.getResponseCode();
+
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    // Read data sent from server
+                    InputStream input = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+
+                    return result.toString();
+                    // Pass data to onPostExecute method
+
+
+                } else {
+                    return "connection failure";
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "connection failure";
+            } finally {
+                conn.disconnect();
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            //this method will be running on UI thread
+
+            if (result.equalsIgnoreCase("connection failure")) {
+                /* Here launching another activity when login successful. If you persist login state
+                use sharedPreferences of Android. and logout button to clear sharedPreferences.
+                 */
+            } else {
+                System.out.println(result);
+
+            }
+        }
+
+
+    }
+
 
     private class AsyncGetItems extends AsyncTask<String, String, String> {
         HttpURLConnection conn;
@@ -675,7 +792,8 @@ public class JobDetailsActivity extends ListActivity {
                 conn.setDoOutput(true);
 
                 // Append parameters to URL
-                Uri.Builder builder = new Uri.Builder().appendQueryParameter("job_id", params[0]);
+                Uri.Builder builder = new Uri.Builder().appendQueryParameter("job_id", params[0])
+                        .appendQueryParameter("payment_amount", params[1]);
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
@@ -748,6 +866,143 @@ public class JobDetailsActivity extends ListActivity {
         }
     }
 
+
+    private class AsyncGetPaymentMethod extends AsyncTask<String, String, String> {
+        HttpURLConnection conn;
+        URL url = null;
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+                // Enter URL address where your php file resides
+                url = new URL("http://may1722db.ece.iastate.edu/getpaymentmethod.php");
+
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return "exception";
+            }
+            try {
+                // Setup HttpURLConnection class to send and receive data from php and mysql
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(15000);
+                conn.setConnectTimeout(15000);
+                conn.setRequestMethod("POST");
+
+                // setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("jobid", params[0]);
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return "exception";
+            }
+
+            try {
+
+                int response_code = conn.getResponseCode();
+
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    // Read data sent from server
+                    InputStream input = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+
+                    return result.toString();
+                    // Pass data to onPostExecute method
+
+
+                } else {
+                    //Toast.makeText(JobDetailsActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                    return "connection failure";
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(JobDetailsActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                return "connection failure";
+            } finally {
+                conn.disconnect();
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            //this method will be running on UI thread
+
+            if (result.equalsIgnoreCase("connection failure")) {
+                /* Here launching another activity when login successful. If you persist login state
+                use sharedPreferences of Android. and logout button to clear sharedPreferences.
+                 */
+                Toast.makeText(JobDetailsActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+            } else {
+                String keyString = "averylongtext!@$@#$#@$#*&(*&}{23432432432dsfsdf"; // 128 bit key
+                // Create key and cipher
+
+
+
+
+
+                String decrypted = "";
+
+                String[] arr = result.split(" ");
+                byte[] encrypted = new byte[arr.length];
+
+
+                for(int i = 0; i < arr.length; i++){
+                    encrypted[i] = (byte) Integer.parseInt(arr[i]);
+                }
+
+                try {
+                    Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+                    byte[] iv = new byte[]{-75, -29, -84, -45, 20, -106, 52, -95, -14, 57, -112, 115, -83, -58, 96, 70};
+                    IvParameterSpec ivSpec = new IvParameterSpec(iv);
+                    MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                    digest.update(keyString.getBytes());
+                    byte[] key = new byte[16];
+                    System.arraycopy(digest.digest(), 0, key, 0, key.length);
+                    SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+                    // decrypt the text
+                    cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+
+                    byte[] decrypt = cipher.doFinal(encrypted);
+                    decrypted = new String(decrypt);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                token = decrypted;
+                //Toast.makeText(JobDetailsActivity.this, "success", Toast.LENGTH_LONG).show();
+            }
+        }
+
+
+    }
     /**
      * Calculates a code based on job information.  Used for the verification between courier and requester
      * @return

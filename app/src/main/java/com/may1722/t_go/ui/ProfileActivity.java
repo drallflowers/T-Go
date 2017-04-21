@@ -40,7 +40,21 @@ public class ProfileActivity extends AppCompatActivity {
         TextView emailtextView = (TextView) findViewById(R.id.profileEmail);
         TextView phonetextView = (TextView) findViewById(R.id.profilePhoneLabel);
         profiletextView.setText(username);
-        typetextView.setText(user_type);
+
+        if(user_type.equals("1")){
+            typetextView.setText("Courier");
+        }else if(user_type.equals("2")) {
+            typetextView.setText("Moderator");
+            Button button = (Button) findViewById(R.id.upgradeAcctButton);
+            button.setVisibility(View.GONE);
+        }else if(user_type.equals("3")){
+            typetextView.setText("Admin");
+            Button button = (Button) findViewById(R.id.upgradeAcctButton);
+            button.setVisibility(View.GONE);
+        }else{
+            typetextView.setText("User");
+        }
+
         emailtextView.setText(email);
         phonetextView.setText(phone_number);
 
@@ -49,8 +63,8 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         if(Integer.parseInt(user_type) == 0){
-            findJob.setVisibility(View.INVISIBLE);
-            myReviews.setVisibility(View.INVISIBLE);
+            findJob.setVisibility(View.GONE);
+            myReviews.setVisibility(View.GONE);
             findJob.setEnabled(false);
             myReviews.setEnabled(false);
         }

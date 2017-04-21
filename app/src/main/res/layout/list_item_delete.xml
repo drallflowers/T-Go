@@ -58,6 +58,20 @@
                 android:id="@+id/textAmount"
                 android:layout_weight="1"
                 android:text="1" />
+
+            <TextView
+                android:text="Price: "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textPriceLabel"
+                android:layout_weight="0.04" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textPrice"
+                android:layout_weight="1"
+                android:text="1" />
         </LinearLayout>
 
     </LinearLayout>

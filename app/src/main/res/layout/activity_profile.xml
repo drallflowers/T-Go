@@ -172,12 +172,13 @@
                 android:layout_height="wrap_content">
 
                 <Button
-                    android:text="Go To Map"
+                    android:id="@+id/mapButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/mapButton"
                     android:layout_weight="1"
-                    android:onClick="goToMaps" />
+                    android:onClick="goToMaps"
+                    android:text="Go To Map"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout
@@ -186,20 +187,20 @@
                 android:layout_height="wrap_content">
 
                 <Button
-                    android:text="My Reviews (Courier)"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/buttonReviews"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:onClick="goToReviewBoard" />
+                    android:onClick="goToReviewBoard"
+                    android:text="My Reviews" />
 
                 <Button
-                    android:text="Find Jobs (Courier)"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/buttonFindJobs"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:onClick="goToJobBoard" />
+                    android:onClick="goToJobBoard"
+                    android:text="Find Jobs" />
             </LinearLayout>
 
             <LinearLayout
@@ -209,7 +210,7 @@
 
                 <Button
                     android:text="My Jobs"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/buttonMyJobs"
                     android:layout_weight="1"
@@ -217,7 +218,7 @@
 
                 <Button
                     android:text="New Job"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/buttonNewJob"
                     android:layout_weight="1"
