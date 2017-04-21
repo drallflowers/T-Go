@@ -46,10 +46,18 @@
                 android:cursorVisible="false" />
 
             <Button
+                android:id="@+id/pymtButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="addPayment"
+                android:text="Add Payment" />
+
+            <Button
                 android:id="@+id/buttonContinue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.13"
+                android:enabled="true"
                 android:onClick="submit"
                 android:text="submit" />
 

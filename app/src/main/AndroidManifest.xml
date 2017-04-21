@@ -59,6 +59,10 @@
         <activity android:name=".ui.MapsActivity" />
         <activity android:name=".ui.MailActivity" />
         <activity android:name=".ui.ApplyActivity" />
+        <activity
+            android:name=".ui.ModSearchJobActivity"
+            android:label="@string/title_activity_mod_search_job"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

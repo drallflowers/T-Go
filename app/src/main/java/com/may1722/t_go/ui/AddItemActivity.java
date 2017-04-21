@@ -24,6 +24,11 @@ import android.widget.Toast;
 import com.may1722.t_go.R;
 import com.may1722.t_go.model.ListViewAdapter;
 import com.may1722.t_go.model.ProductObject;
+import com.stripe.android.Stripe;
+import com.stripe.android.TokenCallback;
+import com.stripe.android.model.Card;
+import com.stripe.android.model.Token;
+import com.stripe.android.view.CardInputWidget;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +44,12 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.MessageDigest;
 import java.util.ArrayList;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class AddItemActivity extends AppCompatActivity {
 
@@ -51,6 +61,7 @@ public class AddItemActivity extends AppCompatActivity {
     private String userID;
     private String user_type;
     private Integer productID = 0;
+    private static Token token;
 
     static String itemName;
     static ListView listView;
@@ -83,7 +94,7 @@ public class AddItemActivity extends AppCompatActivity {
         listDescription = new ArrayList<>();
         listPrices = new ArrayList<>();
         listQuantity = new ArrayList<>();
-        adapter = new ListViewAdapter(listItems, listDescription, listPrices,listQuantity, this);
+        adapter = new ListViewAdapter(listItems, listDescription, listPrices, listQuantity, this);
         listView.setAdapter(adapter);
         itemName = "";
         priceView = (TextView) findViewById(R.id.totalPrice);
@@ -102,6 +113,11 @@ public class AddItemActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void addPayment(View view) {
+        DialogFragment newFragment = new PaymentFragment();
+        newFragment.show(getSupportFragmentManager(), "test");
     }
 
     public static void setListViewHeightBasedOnChildren(ListView listView) {
@@ -126,36 +142,112 @@ public class AddItemActivity extends AppCompatActivity {
     }
 
 
-    public void fragmentTaskCompleted()
-    {
+    public void fragmentTaskCompleted() {
         setListViewHeightBasedOnChildren(listView);
         adapter.notifyDataSetChanged();
     }
+
+    public static class PaymentFragment extends DialogFragment {
+        PaymentFragment newInstance(String title) {
+            PaymentFragment fragment = new PaymentFragment();
+            Bundle args = new Bundle();
+            args.putString("title", title);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final View view = inflater.inflate(R.layout.payment_layout, null);
+
+            final CardInputWidget mCardInputWidget = (CardInputWidget) view.findViewById(R.id.card_input_widget);
+
+            //connect to the edit_quantity to get original amount
+
+
+            return new android.support.v7.app.AlertDialog.Builder(getActivity())
+                    .setTitle("Enter Payment Info")
+                    .setView(view)
+                    .setPositiveButton("Add",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+                                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                    View view = inflater.inflate(R.layout.view_custom_item, null);
+                                    //connect to the edit_quantity to get original amount
+
+                                    Card cardToSave = mCardInputWidget.getCard();
+                                    if (cardToSave == null) {
+
+                                    } else {
+                                        Stripe stripe = new Stripe(getContext(), "pk_test_HTpFfQgN4nvtJ9LZGXaUlJff");
+                                        stripe.createToken(
+                                                cardToSave,
+                                                new TokenCallback() {
+                                                    public void onSuccess(Token t) {
+
+                                                        token = t;
+
+                                                    }
+
+                                                    public void onError(Exception error) {
+                                                        // Show localized error message
+                                                        Toast.makeText(getContext(), "Error",
+                                                                Toast.LENGTH_LONG
+                                                        ).show();
+                                                    }
+                                                }
+                                        );
+                                    }
+
+
+                                    // make call to get item price from db
+
+
+                                }
+                            })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+
+                                }
+                            }).create();
+        }
+    }
+
 
     public void submit(View view) throws JSONException {
         /*name = (TextView) findViewById(R.id.nameText);
         description = (TextView) findViewById(R.id.descriptionText);
         price = (TextView) findViewById(R.id.priceText);
         quantity = (TextView) findViewById(R.id.quantityText);*/
+        if (listItems.size() == 0) {
+            Toast.makeText(AddItemActivity.this, "Please Add Items", Toast.LENGTH_LONG).show();
+        } else if (token == null) {
+            Toast.makeText(AddItemActivity.this, "Please Add Payment Info", Toast.LENGTH_LONG).show();
 
 
-        for(int i = 0; i < listItems.size(); i++){
-            String nameString = listItems.get(i);
-            String descriptionString = listDescription.get(i);
-            String priceString = listPrices.get(i).toString();
-            String quantityString =listQuantity.get(i).toString();
+            for (int i = 0; i < listItems.size(); i++) {
+                String nameString = listItems.get(i);
+                String descriptionString = listDescription.get(i);
+                String priceString = listPrices.get(i).toString();
+                String quantityString = listQuantity.get(i).toString();
 
-            if (nameString.length() > 0 && priceString.length() > 0 && quantityString.length() > 0) {
-                new AsyncAddItem().execute(nameString, descriptionString, priceString, quantityString, jobID.toString(), productID.toString());
-            } else {
-                Toast.makeText(AddItemActivity.this, "Missing info", Toast.LENGTH_LONG).show();
+                if (nameString.length() > 0 && priceString.length() > 0 && quantityString.length() > 0) {
+                    new AsyncAddItem().execute(nameString, descriptionString, priceString, quantityString, jobID.toString(), productID.toString());
+                } else {
+                    Toast.makeText(AddItemActivity.this, "Missing info", Toast.LENGTH_LONG).show();
+                }
+
             }
 
+            new AsyncGetUserInfo().execute(userID);
+            Toast.makeText(AddItemActivity.this, "Job Added", Toast.LENGTH_LONG).show();
+
         }
-
-        new AsyncGetUserInfo().execute(userID);
-        Toast.makeText(AddItemActivity.this, "Job Added", Toast.LENGTH_LONG).show();
-
     }
 
     private class AsyncAddItem extends AsyncTask<String, String, String> {
@@ -261,7 +353,8 @@ public class AddItemActivity extends AppCompatActivity {
             }
         }
     }
-    public void startProfileActivity(){
+
+    public void startProfileActivity() {
         Intent intent = new Intent(this, ProfileActivity.class);
         intent.putExtra("userID", userID);
         intent.putExtra("user_type", user_type);
@@ -299,8 +392,6 @@ public class AddItemActivity extends AppCompatActivity {
                 public void onClick(View v) {
 
 
-
-
                 }
             });
             return new android.support.v7.app.AlertDialog.Builder(getActivity())
@@ -315,7 +406,6 @@ public class AddItemActivity extends AppCompatActivity {
                                     //connect to the edit_quantity to get original amount
 
 
-
                                     listItems.add(id.getText().toString());
                                     listDescription.add(description.getText().toString());
                                     listPrices.add(Double.parseDouble(price.getText().toString()));
@@ -323,11 +413,11 @@ public class AddItemActivity extends AppCompatActivity {
                                     adapter.notifyDataSetChanged();
 
                                     double tempPrice = 0.0;
-                                    for(int i = 0; i < listPrices.size(); i++){
-                                        tempPrice += Math.round((listPrices.get(i)*listQuantity.get(i))*100)/100.00d;
+                                    for (int i = 0; i < listPrices.size(); i++) {
+                                        tempPrice += Math.round((listPrices.get(i) * listQuantity.get(i)) * 100) / 100.00d;
                                     }
 
-                                    priceView.setText(tempPrice+"");
+                                    priceView.setText(tempPrice + "");
                                     // make call to get item price from db
 
                                     setListViewHeightBasedOnChildren(listView);
@@ -344,20 +434,21 @@ public class AddItemActivity extends AppCompatActivity {
                             }).create();
         }
     }
-    public void addCustomProduct(View view){
+
+    public void addCustomProduct(View view) {
 
     }
 
     //PRODUCT FETCHING
-    public void getProducts(View view){
+    public void getProducts(View view) {
         alertBuilder = new AlertDialog.Builder(AddItemActivity.this);
         alertBuilder.setTitle("Select a product:");
 
-        alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
-           @Override
-            public void onClick(DialogInterface dialog, int which){
-               dialog.dismiss();
-           }
+        alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
         });
 
         new AsyncGetProducts().execute();
@@ -492,11 +583,147 @@ public class AddItemActivity extends AppCompatActivity {
 
     }
 
+    private static class AsyncUpdateJob extends AsyncTask<String, String, String> {
+        HttpURLConnection conn;
+        URL url = null;
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+                // Enter URL address where your php file resides
+                url = new URL("http://may1722db.ece.iastate.edu/updatejob.php");
+
+            } catch (MalformedURLException e) {
+
+                e.printStackTrace();
+                return "exception";
+            }
+            try {
+                // Setup HttpURLConnection class to send and receive data from php and mysql
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(15000);
+                conn.setConnectTimeout(15000);
+                conn.setRequestMethod("POST");
+
+                // setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+
+                byte[] encrypted = new byte[0];
+                String ciph = "";
+                try {
+                    String keyString = "averylongtext!@$@#$#@$#*&(*&}{23432432432dsfsdf"; // 128 bit key
+                    // Create key and cipher
+
+                    //make iv not random...
+                    Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+                    byte[] iv = new byte[]{-75, -29, -84, -45, 20, -106, 52, -95, -14, 57, -112, 115, -83, -58, 96, 70};
+
+                    IvParameterSpec ivSpec = new IvParameterSpec(iv);
+
+                    MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                    digest.update(keyString.getBytes());
+
+                    byte[] key = new byte[16];
+                    System.arraycopy(digest.digest(), 0, key, 0, key.length);
+                    SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+
+                    cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
+                    // encrypt the text
+                    encrypted = cipher.doFinal(params[0].getBytes("UTF-8"));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                String temp = "";
+                //store the bytes in a string to put in the db and return to make sure we get the right shit
+                for (int i = 0; i < encrypted.length; i++) {
+                    temp = temp + encrypted[i] + " ";
+                }
+
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("token", temp)
+                        .appendQueryParameter("jobid", params[1]);
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+
+            } catch (IOException e1) {
+
+                e1.printStackTrace();
+                return "exception";
+            }
+
+            try {
+
+                int response_code = conn.getResponseCode();
+
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    // Read data sent from server
+                    InputStream input = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+
+                    return result.toString();
+                    // Pass data to onPostExecute method
+
+
+                } else {
+                    return "connection failure";
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "connection failure";
+            } finally {
+                conn.disconnect();
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            //this method will be running on UI thread
+
+            if (result.equalsIgnoreCase("connection failure")) {
+                /* Here launching another activity when login successful. If you persist login state
+                use sharedPreferences of Android. and logout button to clear sharedPreferences.
+                 */
+            } else {
+                System.out.println(result);
+
+            }
+        }
+
+
+    }
+
+
     public void addItemsToList(String result) throws JSONException {
         JSONArray jArray = new JSONArray(result);
 
         ArrayList<ProductObject> products = new ArrayList<>();
-        for(int i=0; i<jArray.length(); i++){
+        for (int i = 0; i < jArray.length(); i++) {
             JSONObject jObject = jArray.getJSONObject(i);
             int id = jObject.getInt("product_id");
             String name = jObject.getString("product_name");
@@ -507,9 +734,9 @@ public class AddItemActivity extends AppCompatActivity {
 
         final ProductAdapter adapter = new ProductAdapter(this, products);
 
-        alertBuilder.setAdapter(adapter, new DialogInterface.OnClickListener(){
+        alertBuilder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which){
+            public void onClick(DialogInterface dialog, int which) {
                 ProductObject product = adapter.getItem(which);
                 /*productID = product.getProduct_id();
                 name = (TextView) findViewById(R.id.nameText);
@@ -520,11 +747,9 @@ public class AddItemActivity extends AppCompatActivity {
                 price.setText(String.format("%.2f", product.getAvg_price()));*/
 
 
-
-
                 TextView p = (TextView) findViewById(R.id.totalPrice);
                 //quantity = (TextView) findViewById(R.id.quantityText);
-               // itemName = product.getProduct_name();
+                // itemName = product.getProduct_name();
                 listItems.add(product.getProduct_name());
                 listPrices.add(product.getAvg_price());
                 listDescription.add(product.getProduct_description());
