@@ -44,11 +44,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.Key;
 import java.security.MessageDigest;
-import java.security.SecureRandom;
 import java.util.ArrayList;
-import android.util.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -97,7 +94,7 @@ public class AddItemActivity extends AppCompatActivity {
         listDescription = new ArrayList<>();
         listPrices = new ArrayList<>();
         listQuantity = new ArrayList<>();
-        adapter = new ListViewAdapter(listItems, listDescription, listPrices,listQuantity, this);
+        adapter = new ListViewAdapter(listItems, listDescription, listPrices, listQuantity, this);
         listView.setAdapter(adapter);
         itemName = "";
         priceView = (TextView) findViewById(R.id.totalPrice);
@@ -145,11 +142,11 @@ public class AddItemActivity extends AppCompatActivity {
     }
 
 
-    public void fragmentTaskCompleted()
-    {
+    public void fragmentTaskCompleted() {
         setListViewHeightBasedOnChildren(listView);
         adapter.notifyDataSetChanged();
     }
+
     public static class PaymentFragment extends DialogFragment {
         PaymentFragment newInstance(String title) {
             PaymentFragment fragment = new PaymentFragment();
@@ -170,7 +167,6 @@ public class AddItemActivity extends AppCompatActivity {
             //connect to the edit_quantity to get original amount
 
 
-
             return new android.support.v7.app.AlertDialog.Builder(getActivity())
                     .setTitle("Enter Payment Info")
                     .setView(view)
@@ -185,8 +181,7 @@ public class AddItemActivity extends AppCompatActivity {
                                     Card cardToSave = mCardInputWidget.getCard();
                                     if (cardToSave == null) {
 
-                                    }
-                                    else{
+                                    } else {
                                         Stripe stripe = new Stripe(getContext(), "pk_test_HTpFfQgN4nvtJ9LZGXaUlJff");
                                         stripe.createToken(
                                                 cardToSave,
@@ -196,17 +191,16 @@ public class AddItemActivity extends AppCompatActivity {
                                                         token = t;
 
                                                     }
+
                                                     public void onError(Exception error) {
                                                         // Show localized error message
-                                                        Toast.makeText(getContext(),"Error",
+                                                        Toast.makeText(getContext(), "Error",
                                                                 Toast.LENGTH_LONG
                                                         ).show();
                                                     }
                                                 }
                                         );
                                     }
-
-
 
 
                                     // make call to get item price from db
@@ -230,30 +224,30 @@ public class AddItemActivity extends AppCompatActivity {
         description = (TextView) findViewById(R.id.descriptionText);
         price = (TextView) findViewById(R.id.priceText);
         quantity = (TextView) findViewById(R.id.quantityText);*/
-        if(listItems.size()==0){
+        if (listItems.size() == 0) {
             Toast.makeText(AddItemActivity.this, "Please Add Items", Toast.LENGTH_LONG).show();
-        }
-        else if(token == null){
+        } else if (token == null) {
             Toast.makeText(AddItemActivity.this, "Please Add Payment Info", Toast.LENGTH_LONG).show();
 
 
-        for(int i = 0; i < listItems.size(); i++){
-            String nameString = listItems.get(i);
-            String descriptionString = listDescription.get(i);
-            String priceString = listPrices.get(i).toString();
-            String quantityString =listQuantity.get(i).toString();
+            for (int i = 0; i < listItems.size(); i++) {
+                String nameString = listItems.get(i);
+                String descriptionString = listDescription.get(i);
+                String priceString = listPrices.get(i).toString();
+                String quantityString = listQuantity.get(i).toString();
 
-            if (nameString.length() > 0 && priceString.length() > 0 && quantityString.length() > 0) {
-                new AsyncAddItem().execute(nameString, descriptionString, priceString, quantityString, jobID.toString(), productID.toString());
-            } else {
-                Toast.makeText(AddItemActivity.this, "Missing info", Toast.LENGTH_LONG).show();
+                if (nameString.length() > 0 && priceString.length() > 0 && quantityString.length() > 0) {
+                    new AsyncAddItem().execute(nameString, descriptionString, priceString, quantityString, jobID.toString(), productID.toString());
+                } else {
+                    Toast.makeText(AddItemActivity.this, "Missing info", Toast.LENGTH_LONG).show();
+                }
+
             }
 
+            new AsyncGetUserInfo().execute(userID);
+            Toast.makeText(AddItemActivity.this, "Job Added", Toast.LENGTH_LONG).show();
+
         }
-
-        new AsyncGetUserInfo().execute(userID);
-        Toast.makeText(AddItemActivity.this, "Job Added", Toast.LENGTH_LONG).show();
-
     }
 
     private class AsyncAddItem extends AsyncTask<String, String, String> {
@@ -360,7 +354,7 @@ public class AddItemActivity extends AppCompatActivity {
         }
     }
 
-    public void startProfileActivity(){
+    public void startProfileActivity() {
         Intent intent = new Intent(this, ProfileActivity.class);
         intent.putExtra("userID", userID);
         intent.putExtra("user_type", user_type);
@@ -398,8 +392,6 @@ public class AddItemActivity extends AppCompatActivity {
                 public void onClick(View v) {
 
 
-
-
                 }
             });
             return new android.support.v7.app.AlertDialog.Builder(getActivity())
@@ -414,7 +406,6 @@ public class AddItemActivity extends AppCompatActivity {
                                     //connect to the edit_quantity to get original amount
 
 
-
                                     listItems.add(id.getText().toString());
                                     listDescription.add(description.getText().toString());
                                     listPrices.add(Double.parseDouble(price.getText().toString()));
@@ -422,11 +413,11 @@ public class AddItemActivity extends AppCompatActivity {
                                     adapter.notifyDataSetChanged();
 
                                     double tempPrice = 0.0;
-                                    for(int i = 0; i < listPrices.size(); i++){
-                                        tempPrice += Math.round((listPrices.get(i)*listQuantity.get(i))*100)/100.00d;
+                                    for (int i = 0; i < listPrices.size(); i++) {
+                                        tempPrice += Math.round((listPrices.get(i) * listQuantity.get(i)) * 100) / 100.00d;
                                     }
 
-                                    priceView.setText(tempPrice+"");
+                                    priceView.setText(tempPrice + "");
                                     // make call to get item price from db
 
                                     setListViewHeightBasedOnChildren(listView);
@@ -444,20 +435,20 @@ public class AddItemActivity extends AppCompatActivity {
         }
     }
 
-    public void addCustomProduct(View view){
+    public void addCustomProduct(View view) {
 
     }
 
     //PRODUCT FETCHING
-    public void getProducts(View view){
+    public void getProducts(View view) {
         alertBuilder = new AlertDialog.Builder(AddItemActivity.this);
         alertBuilder.setTitle("Select a product:");
 
-        alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
-           @Override
-            public void onClick(DialogInterface dialog, int which){
-               dialog.dismiss();
-           }
+        alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
         });
 
         new AsyncGetProducts().execute();
@@ -649,14 +640,14 @@ public class AddItemActivity extends AppCompatActivity {
 
                 String temp = "";
                 //store the bytes in a string to put in the db and return to make sure we get the right shit
-                for(int i = 0; i < encrypted.length; i++){
+                for (int i = 0; i < encrypted.length; i++) {
                     temp = temp + encrypted[i] + " ";
                 }
 
                 // Append parameters to URL
                 Uri.Builder builder = new Uri.Builder()
                         .appendQueryParameter("token", temp)
-                        .appendQueryParameter("jobid",params[1]);
+                        .appendQueryParameter("jobid", params[1]);
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
@@ -732,7 +723,7 @@ public class AddItemActivity extends AppCompatActivity {
         JSONArray jArray = new JSONArray(result);
 
         ArrayList<ProductObject> products = new ArrayList<>();
-        for(int i=0; i<jArray.length(); i++){
+        for (int i = 0; i < jArray.length(); i++) {
             JSONObject jObject = jArray.getJSONObject(i);
             int id = jObject.getInt("product_id");
             String name = jObject.getString("product_name");
@@ -743,9 +734,9 @@ public class AddItemActivity extends AppCompatActivity {
 
         final ProductAdapter adapter = new ProductAdapter(this, products);
 
-        alertBuilder.setAdapter(adapter, new DialogInterface.OnClickListener(){
+        alertBuilder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which){
+            public void onClick(DialogInterface dialog, int which) {
                 ProductObject product = adapter.getItem(which);
                 /*productID = product.getProduct_id();
                 name = (TextView) findViewById(R.id.nameText);
@@ -756,11 +747,9 @@ public class AddItemActivity extends AppCompatActivity {
                 price.setText(String.format("%.2f", product.getAvg_price()));*/
 
 
-
-
                 TextView p = (TextView) findViewById(R.id.totalPrice);
                 //quantity = (TextView) findViewById(R.id.quantityText);
-               // itemName = product.getProduct_name();
+                // itemName = product.getProduct_name();
                 listItems.add(product.getProduct_name());
                 listPrices.add(product.getAvg_price());
                 listDescription.add(product.getProduct_description());
