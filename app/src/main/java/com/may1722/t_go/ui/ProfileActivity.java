@@ -79,6 +79,15 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void submitReview(View view)
+    {
+        Intent intent = new Intent(this, SubmitReviewActivity.class);
+        intent.putExtra("my_id", "29");
+        intent.putExtra("their_id", "40");
+        intent.putExtra("their_username", "Andy");
+        startActivity(intent);
+    }
+
     public void updateUserInfo(View view) {
         Intent intent = new Intent(this, UpdateUserInfoActivity.class);
         intent.putExtra("userID", userID);

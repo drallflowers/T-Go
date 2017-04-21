@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,10 +25,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.vision.text.Text;
 import com.may1722.t_go.R;
-import com.may1722.t_go.model.ItemObject;
-import com.may1722.t_go.networking.ChatInfoRequest;
 import com.may1722.t_go.networking.CreateChatRequest;
 
 import org.json.JSONArray;
@@ -48,8 +43,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class JobDetailsActivity extends ListActivity {
@@ -129,7 +122,8 @@ public class JobDetailsActivity extends ListActivity {
                     if(userEntry.equals(jobCode)){
                         new AsyncCompleteJob().execute(jobID);
                         dialogInterface.dismiss();
-                        goToJobComplete();
+                        gotToSubmitReview();
+                        //goToJobComplete();
                     } else {
                         Toast.makeText(JobDetailsActivity.this, "Incorrect Verification Code", Toast.LENGTH_LONG).show();
                     }
@@ -146,6 +140,14 @@ public class JobDetailsActivity extends ListActivity {
     public void goToJobComplete(){
         Intent intent = new Intent(this, JobCompleteActivity.class)
                 .putExtra("job_id", jobID);
+        startActivity(intent);
+    }
+
+    public void gotToSubmitReview(){
+        Intent intent = new Intent(this, SubmitReviewActivity.class)
+                .putExtra("my_id", userID);
+        intent.putExtra("their_id", otherID);
+        intent.putExtra("their_username",othername);
         startActivity(intent);
     }
 
