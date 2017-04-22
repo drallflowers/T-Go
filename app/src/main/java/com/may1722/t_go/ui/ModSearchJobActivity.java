@@ -56,7 +56,7 @@ public class ModSearchJobActivity extends AppCompatActivity {
                 adapter = new SearchJobAdapter(ModSearchJobActivity.this, this, jobs);
                 jobListView.setAdapter(adapter);
                 if(jobs.size() <= 0){
-                    Toast.makeText(ModSearchJobActivity.this, "One or both of the usernames does not exist.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ModSearchJobActivity.this, "No jobs found.alx", Toast.LENGTH_LONG).show();
                 }
 
             } catch (InterruptedException e) {

@@ -45,12 +45,16 @@ public class ProfileActivity extends AppCompatActivity {
             typetextView.setText("Courier");
         }else if(user_type.equals("2")) {
             typetextView.setText("Moderator");
-            Button button = (Button) findViewById(R.id.upgradeAcctButton);
-            button.setVisibility(View.GONE);
+            Button upgrade = (Button) findViewById(R.id.upgradeAcctButton);
+            upgrade.setVisibility(View.GONE);
+            Button search = (Button) findViewById(R.id.modSearchJob);
+            search.setVisibility(View.VISIBLE);
         }else if(user_type.equals("3")){
             typetextView.setText("Admin");
-            Button button = (Button) findViewById(R.id.upgradeAcctButton);
-            button.setVisibility(View.GONE);
+            Button upgrade = (Button) findViewById(R.id.upgradeAcctButton);
+            upgrade.setVisibility(View.GONE);
+            Button search = (Button) findViewById(R.id.modSearchJob);
+            search.setVisibility(View.VISIBLE);
         }else{
             typetextView.setText("User");
         }
@@ -106,6 +110,12 @@ public class ProfileActivity extends AppCompatActivity {
         intent.putExtra("type", user_type);
         intent.putExtra("userID", userID);
 
+        startActivity(intent);
+    }
+
+    public void goToModSearchJob(View view) {
+        Intent intent = new Intent(this, ModSearchJobActivity.class);
+        intent.putExtra("userID", userID);
         startActivity(intent);
     }
 
