@@ -228,7 +228,7 @@ public class AddItemActivity extends AppCompatActivity {
             Toast.makeText(AddItemActivity.this, "Please Add Items", Toast.LENGTH_LONG).show();
         } else if (token == null) {
             Toast.makeText(AddItemActivity.this, "Please Add Payment Info", Toast.LENGTH_LONG).show();
-
+        } else {
 
             for (int i = 0; i < listItems.size(); i++) {
                 String nameString = listItems.get(i);
@@ -244,9 +244,9 @@ public class AddItemActivity extends AppCompatActivity {
 
             }
 
+            new AsyncUpdateJob().execute(token.toString(), Integer.toString(jobID));
             new AsyncGetUserInfo().execute(userID);
             Toast.makeText(AddItemActivity.this, "Job Added", Toast.LENGTH_LONG).show();
-
         }
     }
 
