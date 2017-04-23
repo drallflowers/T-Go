@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -24,6 +25,7 @@ public class ProfileActivity extends AppCompatActivity {
     private String userID;
     private String user_type;
     private String username;
+    private float avg_rating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +37,13 @@ public class ProfileActivity extends AppCompatActivity {
         user_type = getIntent().getExtras().getString("user_type");
         String email = getIntent().getExtras().getString("email");
         String phone_number =  getIntent().getExtras().getString("phone_number");
+        avg_rating = Float.parseFloat(getIntent().getExtras().getString("average_rating"));
         TextView profiletextView = (TextView) findViewById(R.id.profileUsername);
         TextView typetextView = (TextView) findViewById(R.id.profileUserLevel);
         TextView emailtextView = (TextView) findViewById(R.id.profileEmail);
         TextView phonetextView = (TextView) findViewById(R.id.profilePhoneLabel);
+        RatingBar ratingView = (RatingBar) findViewById(R.id.userRating);
+        ratingView.setRating(avg_rating);
         profiletextView.setText(username);
 
         if(user_type.equals("1")){
@@ -65,16 +70,12 @@ public class ProfileActivity extends AppCompatActivity {
         Button findJob = (Button) findViewById(R.id.buttonFindJobs);
         Button myReviews = (Button) findViewById(R.id.buttonReviews);
 
-
         if(Integer.parseInt(user_type) == 0){
             findJob.setVisibility(View.GONE);
             myReviews.setVisibility(View.GONE);
             findJob.setEnabled(false);
             myReviews.setEnabled(false);
         }
-
-
-
     }
     public void logout(View view)
     {
