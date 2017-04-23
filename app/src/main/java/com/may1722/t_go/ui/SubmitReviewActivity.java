@@ -2,10 +2,9 @@ package com.may1722.t_go.ui;
 
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -25,18 +24,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class SubmitReviewActivity extends AppCompatActivity {
-    private int my_ID;
-    private int their_ID;
+    private String my_ID;
+    private String their_ID;
     private EditText details;
     private float rating;
-    private boolean recommend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit_review);
-        my_ID = getIntent().getExtras().getInt("my_id");
-        their_ID = getIntent().getExtras().getInt("their_id");
+        my_ID = getIntent().getExtras().getString("my_id");
+        their_ID = getIntent().getExtras().getString("their_id");
         String their_username = getIntent().getExtras().getString("their_username");
         details = (EditText) findViewById(R.id.reviewDetails);
 
@@ -46,13 +44,14 @@ public class SubmitReviewActivity extends AppCompatActivity {
         RatingBar rating = (RatingBar) findViewById(R.id.reviewRating);
         this.rating = rating.getRating();
 
-        CheckBox rcmd = (CheckBox) findViewById(R.id.review_recommend);
-        recommend = rcmd.isChecked();
     }
 
     public void submitReview(View view)
     {
-        new AsyncSubmitReview().execute(details.getText().toString());
+        String detailString = details.getText().toString();
+        RatingBar rating = (RatingBar) findViewById(R.id.reviewRating);
+        this.rating = rating.getRating();
+        new AsyncSubmitReview().execute(detailString);
         finish();
     }
 
@@ -84,11 +83,10 @@ public class SubmitReviewActivity extends AppCompatActivity {
 
                 // Append parameters to URL
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("user_ID", String.valueOf(my_ID))
-                        .appendQueryParameter("their_ID", String.valueOf(their_ID))
+                        .appendQueryParameter("user_ID", my_ID)
+                        .appendQueryParameter("their_ID", their_ID)
                         .appendQueryParameter("details", params[0])
-                        .appendQueryParameter("rating", String.valueOf(rating))
-                        .appendQueryParameter("recommend", String.valueOf(recommend));
+                        .appendQueryParameter("rating", String.valueOf(rating));
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
@@ -102,6 +100,7 @@ public class SubmitReviewActivity extends AppCompatActivity {
                 conn.connect();
 
             } catch (IOException e1) {
+                // TODO Auto-generated catch block
                 e1.printStackTrace();
                 return "exception";
             }
@@ -124,6 +123,8 @@ public class SubmitReviewActivity extends AppCompatActivity {
                     }
 
                     return result.toString();
+                    // Pass data to onPostExecute method
+
 
                 } else {
                     //Toast.makeText(JobDetailsActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
@@ -131,11 +132,30 @@ public class SubmitReviewActivity extends AppCompatActivity {
                 }
 
             } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(SubmitReviewActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                return "connection failure";
             } finally {
                 conn.disconnect();
             }
-            Toast.makeText(getApplicationContext(), "Done", Toast.LENGTH_LONG).show();
-            return "done";
+
         }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            //this method will be running on UI thread
+            Toast.makeText(SubmitReviewActivity.this, result, Toast.LENGTH_LONG).show();
+            /*if (result.equalsIgnoreCase("connection failure")) {
+                *//* Here launching another activity when login successful. If you persist login state
+                use sharedPreferences of Android. and logout button to clear sharedPreferences.
+                 *//*
+                Toast.makeText(SubmitReviewActivity.this, "Failure", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(SubmitReviewActivity.this, "Success", Toast.LENGTH_LONG).show();
+            }*/
+        }
+
+
     }
 }

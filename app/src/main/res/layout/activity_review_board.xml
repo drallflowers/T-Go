@@ -20,6 +20,13 @@
             android:textStyle="bold"
             android:textSize="20dp"
             android:textColor="@color/colorPrimaryDark"/>
+        <TextView android:id="@+id/review_board_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:textColor="@color/colorPrimaryDark"/>
         <TextView android:id="@+id/review_board_rating"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

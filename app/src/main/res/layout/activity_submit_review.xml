@@ -41,14 +41,7 @@
             android:layout_weight="0.53"
             android:ems="10"
             android:hint="Review details"
-            android:inputType="textMultiLine" />
-
-        <CheckBox
-            android:id="@+id/review_recommend"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.03"
-            android:text="Would you recommend this person?" />
+            android:singleLine="true" />
 
         <Button
             android:id="@+id/submitButton"

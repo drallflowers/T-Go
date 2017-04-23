@@ -46,4 +46,12 @@
     <!-- JobDetailsActivity -->
     <string name="timePosted">Time Posted:</string>
     <string name="timeDue">Time Due:</string>
+
+    <!-- ModSearchActiviity -->
+    <string name="title_activity_mod_search_job">ModSearchJobActivity</string>
+    <string name="userInput">User: </string>
+    <string name="userHint">User\'s Username</string>
+    <string name="courierInput">Courier: </string>
+    <string name="courierHint">Courier\'s Username</string>
+    <string name="search">Search</string>
 </resources>

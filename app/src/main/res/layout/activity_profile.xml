@@ -13,143 +13,143 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/edittext_bottom_line">
+            android:background="@drawable/edittext_bottom_line"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:orientation="vertical"
                 android:weightSum="1">
 
                 <TextView
-                    android:text="@string/usernameExample"
+                    android:id="@+id/profileUsername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/profileUsername"
-                    android:textSize="20sp"
-                    android:textColor="@color/colorPrimaryDark" />
+                    android:text="@string/usernameExample"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="20sp" />
 
                 <TextView
-                    android:text="@string/user"
+                    android:id="@+id/profileUserLevel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/profileUserLevel"
-                    android:textSize="20sp"
-                    android:textColor="@color/colorPrimaryDark" />
+                    android:text="@string/user"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="20sp" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="180dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
-                    android:text="@string/avgRating"
+                    android:id="@+id/ratingLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/ratingLabel"
+                    android:text="@string/avgRating"
                     android:textColor="@color/colorPrimaryDark" />
 
                 <RatingBar
+                    android:id="@+id/userRating"
+                    style="@style/Widget.AppCompat.RatingBar.Indicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/userRating"
                     android:isIndicator="true"
                     android:numStars="5"
-                    android:stepSize="1"
-                    style="@style/Widget.AppCompat.RatingBar.Indicator"
-                    android:rating="0" />
+                    android:rating="0"
+                    android:stepSize="1" />
 
             </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
-                android:text="@string/email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/emailLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="2.66"
-                android:textSize="20sp"
                 android:paddingTop="5dp"
-                android:textColor="@color/colorPrimaryDark" />
-
-        </LinearLayout>
-
-        <TextView
-            android:text="@string/email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/profileEmail"
-            android:textSize="20sp" />
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:text="@string/phoneNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/phoneLabel"
-                android:layout_weight="1"
-                android:textSize="20sp"
+                android:text="@string/email"
                 android:textColor="@color/colorPrimaryDark"
-                android:onClick="updatePhoneNumber"/>
+                android:textSize="20sp" />
 
         </LinearLayout>
 
         <TextView
-            android:text="@string/phoneNumber"
+            android:id="@+id/profileEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/profilePhoneLabel"
+            android:text="@string/email"
             android:textSize="20sp" />
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
-                android:text="@string/paymentMethods"
+                android:id="@+id/phoneLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/paymentMethodsLabel"
-                android:layout_weight="0.54"
-                android:textSize="20sp"
-                android:textColor="@color/colorPrimaryDark" />
+                android:layout_weight="1"
+                android:onClick="updatePhoneNumber"
+                android:text="@string/phoneNumber"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="20sp" />
 
         </LinearLayout>
 
         <TextView
-            android:text="@string/paymentMethods"
+            android:id="@+id/profilePhoneLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/profilePaymentMethodsLabel"
+            android:text="@string/phoneNumber"
             android:textSize="20sp" />
 
         <LinearLayout
-            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/paymentMethodsLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.54"
+                android:text="@string/paymentMethods"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/profilePaymentMethodsLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/paymentMethods"
+            android:textSize="20sp" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="bottom"
+            android:orientation="vertical"
             android:weightSum="1">
 
             <Button
@@ -167,61 +167,62 @@
                 android:text="Mail" />
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <Button
-                    android:text="Go To Map"
+                    android:id="@+id/mapButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/mapButton"
                     android:layout_weight="1"
-                    android:onClick="goToMaps" />
+                    android:onClick="goToMaps"
+                    android:text="Go To Map"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <Button
-                    android:text="My Reviews (Courier)"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/buttonReviews"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:onClick="goToReviewBoard" />
+                    android:onClick="goToReviewBoard"
+                    android:text="My Reviews" />
 
                 <Button
-                    android:text="Find Jobs (Courier)"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/buttonFindJobs"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:onClick="goToJobBoard" />
+                    android:onClick="goToJobBoard"
+                    android:text="Find Jobs" />
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <Button
-                    android:text="My Jobs"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/buttonMyJobs"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:onClick="goToCurrentJobs" />
+                    android:onClick="goToCurrentJobs"
+                    android:text="My Jobs" />
 
                 <Button
-                    android:text="New Job"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/buttonNewJob"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:onClick="goToJobSubmit" />
+                    android:onClick="goToJobSubmit"
+                    android:text="New Job" />
             </LinearLayout>
 
             <Button
@@ -232,11 +233,19 @@
                 android:text="@string/upgradeAcct" />
 
             <Button
-                android:text="@string/updateUserInfo"
+                android:id="@+id/modSearchJob"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="goToModSearchJob"
+                android:text="Search Jobs"
+                android:visibility="gone"/>
+
+            <Button
                 android:id="@+id/updateUserInfoButton"
-                android:onClick="updateUserInfo"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="updateUserInfo"
+                android:text="@string/updateUserInfo" />
         </LinearLayout>
 
     </LinearLayout>

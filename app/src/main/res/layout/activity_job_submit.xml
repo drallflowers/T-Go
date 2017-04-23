@@ -13,13 +13,13 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:descendantFocusability="blocksDescendants"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="12dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="66dp">
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="66dp"
+        android:descendantFocusability="blocksDescendants">
 
 
         <LinearLayout
@@ -30,52 +30,49 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Location and Time"/>
+                android:text="Location and Time" />
 
 
             <EditText
                 android:id="@+id/addressText"
                 android:layout_width="match_parent"
-                android:layout_height="108dp"
+                android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Street Address"
-                android:inputType="textMultiLine" />
+                android:singleLine="true" />
 
             <EditText
                 android:id="@+id/cityText"
                 android:layout_width="match_parent"
-                android:layout_height="108dp"
+                android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="City"
-                android:inputType="textMultiLine" />
+                android:singleLine="true" />
 
             <EditText
                 android:id="@+id/stateText"
                 android:layout_width="match_parent"
-                android:layout_height="108dp"
+                android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="State"
-                android:inputType="textMultiLine" />
+                android:singleLine="true" />
 
             <EditText
                 android:id="@+id/zipText"
                 android:layout_width="match_parent"
-                android:layout_height="108dp"
+                android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="ZIP"
-                android:inputType="textMultiLine"/>
+                android:singleLine="true" />
 
 
             <EditText
-                android:layout_width="match_parent"
-                android:layout_height="108dp"
-                android:inputType="textMultiLine"
-                android:ems="10"
                 android:id="@+id/apartmentText"
-                android:hint="Apartment Number (Optional)" />
-
-
-
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Apartment Number (Optional)"
+                android:singleLine="true" />
 
 
             <Button

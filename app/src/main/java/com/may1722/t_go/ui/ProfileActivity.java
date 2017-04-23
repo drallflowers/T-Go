@@ -40,7 +40,25 @@ public class ProfileActivity extends AppCompatActivity {
         TextView emailtextView = (TextView) findViewById(R.id.profileEmail);
         TextView phonetextView = (TextView) findViewById(R.id.profilePhoneLabel);
         profiletextView.setText(username);
-        typetextView.setText(user_type);
+
+        if(user_type.equals("1")){
+            typetextView.setText("Courier");
+        }else if(user_type.equals("2")) {
+            typetextView.setText("Moderator");
+            Button upgrade = (Button) findViewById(R.id.upgradeAcctButton);
+            upgrade.setVisibility(View.GONE);
+            Button search = (Button) findViewById(R.id.modSearchJob);
+            search.setVisibility(View.VISIBLE);
+        }else if(user_type.equals("3")){
+            typetextView.setText("Admin");
+            Button upgrade = (Button) findViewById(R.id.upgradeAcctButton);
+            upgrade.setVisibility(View.GONE);
+            Button search = (Button) findViewById(R.id.modSearchJob);
+            search.setVisibility(View.VISIBLE);
+        }else{
+            typetextView.setText("User");
+        }
+
         emailtextView.setText(email);
         phonetextView.setText(phone_number);
 
@@ -49,8 +67,8 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         if(Integer.parseInt(user_type) == 0){
-            findJob.setVisibility(View.INVISIBLE);
-            myReviews.setVisibility(View.INVISIBLE);
+            findJob.setVisibility(View.GONE);
+            myReviews.setVisibility(View.GONE);
             findJob.setEnabled(false);
             myReviews.setEnabled(false);
         }
@@ -62,6 +80,15 @@ public class ProfileActivity extends AppCompatActivity {
     {
         Intent intent = new Intent(this, LoginActivity.class);
         intent.putExtra("userID", userID);
+        startActivity(intent);
+    }
+
+    public void submitReview(View view)
+    {
+        Intent intent = new Intent(this, SubmitReviewActivity.class);
+        intent.putExtra("my_id", "29");
+        intent.putExtra("their_id", "40");
+        intent.putExtra("their_username", "Andy");
         startActivity(intent);
     }
 
@@ -83,6 +110,12 @@ public class ProfileActivity extends AppCompatActivity {
         intent.putExtra("type", user_type);
         intent.putExtra("userID", userID);
 
+        startActivity(intent);
+    }
+
+    public void goToModSearchJob(View view) {
+        Intent intent = new Intent(this, ModSearchJobActivity.class);
+        intent.putExtra("userID", userID);
         startActivity(intent);
     }
 
