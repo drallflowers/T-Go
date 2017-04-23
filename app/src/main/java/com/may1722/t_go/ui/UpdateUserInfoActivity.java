@@ -295,6 +295,7 @@ public class UpdateUserInfoActivity extends AppCompatActivity {
                 intent.putExtra("date_created", result2[6]);
                 intent.putExtra("date_of_birth", result2[7]);
                 intent.putExtra("username", result2[8]);
+                intent.putExtra("average_rating", result2[9]);
                 startActivity(intent);
                 UpdateUserInfoActivity.this.finish();
             }
