@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -574,6 +575,9 @@ public class MailActivity extends AppCompatActivity {
 
             final TextView username = (TextView) view.findViewById(R.id.UserStatusLabel);
             final TextView applyingFor = (TextView) view.findViewById(R.id.NextStatusLabel);
+            final RatingBar ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
+
+            ratingBar.setRating(mail.get(pos).getRating());
 
             //connect to the edit_quantity to get original amount
             username.setText(mail.get(pos).getUserName());

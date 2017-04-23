@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,10 @@ public class ApplyActivity extends AppCompatActivity
         TextView status = (TextView) findViewById(R.id.UserStatusLabel);
         TextView next = (TextView) findViewById(R.id.NextStatusLabel);
         String type = getIntent().getExtras().getString("type");
+
+        float rating = Float.parseFloat(getIntent().getExtras().getString("average_rating"));
+        RatingBar bar = (RatingBar) findViewById(R.id.ratingBar);
+        bar.setRating(rating);
 
         switch (type){
             case "0": status.setText("User");
@@ -84,7 +89,10 @@ public class ApplyActivity extends AppCompatActivity
 
                 // Append parameters to URL
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("userid","0").appendQueryParameter("content", "Applying For Upgrade").appendQueryParameter("mail_type", "01").appendQueryParameter("from_userid", getIntent().getExtras().getString("userID"));
+                        .appendQueryParameter("userid","0")
+                        .appendQueryParameter("content", "Applying For Upgrade")
+                        .appendQueryParameter("mail_type", "01")
+                        .appendQueryParameter("from_userid", getIntent().getExtras().getString("userID"));
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data

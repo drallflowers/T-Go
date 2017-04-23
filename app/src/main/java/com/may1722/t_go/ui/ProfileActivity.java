@@ -110,6 +110,7 @@ public class ProfileActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ApplyActivity.class);
         intent.putExtra("type", user_type);
         intent.putExtra("userID", userID);
+        intent.putExtra("average_rating", String.valueOf(avg_rating));
 
         startActivity(intent);
     }
