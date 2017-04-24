@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +36,7 @@ import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.may1722.t_go.R;
+import com.may1722.t_go.model.ItemObject;
 import com.may1722.t_go.networking.CreateChatRequest;
 
 import org.json.JSONArray;
@@ -269,16 +273,18 @@ public class JobDetailsActivity extends ListActivity {
     public class ItemCardData {
         public String item_name;
         public String item_description;
-        public String price; // String for mockup purposes, change to double later
-        public String quantity; // String for mockup purposes, change to Date later
+        public String price;
+        public String quantity;
         public Integer itemID;
+        public Integer productID;
 
-        public ItemCardData(String name, String description, String price, String quantity, Integer itemID) {
+        public ItemCardData(String name, String description, String price, String quantity, Integer itemID, Integer productID) {
             item_name = name;
             item_description = description;
             this.price = price;
             this.quantity = quantity;
             this.itemID = itemID;
+            this.productID = productID;
         }
     }
 
@@ -323,7 +329,7 @@ public class JobDetailsActivity extends ListActivity {
             Integer count = jObject.getInt("quantity");
             Integer product_id = jObject.getInt("product_id");
             totalPrice += (price*count);
-            newItemsList.add(new JobDetailsActivity.ItemCardData(name, description, price.toString(), count.toString(), product_id));
+            newItemsList.add(new JobDetailsActivity.ItemCardData(name, description, price.toString(), count.toString(), item_id, product_id));
         }
 
         if(itemsList == null || !itemsList.equals(newItemsList)) {
@@ -1080,5 +1086,218 @@ public class JobDetailsActivity extends ListActivity {
         int shortCode = Math.abs(code%1000000);
 
         return String.format("%06d", shortCode);
+    }
+
+//TODO: PRUNE OUT UNNECESSARY
+
+    private void updateProducts(){
+
+        for(ItemCardData item : itemsList){
+
+            if(item.productID > 0) {
+                new AsyncUpdatePrice().execute(Integer.toString(item.productID), item.price);
+            } else {
+                new AsyncAddProduct().execute(Integer.toString(item.productID), item.item_description, item.price);
+            }
+        }
+
+        finish();
+    }
+
+    private class AsyncUpdatePrice extends AsyncTask<String, String, String> {
+        HttpURLConnection conn;
+        URL url = null;
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+                // Enter URL address where your php file resides
+                url = new URL("http://may1722db.ece.iastate.edu/updateproduct.php");
+
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return "exception";
+            }
+            try {
+                // Setup HttpURLConnection class to send and receive data from php and mysql
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(15000);
+                conn.setConnectTimeout(15000);
+                conn.setRequestMethod("POST");
+
+                // setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("product_id", params[0])
+                        .appendQueryParameter("price", params[1]);
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return "exception";
+            }
+
+            try {
+
+                int response_code = conn.getResponseCode();
+
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    // Read data sent from server
+                    InputStream input = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+                    return result.toString();
+                    // Pass data to onPostExecute method
+
+
+                } else {
+                    return "connection failure";
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(JobDetailsActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                return "connection failure";
+            } finally {
+                conn.disconnect();
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            //this method will be running on UI thread
+
+            if (result.equalsIgnoreCase("connection failure")) {
+                /* Here launching another activity when login successful. If you persist login state
+                use sharedPreferences of Android. and logout button to clear sharedPreferences.
+                 */
+                Toast.makeText(JobDetailsActivity.this, "OOPs! Something went wrong. Connection Problem."+result, Toast.LENGTH_LONG).show();
+            } else {
+            }
+        }
+    }
+
+    private class AsyncAddProduct extends AsyncTask<String, String, String> {
+        HttpURLConnection conn;
+        URL url = null;
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+                // Enter URL address where your php file resides
+                url = new URL("http://may1722db.ece.iastate.edu/addproduct.php");
+
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return "exception";
+            }
+            try {
+                // Setup HttpURLConnection class to send and receive data from php and mysql
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(15000);
+                conn.setConnectTimeout(15000);
+                conn.setRequestMethod("POST");
+
+                // setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("product_name", params[0])
+                        .appendQueryParameter("product_description", params[1])
+                        .appendQueryParameter("avg_price", params[2]);
+                String query = builder.build().getEncodedQuery();
+                System.out.println(query);
+                // Open connection for sending data
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return "exception";
+            }
+
+            try {
+
+                int response_code = conn.getResponseCode();
+
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    // Read data sent from server
+                    InputStream input = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+                    return result.toString();
+                    // Pass data to onPostExecute method
+
+
+                } else {
+                    return "connection failure";
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(JobDetailsActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                return "connection failure";
+            } finally {
+                conn.disconnect();
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            //this method will be running on UI thread
+
+            if (result.equalsIgnoreCase("connection failure")) {
+                /* Here launching another activity when login successful. If you persist login state
+                use sharedPreferences of Android. and logout button to clear sharedPreferences.
+                 */
+                Toast.makeText(JobDetailsActivity.this, "OOPs! Something went wrong. Connection Problem."+result, Toast.LENGTH_LONG).show();
+            } else {
+            }
+        }
     }
 }
