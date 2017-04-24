@@ -44,6 +44,13 @@ public class JobBoardActivity extends ListActivity {
         new AsyncGetJobs().execute();
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        new AsyncGetJobs().execute();
+    }
+
+
     public class JobBoardCardData {
         public String location;
         public String username;

@@ -76,6 +76,7 @@ public class JobDetailsActivity extends ListActivity {
     private String username;
     private String othername;
     private  ArrayList<JobDetailsActivity.ItemCardData> itemsList;
+    private boolean update;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +88,7 @@ public class JobDetailsActivity extends ListActivity {
         totalPrice = 0.0;
         jobID = getIntent().getExtras().getString("job_ID");
         chatId = getIntent().getExtras().getInt("chat_ID");
+        update = true;
         String fromWhere = getIntent().getExtras().getString("from_where");
         if(fromWhere.equals("job_board")){
             Button chat = (Button) findViewById(R.id.chatButton);
@@ -113,7 +115,32 @@ public class JobDetailsActivity extends ListActivity {
     @Override
     public void onResume() {
         super.onResume();
-        new AsyncGetItems().execute(jobID);
+//        new AsyncGetItems().execute(jobID);
+        update = true;
+        keepItemsUpdated();
+    }
+
+    @Override
+    public void onBackPressed() {
+        update = false;
+        super.onBackPressed();
+    }
+
+    public void keepItemsUpdated(){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+            while(update){
+                    new AsyncGetItems().execute(jobID);
+                    try {
+                        Thread.sleep(600000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        thread.start();
     }
 
     public void acceptJob(View view) {
@@ -189,6 +216,7 @@ public class JobDetailsActivity extends ListActivity {
     }
 
     public void gotToSubmitReview(){
+        update = false;
         Intent intent = new Intent(this, SubmitReviewActivity.class)
                 .putExtra("my_id", userID);
         intent.putExtra("their_id", otherID);
@@ -197,6 +225,7 @@ public class JobDetailsActivity extends ListActivity {
     }
 
     public void goToMaps(View view) {
+        update = false;
         findPlace(view);
 
     }
@@ -283,7 +312,7 @@ public class JobDetailsActivity extends ListActivity {
     public void addItemsToList(String result) throws JSONException {
         JSONArray jArray = new JSONArray(result);
 
-         itemsList = new ArrayList<>();
+        ArrayList<ItemCardData> newItemsList = new ArrayList<>();
         for (int i = 0; i < jArray.length(); i++) {
             //Add item object
             JSONObject jObject = jArray.getJSONObject(i);
@@ -294,25 +323,29 @@ public class JobDetailsActivity extends ListActivity {
             Integer count = jObject.getInt("quantity");
             Integer product_id = jObject.getInt("product_id");
             totalPrice += (price*count);
-            itemsList.add(new JobDetailsActivity.ItemCardData(name, description, price.toString(), count.toString(), product_id));
+            newItemsList.add(new JobDetailsActivity.ItemCardData(name, description, price.toString(), count.toString(), product_id));
         }
 
-        ItemCardDataAdapter adapter = new ItemCardDataAdapter(this, itemsList);
-        ListView list = this.getListView();
-        list.setAdapter(adapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                JobDetailsActivity.ItemCardData selected = (JobDetailsActivity.ItemCardData) parent.getAdapter().getItem(position);
-                //new AsyncClaimJob().execute(userID, selected.jobID.toString());
-                //goToJobDetails(selected.jobID.toString());
-                //Toast.makeText(JobBoardActivity.this, "claimed", Toast.LENGTH_LONG).show();
-            }
-        });
+        if(itemsList == null || !itemsList.equals(newItemsList)) {
+            itemsList = newItemsList;
+            ItemCardDataAdapter adapter = new ItemCardDataAdapter(this, itemsList);
+            ListView list = this.getListView();
+            list.setAdapter(adapter);
+            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    JobDetailsActivity.ItemCardData selected = (JobDetailsActivity.ItemCardData) parent.getAdapter().getItem(position);
+                    //new AsyncClaimJob().execute(userID, selected.jobID.toString());
+                    //goToJobDetails(selected.jobID.toString());
+                    //Toast.makeText(JobBoardActivity.this, "claimed", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
     public void goToChat(View view)
     {
+        update = false;
         Intent intent = new Intent(this, ChatActivity.class);
         intent.putExtra("user1", username);
         intent.putExtra("user2", othername);
@@ -584,7 +617,8 @@ public class JobDetailsActivity extends ListActivity {
         timedue.setText("Time Due: " + result2[8]);
         token = result2[9];
         new AsyncGetPaymentMethod().execute(jobID);
-        new AsyncGetItems().execute(jobID);
+        //new AsyncGetItems().execute(jobID);
+        keepItemsUpdated();
     }
 
     private static class AsyncSendPayment extends AsyncTask<String, String, String> {
