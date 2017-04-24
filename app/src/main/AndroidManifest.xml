@@ -62,6 +62,10 @@
         <activity
             android:name=".ui.ModSearchJobActivity"
             android:label="@string/title_activity_mod_search_job"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.AdjustPricesActivity"
+            android:label="@string/title_activity_adjust_prices"
             android:theme="@style/AppTheme"></activity>
     </application>
 

@@ -1,5 +1,8 @@
 package com.may1722.t_go.ui;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,6 +10,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
@@ -15,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -48,6 +53,7 @@ import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -85,13 +91,17 @@ public class JobDetailsActivity extends ListActivity {
         if(fromWhere.equals("job_board")){
             Button chat = (Button) findViewById(R.id.chatButton);
             chat.setVisibility(View.GONE);
+            Button adjustPrice = (Button) findViewById(R.id.adjustPriceButton);
+            adjustPrice.setVisibility(View.GONE);
         }
         else if(fromWhere.equals("search_job")){
             Button chat = (Button) findViewById(R.id.chatButton);
+            Button adjustPrice = (Button) findViewById(R.id.adjustPriceButton);
             Button map = (Button) findViewById(R.id.goToMapButton);
             Button acceptJob = (Button) findViewById(R.id.acceptJobButton);
             Button completeJob = (Button) findViewById(R.id.completeJobButton);
             chat.setVisibility(View.GONE);
+            adjustPrice.setVisibility(View.GONE);
             map.setVisibility(View.GONE);
             acceptJob.setVisibility(View.GONE);
             completeJob.setVisibility(View.GONE);
@@ -107,9 +117,12 @@ public class JobDetailsActivity extends ListActivity {
 
         try {
             Thread.sleep(500);
-            chatId = createChatRequest.getChatId();Button chat = (Button) findViewById(R.id.chatButton);
+            chatId = createChatRequest.getChatId();
+            Button chat = (Button) findViewById(R.id.chatButton);
+            Button adjustPrice = (Button) findViewById(R.id.adjustPriceButton);
             Button acceptJob = (Button) findViewById(R.id.acceptJobButton);
             chat.setVisibility(View.VISIBLE);
+            adjustPrice.setVisibility(View.VISIBLE);
             acceptJob.setVisibility(View.GONE);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -180,6 +193,12 @@ public class JobDetailsActivity extends ListActivity {
     public void goToMaps(View view) {
         findPlace(view);
 
+    }
+
+    public void adjustPrices(View view) {
+        Intent intent = new Intent(this, AdjustPricesActivity.class);
+        intent.putExtra("jobID", jobID);
+        startActivity(intent);
     }
 
     public void findPlace(View view) {

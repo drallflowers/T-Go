@@ -54,4 +54,5 @@
     <string name="courierInput">Courier: </string>
     <string name="courierHint">Courier\'s Username</string>
     <string name="search">Search</string>
+    <string name="title_activity_adjust_prices">AdjustPricesActivity</string>
 </resources>
