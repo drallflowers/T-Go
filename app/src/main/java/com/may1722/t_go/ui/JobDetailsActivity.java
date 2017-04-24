@@ -110,6 +110,12 @@ public class JobDetailsActivity extends ListActivity {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        new AsyncGetItems().execute(jobID);
+    }
+
     public void acceptJob(View view) {
         new AsyncClaimJob().execute(userID, jobID);
         CreateChatRequest createChatRequest = new CreateChatRequest();

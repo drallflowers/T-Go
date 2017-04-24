@@ -24,14 +24,15 @@
         <ListView
             android:id="@+id/adjustItemListView"
             android:layout_width="match_parent"
-            android:layout_height="459dp"
-            android:layout_weight="0.87" />
+            android:layout_height="353dp"
+            android:layout_weight="0.99" />
 
         <Button
             android:id="@+id/submitButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="bottom"
+            android:onClick="submitPrices"
             android:text="Submit"
             android:textAlignment="center" />
 

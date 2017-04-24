@@ -2,10 +2,14 @@ package com.may1722.t_go.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +69,30 @@ public class AdjustPricesActivity extends AppCompatActivity {
 
         adapter = new AdjustAdapter(this, adjustPriceItems);
         listView.setAdapter(adapter);
+    }
+
+    public void submitPrices(View view) {
+        for(int i = 0; i < adjustPriceItems.size(); i++) {
+            View itemView = listView.getChildAt(i);
+            EditText pricePerItem = (EditText) itemView.findViewById(R.id.pricePerItemEditText);
+            EditText quantity = (EditText) itemView.findViewById(R.id.quantityEditText);
+            if(!(pricePerItem.getText().toString().equals(""))) {
+                adjustPriceItems.get(i).setPrice(Double.parseDouble(pricePerItem.getText().toString()));
+            }
+            if(!(quantity.getText().toString().equals(""))) {
+                adjustPriceItems.get(i).setQuantity(Integer.parseInt(quantity.getText().toString()));
+            }
+            AdjustPriceItem item = adjustPriceItems.get(i);
+            new AsyncUpdateItem().execute(Integer.toString(item.getItem_id()), Double.toString(item.getPrice()), Integer.toString(item.getQuantity()), jobId);
+        }
+//        Intent intent = new Intent(this, ProfileActivity.class);
+//        startActivity(intent);
+        try {
+            Thread.sleep(500);
+            finish();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private class AdjustPriceItem {
@@ -129,18 +157,76 @@ public class AdjustPricesActivity extends AppCompatActivity {
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
+            final ViewHolder holder;
+            final int pos = position;
             AdjustPriceItem i = items.get(position);
+            if(convertView == null){
+                holder = new ViewHolder();
+                LayoutInflater mInflater = AdjustPricesActivity.this.getLayoutInflater();
+                convertView = mInflater.inflate(R.layout.list_adjust_price_item, null);
+                holder.itemTitle = (TextView) convertView.findViewById(R.id.itemTextView);
+                holder.pricePerItem = (EditText) convertView.findViewById(R.id.pricePerItemEditText);
+                holder.quantity = (EditText) convertView.findViewById(R.id.quantityEditText);
 
-            LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+                convertView.setTag(holder);
+            }
+            else {
+                holder = (ViewHolder) convertView.getTag();
+//                LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+//
+//                convertView = mInflater.inflate(R.layout.list_adjust_price_item, null);
+//                TextView itemTitle = (TextView) convertView.findViewById(R.id.itemTextView);
+//                EditText pricePerItem = (EditText) convertView.findViewById(R.id.pricePerItemEditText);
+//                EditText quantity = (EditText) convertView.findViewById(R.id.quantityEditText);
+            }
+            holder.ref = position;
+            holder.itemTitle.setText(i.getName());
+            holder.pricePerItem.setText(Double.toString(i.getPrice()));
+            holder.pricePerItem.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            convertView = mInflater.inflate(R.layout.list_adjust_price_item, null);
-            TextView itemTitle = (TextView) convertView.findViewById(R.id.itemTextView);
-            EditText pricePerItem = (EditText) convertView.findViewById(R.id.pricePerItemEditText);
-            EditText quantity = (EditText) convertView.findViewById(R.id.quantityEditText);
-            itemTitle.setText(i.getName());
-            pricePerItem.setText(Double.toString(i.getPrice()));
-            quantity.setText(Integer.toString(i.getQuantity()));
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if(!s.toString().equals("")) {
+                        items.get(pos).setPrice(Double.parseDouble(s.toString()));
+                    }
+                }
+            });
+            holder.quantity.setText(Integer.toString(i.getQuantity()));
+            holder.quantity.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if(!s.toString().equals("")) {
+                        items.get(pos).setQuantity(Integer.parseInt(s.toString()));
+                    }
+                }
+            });
             return convertView;
+        }
+
+        private class ViewHolder {
+            TextView itemTitle;
+            EditText pricePerItem;
+            EditText quantity;
+            int ref;
         }
     }
 
@@ -243,6 +329,108 @@ public class AdjustPricesActivity extends AppCompatActivity {
                     e.printStackTrace();
                     Toast.makeText(AdjustPricesActivity.this, "OOPs! Something went wrong. Bad Results Returned.", Toast.LENGTH_LONG).show();
                 }
+            }
+        }
+    }
+
+    private class AsyncUpdateItem extends AsyncTask<String, String, String> {
+        HttpURLConnection conn;
+        URL url = null;
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+                // Enter URL address where your php file resides
+                url = new URL("http://may1722db.ece.iastate.edu/updateitem.php");
+
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return "exception";
+            }
+            try {
+                // Setup HttpURLConnection class to send and receive data from php and mysql
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(15000);
+                conn.setConnectTimeout(15000);
+                conn.setRequestMethod("POST");
+
+                // setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("item_id", params[0])
+                        .appendQueryParameter("price", params[1])
+                        .appendQueryParameter("quantity", params[2])
+                        .appendQueryParameter("job_id", params[3]);
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return "exception";
+            }
+
+            try {
+
+                int response_code = conn.getResponseCode();
+
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    // Read data sent from server
+                    InputStream input = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+
+                    return result.toString();
+                    // Pass data to onPostExecute method
+
+
+                } else {
+                    //Toast.makeText(AddItemActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                    return "connection failure";
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(AdjustPricesActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+                return "connection failure";
+            } finally {
+                conn.disconnect();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            //this method will be running on UI thread
+
+            if (result.equalsIgnoreCase("connection failure")) {
+                /* Here launching another activity when login successful. If you persist login state
+                use sharedPreferences of Android. and logout button to clear sharedPreferences.
+                 */
+                Toast.makeText(AdjustPricesActivity.this, "OOPs! Something went wrong. Connection Problem.", Toast.LENGTH_LONG).show();
+            } else {
+
             }
         }
     }
