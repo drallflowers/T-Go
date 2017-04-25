@@ -41,13 +41,13 @@ public class JobBoardActivity extends ListActivity {
         setContentView(R.layout.activity_job_board);
 
         userID = getIntent().getExtras().getString("userID");
-        new AsyncGetJobs().execute();
+        new AsyncGetJobs().execute(userID);
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        new AsyncGetJobs().execute();
+        new AsyncGetJobs().execute(userID);
     }
 
 
@@ -124,14 +124,15 @@ public class JobBoardActivity extends ListActivity {
                 conn.setDoOutput(true);
 
                 // Append parameters to URL
-                Uri.Builder builder = new Uri.Builder();
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("userID", params[0]);
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
                 OutputStream os = conn.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(
                         new OutputStreamWriter(os, "UTF-8"));
-                writer.write("");
+                writer.write(query);
                 writer.flush();
                 writer.close();
                 os.close();
